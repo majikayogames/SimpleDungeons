@@ -1,4 +1,4 @@
-# SimpleTerrain for Godot 4
+# SimpleDungeons for Godot 4
 
 SimpleDungeons is a Godot 4 addon which allows for the creation of procedurally generated 3D dungeons/levels using user defined prefab rooms.
 
