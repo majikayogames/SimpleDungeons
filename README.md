@@ -5,6 +5,8 @@ SimpleDungeons is a Godot 4 addon which allows for the creation of procedurally 
 I did a YouTube video explaining how the algorithm works here:
 https://www.youtube.com/watch?v=TPvxWIKHE6Q
 
+You can download this repo and open its folder in Godot to run the sample project.
+
 ## Installation
 
 1. Clone this repo or download as a zip by clicking the `Code` button above.
