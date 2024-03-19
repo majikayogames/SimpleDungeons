@@ -19,7 +19,7 @@ https://www.youtube.com/watch?v=TPvxWIKHE6Q
     - Define the AABB of each room with an invisible CSGBox3D named "AABB" as a direct child of the DungeonRoom. Must be standardized to the "room_size" export variable set on the DungeonKit scene.
     - Each room must inherit from the DungeonRoom class. When creating custom room scripts, make sure to add the @tool directive if you want to see in editor debug info for the room's doors.
     - You can connect to the `placed_room` signal which is emitted on the DungeonRoom once the generation is finished.
-    - Other useful functions are `DungeonRoom.get_doors() -> Array[Door]` on DungeonRoom and `Door.get_room_leads_to -> null or the DungeonRoom instance`. Also `DungeonRoom.get_door_by_node(door_node : Node3D) -> Door class instance`. Useful for removing unused optional doors after generation is finished.
+    - Other useful functions are `DungeonRoom.get_doors() -> Array[Door]` on DungeonRoom and `Door.get_room_leads_to() -> DungeonRoom instance or null if none`. Also `DungeonRoom.get_door_by_node(door_node : Node3D) -> Door class instance`. Useful for removing unused optional doors after generation is finished.
 
 ## License
 
