@@ -12,7 +12,7 @@ https://www.youtube.com/watch?v=TPvxWIKHE6Q
 
 ## Usage
 
-- Add a DungeonGenerator instance to your scene and set the size and shape of the dungeon you want to create.
+- Add a DungeonGenerator instance to your scene (`addons/SimpleDungeons/DungeonGenerator.tscn`) and set the size and shape of the dungeon you want to create.
 - Set the dungeon kit variable (which houses all the prefab rooms) on the DungeonGenerator. Use one of the sample DungeonKits or create your own.
 - Refer to the sample DungeonKit examples to see how you should structure the DungeonKit.
     - Each room needs doors defined by creating Node3Ds with the prefix "DOOR" for required doors or "DOOR?" for optional doors.
