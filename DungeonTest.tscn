@@ -1,0 +1,35 @@
+[gd_scene load_steps=7 format=3 uid="uid://ba3rkgbyxsyo0"]
+
+[ext_resource type="PackedScene" uid="uid://b2c2jvx5vsfc0" path="res://addons/SimpleDungeons/SampleDungeonKitWithModels.tscn" id="3_bl7i8"]
+[ext_resource type="Script" path="res://addons/SimpleDungeons/DungeonGenerator.gd" id="3_dysek"]
+[ext_resource type="PackedScene" uid="uid://g407w5bbx5ci" path="res://entities/Player/Player.tscn" id="3_efbs5"]
+
+[sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_ga1mx"]
+sky_horizon_color = Color(0.64625, 0.65575, 0.67075, 1)
+ground_horizon_color = Color(0.64625, 0.65575, 0.67075, 1)
+
+[sub_resource type="Sky" id="Sky_c72ol"]
+sky_material = SubResource("ProceduralSkyMaterial_ga1mx")
+
+[sub_resource type="Environment" id="Environment_omyfu"]
+background_mode = 2
+sky = SubResource("Sky_c72ol")
+tonemap_mode = 2
+glow_enabled = true
+
+[node name="DungeonTest" type="Node3D"]
+
+[node name="DirectionalLight3D" type="DirectionalLight3D" parent="."]
+transform = Transform3D(-0.866023, -0.433016, 0.250001, 0, 0.499998, 0.866027, -0.500003, 0.749999, -0.43301, 0, 0, 0)
+shadow_enabled = true
+
+[node name="WorldEnvironment" type="WorldEnvironment" parent="."]
+environment = SubResource("Environment_omyfu")
+
+[node name="DungeonGenerator" type="Node3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -130.516)
+script = ExtResource("3_dysek")
+dungeon_kit_scene = ExtResource("3_bl7i8")
+generate_threaded = true
+
+[node name="Player" parent="." instance=ExtResource("3_efbs5")]

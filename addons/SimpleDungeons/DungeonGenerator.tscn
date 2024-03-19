@@ -1,0 +1,6 @@
+[gd_scene load_steps=2 format=3 uid="uid://baosaty7j6vpr"]
+
+[ext_resource type="Script" path="res://addons/SimpleDungeons/DungeonGenerator.gd" id="1_5w03l"]
+
+[node name="DungeonGenerator" type="Node3D"]
+script = ExtResource("1_5w03l")

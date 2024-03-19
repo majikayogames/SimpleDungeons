@@ -1,0 +1,264 @@
+[gd_scene load_steps=17 format=3 uid="uid://c43g1igpy61ii"]
+
+[ext_resource type="Texture2D" uid="uid://bexae48ah1k8f" path="res://addons/SimpleDungeons/sample_assets/texture_01.png" id="1_77sy1"]
+[ext_resource type="Script" path="res://addons/SimpleDungeons/DungeonKit.gd" id="1_hqoq6"]
+[ext_resource type="Script" path="res://addons/SimpleDungeons/DungeonRoom.gd" id="2_6g37u"]
+[ext_resource type="Material" uid="uid://r3rtjl181fpd" path="res://addons/SimpleDungeons/sample_assets/texture_02.tres" id="2_tm1fi"]
+[ext_resource type="Texture2D" uid="uid://bf0d0dxa7luvu" path="res://addons/SimpleDungeons/sample_assets/texture_08.png" id="3_e22b6"]
+[ext_resource type="PackedScene" uid="uid://bak8ltrhbmlv5" path="res://addons/SimpleDungeons/sample_assets/CSGStairMaker3D.tscn" id="5_jturq"]
+[ext_resource type="Texture2D" uid="uid://hxotou28sfpb" path="res://addons/SimpleDungeons/sample_assets/texture_09.png" id="5_njbn5"]
+[ext_resource type="PackedScene" uid="uid://byxj34ip8ttma" path="res://utils/DebugFlyCamera.tscn" id="8_ljpqy"]
+
+[sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_ayok2"]
+sky_horizon_color = Color(0.64625, 0.65575, 0.67075, 1)
+ground_horizon_color = Color(0.64625, 0.65575, 0.67075, 1)
+
+[sub_resource type="Sky" id="Sky_drqsx"]
+sky_material = SubResource("ProceduralSkyMaterial_ayok2")
+
+[sub_resource type="Environment" id="Environment_m4uas"]
+background_mode = 2
+sky = SubResource("Sky_drqsx")
+tonemap_mode = 2
+glow_enabled = true
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_57r0k"]
+albedo_texture = ExtResource("1_77sy1")
+
+[sub_resource type="GDScript" id="GDScript_kd18u"]
+script/source = "@tool
+extends DungeonRoom
+
+
+# Called when the node enters the scene tree for the first time.
+func _ready():
+	placed_room.connect(remove_unused_doors)
+
+func remove_unused_doors():
+	for door in get_doors():
+		if door.get_room_leads_to() == null:
+			door.door_node.queue_free()
+"
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_orb45"]
+albedo_texture = ExtResource("5_njbn5")
+uv1_triplanar = true
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_egqka"]
+albedo_texture = ExtResource("3_e22b6")
+uv1_triplanar = true
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_y4oqf"]
+albedo_texture = ExtResource("3_e22b6")
+
+[node name="DungeonKit" type="Node3D"]
+script = ExtResource("1_hqoq6")
+
+[node name="WorldEnvironment" type="WorldEnvironment" parent="."]
+environment = SubResource("Environment_m4uas")
+
+[node name="EntranceRoom" type="Node3D" parent="."]
+script = ExtResource("2_6g37u")
+min_count = 1
+max_count = 1
+
+[node name="FrontDoor" type="CSGBox3D" parent="EntranceRoom"]
+transform = Transform3D(-1, 0, -8.74228e-08, 0, 1, 0, 8.74228e-08, 0, -1, -1.83588e-06, -2.75, -4.5)
+material_override = SubResource("StandardMaterial3D_57r0k")
+size = Vector3(5, 4, 0.5)
+
+[node name="CSGBox3D" type="CSGBox3D" parent="EntranceRoom"]
+transform = Transform3D(-1, 0, -8.74228e-08, 0, 1, 0, 8.74228e-08, 0, -1, -1.44248e-06, 0, 0)
+material_override = ExtResource("2_tm1fi")
+use_collision = true
+size = Vector3(10, 10, 10)
+
+[node name="CSGBox3D2" type="CSGBox3D" parent="EntranceRoom/CSGBox3D"]
+operation = 2
+size = Vector3(9.5, 9.5, 9.5)
+
+[node name="DOOR_F_CUT" type="CSGBox3D" parent="EntranceRoom/CSGBox3D"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -2.75, -5)
+operation = 2
+size = Vector3(2, 4, 1)
+
+[node name="DOOR_R_CUT" type="CSGBox3D" parent="EntranceRoom/CSGBox3D"]
+transform = Transform3D(-4.37114e-08, 0, -1, 0, 1, 0, 1, 0, -4.37114e-08, 5, -2.75, 0)
+operation = 2
+size = Vector3(2, 4, 1)
+
+[node name="DOOR_L_CUT" type="CSGBox3D" parent="EntranceRoom/CSGBox3D"]
+transform = Transform3D(-4.37114e-08, 0, -1, 0, 1, 0, 1, 0, -4.37114e-08, -5, -2.75, 0)
+operation = 2
+size = Vector3(2, 4, 1)
+
+[node name="AABB" type="CSGBox3D" parent="EntranceRoom"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1.44248e-06, 0, 0)
+visible = false
+size = Vector3(10, 10, 10)
+
+[node name="AnyRoom" type="Node3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 10)
+script = SubResource("GDScript_kd18u")
+
+[node name="CSGBox3D" type="CSGBox3D" parent="AnyRoom"]
+transform = Transform3D(-1, 0, -8.74228e-08, 0, 1, 0, 8.74228e-08, 0, -1, -5.68248e-07, 0, 0)
+material_override = SubResource("StandardMaterial3D_orb45")
+use_collision = true
+size = Vector3(10, 10, 10)
+
+[node name="CSGBox3D2" type="CSGBox3D" parent="AnyRoom/CSGBox3D"]
+operation = 2
+size = Vector3(9.5, 9.5, 9.5)
+
+[node name="DOOR?_F_CUT" type="CSGBox3D" parent="AnyRoom/CSGBox3D"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -2.75, -5.25)
+operation = 2
+size = Vector3(2, 4, 1)
+
+[node name="DOOR?_R_CUT" type="CSGBox3D" parent="AnyRoom/CSGBox3D"]
+transform = Transform3D(-4.37114e-08, 0, -1, 0, 1, 0, 1, 0, -4.37114e-08, 5, -2.75, 0)
+operation = 2
+size = Vector3(2, 4, 1)
+
+[node name="DOOR?_L_CUT" type="CSGBox3D" parent="AnyRoom/CSGBox3D"]
+transform = Transform3D(-4.37114e-08, 0, -1, 0, 1, 0, 1, 0, -4.37114e-08, -5, -2.75, 0)
+operation = 2
+size = Vector3(2, 4, 1)
+
+[node name="DOOR?_B_CUT" type="CSGBox3D" parent="AnyRoom/CSGBox3D"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -2.75, 5)
+operation = 2
+size = Vector3(2, 4, 1)
+
+[node name="AABB" type="CSGBox3D" parent="AnyRoom"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -5.68248e-07, 0, 0)
+visible = false
+size = Vector3(10, 10, 10)
+
+[node name="Stair" type="Node3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 10, 0, 10)
+script = ExtResource("2_6g37u")
+max_count = 10
+
+[node name="CSGBox3D" type="CSGBox3D" parent="Stair"]
+transform = Transform3D(-1, 0, -8.74228e-08, 0, 1, 0, 8.74228e-08, 0, -1, 5, 5, 0)
+material_override = ExtResource("2_tm1fi")
+use_collision = true
+size = Vector3(20, 20, 10)
+
+[node name="CSGBox3D2" type="CSGBox3D" parent="Stair/CSGBox3D"]
+operation = 2
+size = Vector3(19.5, 19.5, 9.5)
+
+[node name="DOOR?_R_CUT" type="CSGBox3D" parent="Stair/CSGBox3D"]
+transform = Transform3D(-4.37114e-08, 0, -1, 0, 1, 0, 1, 0, -4.37114e-08, 9.8, -7.75, 0)
+operation = 2
+size = Vector3(2, 4, 1)
+
+[node name="DOOR?_L_CUT" type="CSGBox3D" parent="Stair/CSGBox3D"]
+transform = Transform3D(-4.37114e-08, 0, -1, 0, 1, 0, 1, 0, -4.37114e-08, -9.9, 2.25, 0)
+operation = 2
+size = Vector3(2, 4, 1)
+
+[node name="AABB" type="CSGBox3D" parent="Stair"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 5, 5, 0)
+visible = false
+size = Vector3(20, 20, 10)
+
+[node name="CSGStairMaker3D" parent="Stair" instance=ExtResource("5_jturq")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 7.75, 0.25, 0)
+use_collision = true
+size = Vector3(14, 10, 9.5)
+num_stairs = 24
+
+[node name="BridgeRoom" type="Node3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 20)
+script = ExtResource("2_6g37u")
+
+[node name="bridge" type="CSGBox3D" parent="BridgeRoom"]
+transform = Transform3D(-1, 0, -8.74228e-08, 0, 1, 0, 8.74228e-08, 0, -1, 7.43094e-07, -4.775, 5)
+material_override = SubResource("StandardMaterial3D_egqka")
+operation = 2
+use_collision = true
+size = Vector3(2, 0.1, 19.5)
+
+[node name="CSGBox3D" type="CSGBox3D" parent="BridgeRoom"]
+transform = Transform3D(-1, 0, -8.74228e-08, 0, 1, 0, 8.74228e-08, 0, -1, 7.43094e-07, 0, 5)
+material_override = ExtResource("2_tm1fi")
+use_collision = true
+size = Vector3(10, 10, 20)
+
+[node name="CSGBox3D3" type="CSGBox3D" parent="BridgeRoom/CSGBox3D"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.25, 0)
+operation = 2
+size = Vector3(9.5, 9, 19.5)
+
+[node name="DOOR_B_CUT" type="CSGBox3D" parent="BridgeRoom/CSGBox3D"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2.27374e-13, -2.75, 9.75)
+operation = 2
+size = Vector3(2, 4, 1)
+
+[node name="DOOR_F_CUT" type="CSGBox3D" parent="BridgeRoom/CSGBox3D"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -2.75, -10.25)
+operation = 2
+size = Vector3(2, 4, 1)
+
+[node name="AABB" type="CSGBox3D" parent="BridgeRoom"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 7.43094e-07, 0, 5)
+visible = false
+size = Vector3(10, 10, 20)
+
+[node name="LivingRoom" type="Node3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 40)
+script = ExtResource("2_6g37u")
+
+[node name="CSGBox3D" type="CSGBox3D" parent="LivingRoom"]
+transform = Transform3D(-1, 0, -8.74228e-08, 0, 1, 0, 8.74228e-08, 0, -1, 2.49155e-06, 0, 5)
+material_override = ExtResource("2_tm1fi")
+use_collision = true
+size = Vector3(30, 10, 20)
+
+[node name="CSGBox3D3" type="CSGBox3D" parent="LivingRoom/CSGBox3D"]
+operation = 2
+size = Vector3(29.5, 9.5, 19.5)
+
+[node name="DOOR?_B_CUT" type="CSGBox3D" parent="LivingRoom/CSGBox3D"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -2.75, 9.75)
+operation = 2
+size = Vector3(2, 4, 1)
+
+[node name="DOOR?_R2_CUT2" type="CSGBox3D" parent="LivingRoom/CSGBox3D"]
+transform = Transform3D(-4.37114e-08, 0, -1, 0, 1, 0, 1, 0, -4.37114e-08, 15, -2.75, -5)
+operation = 2
+size = Vector3(2, 4, 1)
+
+[node name="DOOR?_R1_CUT2" type="CSGBox3D" parent="LivingRoom/CSGBox3D"]
+transform = Transform3D(-4.37114e-08, 0, -1, 0, 1, 0, 1, 0, -4.37114e-08, 15, -2.75, 5)
+operation = 2
+size = Vector3(2, 4, 1)
+
+[node name="DOOR?_L2_CUT" type="CSGBox3D" parent="LivingRoom/CSGBox3D"]
+transform = Transform3D(-4.37114e-08, 0, -1, 0, 1, 0, 1, 0, -4.37114e-08, -15, -2.75, -5)
+operation = 2
+size = Vector3(2, 4, 1)
+
+[node name="DOOR?_L1_CUT" type="CSGBox3D" parent="LivingRoom/CSGBox3D"]
+transform = Transform3D(-4.37114e-08, 0, -1, 0, 1, 0, 1, 0, -4.37114e-08, -15, -2.75, 5)
+operation = 2
+size = Vector3(2, 4, 1)
+
+[node name="CSGBox3D2" type="CSGBox3D" parent="LivingRoom"]
+transform = Transform3D(-1, 0, -8.74228e-08, 0, 1, 0, 8.74228e-08, 0, -1, 2.49155e-06, -4.825, 5)
+material_override = SubResource("StandardMaterial3D_y4oqf")
+use_collision = true
+size = Vector3(8, 0.2, 13)
+
+[node name="AABB" type="CSGBox3D" parent="LivingRoom"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2.49155e-06, 0, 5)
+visible = false
+size = Vector3(30, 10, 20)
+
+[node name="DebugFlyCamera" parent="." instance=ExtResource("8_ljpqy")]
+
+[node name="Label3D" type="Label3D" parent="."]

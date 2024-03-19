@@ -1,0 +1,37 @@
+[gd_scene load_steps=2 format=3 uid="uid://byxj34ip8ttma"]
+
+[sub_resource type="GDScript" id="GDScript_g3prl"]
+script/source = "extends Node3D
+
+const SENSITIVITY = 0.004
+const SPEED = 5
+var speed_mult = 1.0
+
+# Called when the node enters the scene tree for the first time.
+func _ready():
+	Input.set_mouse_mode(Input.MOUSE_MODE_CAPTURED)
+
+func _unhandled_input(event):
+	if event is InputEventMouseMotion and Input.mouse_mode == Input.MOUSE_MODE_CAPTURED:
+		rotate_y(-event.relative.x * SENSITIVITY)
+		$Camera3D.rotate_x(-event.relative.y * SENSITIVITY)
+		$Camera3D.rotation.x = clamp($Camera3D.rotation.x, deg_to_rad(-90), deg_to_rad(90))
+
+# Called every frame. 'delta' is the elapsed time since the previous frame.
+func _process(delta):
+	var input_dir = Input.get_vector(\"ui_left\", \"ui_right\", \"ui_up\", \"ui_down\")
+	if Input.is_action_just_released(\"_MWU\"):
+		speed_mult = min(100.0, speed_mult * 1.1)
+	elif Input.is_action_just_released(\"_MWD\"):
+		speed_mult = max(0.1, speed_mult * 0.9)
+	var speed = SPEED * speed_mult
+	if Input.is_action_pressed(\"sprint\"):
+		speed *= 3
+	if input_dir.length():
+		self.global_position = $Camera3D.global_transform * (Vector3(input_dir.x, 0, input_dir.y).normalized() * delta * speed)
+"
+
+[node name="DebugFlyCamera" type="Node3D"]
+script = SubResource("GDScript_g3prl")
+
+[node name="Camera3D" type="Camera3D" parent="."]

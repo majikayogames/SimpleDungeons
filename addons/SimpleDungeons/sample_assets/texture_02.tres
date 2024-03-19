@@ -1,0 +1,8 @@
+[gd_resource type="StandardMaterial3D" load_steps=2 format=3 uid="uid://r3rtjl181fpd"]
+
+[ext_resource type="Texture2D" uid="uid://bpghqfy0xl05s" path="res://addons/SimpleDungeons/sample_assets/texture_07.png" id="1_h10j6"]
+
+[resource]
+albedo_texture = ExtResource("1_h10j6")
+uv1_triplanar = true
+uv1_world_triplanar = true
