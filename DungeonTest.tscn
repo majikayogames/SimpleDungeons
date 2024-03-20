@@ -38,7 +38,7 @@ generate_threaded = true
 [node name="Player" parent="." instance=ExtResource("3_efbs5")]
 
 [node name="CSGBox3D" type="CSGBox3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -1.93937, 0)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.277678, -1.93937, 0)
 use_collision = true
 size = Vector3(15, 1, 15)
 material = SubResource("StandardMaterial3D_y3oqi")
