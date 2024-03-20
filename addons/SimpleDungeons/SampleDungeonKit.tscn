@@ -1,12 +1,12 @@
 [gd_scene load_steps=17 format=3 uid="uid://c43g1igpy61ii"]
 
-[ext_resource type="Texture2D" uid="uid://bexae48ah1k8f" path="res://addons/SimpleDungeons/sample_assets/texture_01.png" id="1_77sy1"]
+[ext_resource type="Texture2D" uid="uid://cmxrbnuqdv7kt" path="res://addons/SimpleDungeons/sample_assets/texture_01.png" id="1_77sy1"]
 [ext_resource type="Script" path="res://addons/SimpleDungeons/DungeonKit.gd" id="1_hqoq6"]
 [ext_resource type="Script" path="res://addons/SimpleDungeons/DungeonRoom.gd" id="2_6g37u"]
 [ext_resource type="Material" uid="uid://r3rtjl181fpd" path="res://addons/SimpleDungeons/sample_assets/texture_02.tres" id="2_tm1fi"]
-[ext_resource type="Texture2D" uid="uid://bf0d0dxa7luvu" path="res://addons/SimpleDungeons/sample_assets/texture_08.png" id="3_e22b6"]
+[ext_resource type="Texture2D" uid="uid://b7ed23af72v8r" path="res://addons/SimpleDungeons/sample_assets/texture_08.png" id="3_e22b6"]
 [ext_resource type="PackedScene" uid="uid://bak8ltrhbmlv5" path="res://addons/SimpleDungeons/sample_assets/CSGStairMaker3D.tscn" id="5_jturq"]
-[ext_resource type="Texture2D" uid="uid://hxotou28sfpb" path="res://addons/SimpleDungeons/sample_assets/texture_09.png" id="5_njbn5"]
+[ext_resource type="Texture2D" uid="uid://mk4j1xh26ruf" path="res://addons/SimpleDungeons/sample_assets/texture_09.png" id="5_njbn5"]
 [ext_resource type="PackedScene" uid="uid://byxj34ip8ttma" path="res://utils/DebugFlyCamera.tscn" id="8_ljpqy"]
 
 [sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_ayok2"]
