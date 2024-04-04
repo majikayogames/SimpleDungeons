@@ -27,15 +27,24 @@ var stage : BuildStage = BuildStage.DONE
 @export var show_debug_grid_in_editor : bool = true
 @export var show_debug_grid_in_game : bool = false
 
+## Generate the dungeon in editor
+@export var editor_button_generate_dungeon : bool = false :
+	set(value): generate()
+
 var dungeon_kit_inst : DungeonKit
 var _editor_aabb_cube_visual : Node3D
 
 var _rooms_container : Node3D
 func create_or_recreate_rooms_container():
+	if get_node_or_null("RoomsContainer"):
+		var rc = get_node_or_null("RoomsContainer")
+		remove_child(rc)
+		rc.queue_free()
 	if _rooms_container != null:
 		_rooms_container.queue_free()
 	_rooms_container = Node3D.new()
 	_rooms_container.position = Vector3(dungeon_size) * dungeon_kit_inst.grid_voxel_size / -2
+	_rooms_container.name = "RoomsContainer"
 	_rooms = [] as Array[DungeonRoom]
 	_room_counts = {}
 	_floors_graphs = []
@@ -90,7 +99,7 @@ func start_generate_loop():
 			print("Failed to generate dungeon.")
 		return
 	
-	if generate_threaded:
+	if generate_threaded and not Engine.is_editor_hint():
 		var t = Thread.new()
 		t.start(_generate_loop)
 	else:
@@ -154,6 +163,20 @@ func place_rooms_and_stairs() -> bool:
 	stage += 1
 	return true
 
+func claim_node_ownership_recur(node, owner = null):
+	if owner == null:
+		if Engine.is_editor_hint():
+			# Hack to prevent errors at runtime or on export where EditorInterface does not exist.
+			var script := GDScript.new()
+			script.set_source_code("func eval(): return EditorInterface.get_edited_scene_root()" )
+			script.reload()
+			owner = script.new().eval()
+		else:
+			owner = self
+	node.owner = owner
+	for child in node.get_children():
+		claim_node_ownership_recur(child, owner)
+
 ###################
 ## GENERATE LOOP ##
 ###################
@@ -185,6 +208,7 @@ func continue_generating():
 			_position_rooms.call_deferred()
 			_populate_grid_to_rooms_arr.call_deferred()
 			_emit_placed_room_signals.call_deferred()
+			claim_node_ownership_recur.call_deferred(_rooms_container)
 			stage += 1
 	
 	if iterations >= max_safe_iterations and stage != BuildStage.DONE:
