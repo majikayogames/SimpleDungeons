@@ -27,7 +27,8 @@ var stage : BuildStage = BuildStage.DONE
 @export var show_debug_grid_in_editor : bool = true
 @export var show_debug_grid_in_game : bool = false
 
-## Generate the dungeon in editor
+## Generate the dungeon in editor. If you added any custom rooms which extend DungeonRoom,
+## they also need the @tool directive for this to work.
 @export var editor_button_generate_dungeon : bool = false :
 	set(value): generate()
 
