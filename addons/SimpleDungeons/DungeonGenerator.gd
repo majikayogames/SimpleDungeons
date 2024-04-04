@@ -10,6 +10,8 @@ var stage : BuildStage = BuildStage.DONE
 		if dungeon_kit_scene != value:
 			dungeon_kit_scene = value
 			dungeon_kit_inst = dungeon_kit_scene.instantiate()
+
+## Dungeon grid size measured in the standardized room size chosen on the DungeonKit.
 @export var dungeon_size := Vector3i(10,10,10)
 
 ## Seed to use when generating the dungeon. 0 for random. You can call generate(seed) to override.
@@ -33,7 +35,7 @@ func create_or_recreate_rooms_container():
 	if _rooms_container != null:
 		_rooms_container.queue_free()
 	_rooms_container = Node3D.new()
-	_rooms_container.position = Vector3(dungeon_size) * dungeon_kit_inst.room_size / -2
+	_rooms_container.position = Vector3(dungeon_size) * dungeon_kit_inst.grid_voxel_size / -2
 	_rooms = [] as Array[DungeonRoom]
 	_room_counts = {}
 	_floors_graphs = []
@@ -59,6 +61,9 @@ var _rng = RandomNumberGenerator.new()
 
 var _is_generating := false
 func generate(seed_override = null):
+	if not does_pass_safety_checks():
+		printerr("Unable to generate dungeon.")
+		return false
 	if seed_override != null:
 		_rng.seed = seed_override
 	elif generate_seed != 0:
@@ -129,7 +134,7 @@ func _process(delta):
 	if _editor_aabb_cube_visual:
 		_editor_aabb_cube_visual.visible = show_debug_grid_in_editor if Engine.is_editor_hint() else show_debug_grid_in_game
 		if dungeon_kit_inst:
-			_editor_aabb_cube_visual.scale = Vector3(dungeon_size) * dungeon_kit_inst.room_size
+			_editor_aabb_cube_visual.scale = Vector3(dungeon_size) * dungeon_kit_inst.grid_voxel_size
 			_editor_aabb_cube_visual.grid_size = dungeon_size
 	if Engine.is_editor_hint():
 		return
@@ -196,6 +201,8 @@ func all_floors_connected() -> bool:
 	if _stairs_graph == null:
 		# Build initial stair graph
 		_stairs_graph = DungeonUtils.TreeGraph.new(range(dungeon_size.y))
+		print(_stairs_graph._nodes)
+		print(_stairs_graph._roots)
 		for room_on_grid in _rooms:
 			var doors = room_on_grid.get_doors()
 			for door in doors:
@@ -388,3 +395,46 @@ func _populate_grid_to_rooms_arr():
 func _emit_placed_room_signals():
 	for room in _rooms:
 		room.placed_room.emit()
+		
+## Returns false if it fails any safety checks that would make the dungeon impossible to generate
+func does_pass_safety_checks() -> bool:
+	if not dungeon_kit_inst:
+		printerr("SimpleDungeons Error: Must have a dungeon kit set to generate the dungeon.")
+		return false
+	var found_corridor = false
+	var found_stair_room = false
+	var min_total_room_volume : int = 0
+	if len(dungeon_kit_inst.get_rooms()) == 0:
+		printerr("SimpleDungeons Error: No rooms found. Make sure each room has a DungeonRoom script on it. (Or a script which inherits from DungeonRoom to add custom functionality)")
+		return false
+	for room in dungeon_kit_inst.get_rooms():
+		if not room.get_node_or_null("AABB"):
+			printerr("SimpleDungeons Error: Room ", room.name, " has no AABB. You must add a (can be invisible) CSGBox3D node as a direct child of each DungeonRoom to mark the room dimensions.")
+			return false
+		if not Vector3(room.get_aabb_rel_to_room().size).posmodv(dungeon_kit_inst.grid_voxel_size).length() < 0.5:
+			printerr("SimpleDungeons Warning: Room AABB sizes should be standardized to the chosen grid_voxel_size on the DungeonKit.")
+			printerr("Room ", room.name, " has an AABB which does not match the chosen grid_voxel_size. This may cause incorrect room placement.")
+		if room.size_in_grid.x <= 0 or room.size_in_grid.y <= 0 or room.size_in_grid.z <= 0:
+			printerr("SimpleDungeons Error: Room ", room.name, " has as <= 0 size on one of the X Y or Z axes.")
+			return false
+		if room.size_in_grid.x > dungeon_size.x or room.size_in_grid.y > dungeon_size.y or room.size_in_grid.z > dungeon_size.z:
+			printerr("SimpleDungeons Error: Room ", room.name, " does not fit. Its AABB is larger than the set dungeon_size on one of the X Y or Z axes.")
+			printerr("Room size: ", room.size_in_grid, " Dungeon size: ", dungeon_size)
+			return false
+		if room.size_in_grid == Vector3i(1,1,1) and len(room.get_doors().filter(func(_d : DungeonRoom.Door): return _d.optional)) == 4:
+			found_corridor = true
+		if len(room.get_doors()) == 0:
+			printerr("SimpleDungeons Error: All rooms must have at least 1 door")
+			return false
+		min_total_room_volume += (room.size_in_grid.x * room.size_in_grid.y * room.size_in_grid.z) * room.min_count
+	if not found_corridor:
+		printerr("SimpleDungeons Error: Needs at least 1 1x1x1 (in grid squares/voxels) corridor room with 4 optional doors.")
+		printerr("You can mark a door as optional by prefixing with DOOR? while required doors are prefixed with just DOOR")
+		return false
+	if min_total_room_volume > (dungeon_size.x * dungeon_size.y * dungeon_size.z):
+		printerr("SimpleDungeons Error: Total minimum number of rooms must be less than the total volume of the dungeon. Decrease the number of rooms to spawn or increase the dungeon size.")
+		return false
+	if dungeon_size.y > 1 and len(_get_stair_rooms()) == 0:
+		printerr("SimpleDungeons Error: No stair rooms found and dungeon_size.y > 1. Multi-level dungeons must have a stair room (any room with doors leading to multiple floors).")
+		return false
+	return true

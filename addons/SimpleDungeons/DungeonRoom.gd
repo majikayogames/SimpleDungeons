@@ -75,7 +75,7 @@ func get_aabb_rel_to_room() -> AABB:
 func get_aabb_in_grid() -> AABB:
 	var aabb = get_aabb_rel_to_room()
 	# Not quite full size of grid to prevent rounding errors, not sure if necessary.
-	return AABB(grid_pos, aabb.size / dungeon_kit.room_size * 0.99)
+	return AABB(grid_pos, aabb.size / dungeon_kit.grid_voxel_size * 0.99)
 
 func push_away_from(other_room : DungeonRoom) -> void:
 	var diff := other_room.get_aabb_in_grid().get_center() - get_aabb_in_grid().get_center()
@@ -103,7 +103,7 @@ func _find_door_nodes(node : Node = self, result_array = []):
 	return result_array
 
 func set_room_transform_to_grid_pos():
-	var pos_in_space = Vector3(grid_pos) * dungeon_kit.room_size
+	var pos_in_space = Vector3(grid_pos) * dungeon_kit.grid_voxel_size
 	set_pos_from_aabb_corner(pos_in_space)
 
 func get_door_by_node(door_node : Node3D) -> Door:
@@ -114,7 +114,7 @@ func get_door_by_node(door_node : Node3D) -> Door:
 
 var _doors_cached = null
 func get_doors() -> Array[Door]:
-	if _doors_cached != null:
+	if _doors_cached != null and not Engine.is_editor_hint():
 		return _doors_cached
 	var real_aabb_local = get_aabb_rel_to_room()
 	#real_aabb_local.position = self.transform.inverse() * real_aabb_local.position
