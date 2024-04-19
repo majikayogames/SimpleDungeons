@@ -15,7 +15,7 @@ var stage : BuildStage = BuildStage.DONE
 @export var dungeon_size := Vector3i(10,10,10)
 
 ## Seed to use when generating the dungeon. 0 for random. You can call generate(seed) to override.
-@export var generate_seed : int = 0
+@export var generate_seed = 0
 @export var generate_on_ready : bool = true
 @export var generate_threaded : bool = false
 ## Depending on the dungeon kit used and the separation/connecting algorithm, it's possible that
@@ -30,10 +30,15 @@ var stage : BuildStage = BuildStage.DONE
 ## Generate the dungeon in editor. If you added any custom rooms which extend DungeonRoom,
 ## they also need the @tool directive for this to work.
 @export var editor_button_generate_dungeon : bool = false :
-	set(value): generate()
+	set(value):
+		dungeon_kit_inst = dungeon_kit_scene.instantiate() # may need update if editing and re-generating
+		generate()
 
 var dungeon_kit_inst : DungeonKit
 var _editor_aabb_cube_visual : Node3D
+
+var iterations = 0
+var retry_attempts = 0
 
 var _rooms_container : Node3D
 func create_or_recreate_rooms_container():
@@ -41,6 +46,7 @@ func create_or_recreate_rooms_container():
 		var rc = get_node_or_null("RoomsContainer")
 		remove_child(rc)
 		rc.queue_free()
+		_rooms_container = null
 	if _rooms_container != null:
 		_rooms_container.queue_free()
 	_rooms_container = Node3D.new()
@@ -81,6 +87,8 @@ func generate(seed_override = null):
 	else:
 		_rng.randomize()
 	print("Using dungeon generation seed: ", _rng.get_seed())
+	iterations = 0
+	retry_attempts = 0
 	start_generate_loop()
 
 func start_generate_loop():
@@ -181,8 +189,6 @@ func claim_node_ownership_recur(node, owner = null):
 ###################
 ## GENERATE LOOP ##
 ###################
-var iterations = 0
-var retry_attempts = 0
 func continue_generating():
 	iterations += 1
 	if stage < BuildStage.DONE and iterations < max_safe_iterations:
@@ -197,6 +203,7 @@ func continue_generating():
 			if not all_rooms_connected_on_all_floors():
 				var connect_result := connect_a_room()
 				if not connect_result:
+					printerr("Failed connect")
 					return false
 			else:
 				print("Finished connection stage successfully")
@@ -214,6 +221,12 @@ func continue_generating():
 	
 	if iterations >= max_safe_iterations and stage != BuildStage.DONE:
 		print("Hit max safe iter")
+		_place_corridors.call_deferred()
+		add_child.call_deferred(_rooms_container)
+		_position_rooms.call_deferred()
+		_populate_grid_to_rooms_arr.call_deferred()
+		_emit_placed_room_signals.call_deferred()
+		claim_node_ownership_recur.call_deferred(_rooms_container)
 		return false
 	
 	return true
@@ -379,11 +392,15 @@ func connect_a_room() -> bool:
 				corridors_to_add = astar_grid.get_id_path(Vector2i(door_a.exit_pos_grid.x, door_a.exit_pos_grid.z), Vector2i(door_b.exit_pos_grid.x, door_b.exit_pos_grid.z))
 			if len(corridors_to_add) == 0:
 				# Path find failed or no door_b. Just add 1 corridor at door_a
+				print("Failed to find path for required door. Adding end cap")
 				corridors_to_add.push_back(Vector2i(door_a.exit_pos_grid.x, door_a.exit_pos_grid.z))
 			else: # Found path
 				graph.connect_nodes(door_a.room, door_b.room)
 			# Don't add corridors twice
 			corridors_to_add = corridors_to_add.filter(func(c): return not astar_grid.corridors.has(c))
+			#print("connecting ", door_a.room.name, ":", door_a.door_node.name, " to ... ", door_b.room.name if door_b else null, ":", door_b.door_node.name if door_b else null)
+			#print(rooms)
+			#print(doors_on_this_floor.map(func(_d): return _d.room))
 			for pos in corridors_to_add:
 				astar_grid.corridors.push_back(pos)
 			return true
@@ -451,6 +468,10 @@ func does_pass_safety_checks() -> bool:
 		if len(room.get_doors()) == 0:
 			printerr("SimpleDungeons Error: All rooms must have at least 1 door")
 			return false
+		for door in room.get_doors():
+			if room.get_aabb_in_grid().has_point(Vector3(door.exit_pos_grid) + Vector3(0.5, 0.5, 0.5)):
+				printerr("SimpleDungeons Error: Room ", room.name, " has invalid door placements.. Use the DungeonKit debug view in editor checkbox and fix doors on this room by making sure they all align with the grid.")
+				return false
 		min_total_room_volume += (room.size_in_grid.x * room.size_in_grid.y * room.size_in_grid.z) * room.min_count
 	if not found_corridor:
 		printerr("SimpleDungeons Error: Needs at least 1 1x1x1 (in grid squares/voxels) corridor room with 4 optional doors.")

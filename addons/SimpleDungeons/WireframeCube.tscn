@@ -3,6 +3,7 @@
 [ext_resource type="Script" path="res://addons/SimpleDungeons/WireframeCube.gd" id="1_m8q47"]
 
 [sub_resource type="Shader" id="Shader_w7nhy"]
+resource_local_to_scene = true
 code = "shader_type spatial;
 render_mode unshaded,cull_disabled;
 uniform vec2 grid_size;
@@ -18,33 +19,41 @@ void fragment() {
 }"
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_jymxj"]
+resource_local_to_scene = true
 render_priority = 0
 shader = SubResource("Shader_w7nhy")
-shader_parameter/grid_size = Vector2(10, 10)
+shader_parameter/grid_size = Vector2(2, 2)
 
 [sub_resource type="QuadMesh" id="QuadMesh_pwl2e"]
+resource_local_to_scene = true
 material = SubResource("ShaderMaterial_jymxj")
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_lnw1d"]
+resource_local_to_scene = true
 render_priority = 0
 shader = SubResource("Shader_w7nhy")
-shader_parameter/grid_size = Vector2(10, 10)
+shader_parameter/grid_size = Vector2(4, 2)
 
 [sub_resource type="QuadMesh" id="QuadMesh_llwc2"]
+resource_local_to_scene = true
 material = SubResource("ShaderMaterial_lnw1d")
 
 [sub_resource type="QuadMesh" id="QuadMesh_hdmjf"]
+resource_local_to_scene = true
 material = SubResource("ShaderMaterial_lnw1d")
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_3xn3f"]
+resource_local_to_scene = true
 render_priority = 0
 shader = SubResource("Shader_w7nhy")
-shader_parameter/grid_size = Vector2(10, 10)
+shader_parameter/grid_size = Vector2(2, 4)
 
 [sub_resource type="QuadMesh" id="QuadMesh_d7b6y"]
+resource_local_to_scene = true
 material = SubResource("ShaderMaterial_3xn3f")
 
 [sub_resource type="QuadMesh" id="QuadMesh_kjtax"]
+resource_local_to_scene = true
 material = SubResource("ShaderMaterial_3xn3f")
 
 [node name="WireframeCube" type="Node3D"]

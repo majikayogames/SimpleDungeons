@@ -1,6 +1,6 @@
 [gd_scene load_steps=8 format=3 uid="uid://ba3rkgbyxsyo0"]
 
-[ext_resource type="PackedScene" uid="uid://b2c2jvx5vsfc0" path="res://addons/SimpleDungeons/SampleDungeonKitWithModels.tscn" id="3_bl7i8"]
+[ext_resource type="PackedScene" uid="uid://b2c2jvx5vsfc0" path="res://addons/SimpleDungeons/SampleDungeonKitWithModels.tscn" id="2_52iw2"]
 [ext_resource type="Script" path="res://addons/SimpleDungeons/DungeonGenerator.gd" id="3_dysek"]
 [ext_resource type="PackedScene" uid="uid://g407w5bbx5ci" path="res://entities/Player/Player.tscn" id="3_efbs5"]
 
@@ -32,7 +32,7 @@ environment = SubResource("Environment_omyfu")
 [node name="DungeonGenerator" type="Node3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -130.516)
 script = ExtResource("3_dysek")
-dungeon_kit_scene = ExtResource("3_bl7i8")
+dungeon_kit_scene = ExtResource("2_52iw2")
 generate_threaded = true
 
 [node name="Player" parent="." instance=ExtResource("3_efbs5")]

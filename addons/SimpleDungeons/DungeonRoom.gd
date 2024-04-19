@@ -50,6 +50,8 @@ class Door:
 func make_duplicate() -> DungeonRoom:
 	var dupe = self.duplicate()
 	dupe.dungeon_kit = dungeon_kit
+	#var rng = RandomNumberGenerator.new()
+	dupe.name = self.name + "_" + str(randi())
 	return dupe
 
 func set_pos_from_aabb_corner(pos : Vector3) -> void:
@@ -119,6 +121,9 @@ func get_doors() -> Array[Door]:
 	var real_aabb_local = get_aabb_rel_to_room()
 	#real_aabb_local.position = self.transform.inverse() * real_aabb_local.position
 	#real_aabb_local.size = self.transform.basis.inverse() * real_aabb_local.size
+	
+	var potential_door_exit_positions = []
+	var corresponding_door_pos_grid_for_exit_pos = []
 	
 	var room_doors = [] as Array[Door]
 	for door in _find_door_nodes():
