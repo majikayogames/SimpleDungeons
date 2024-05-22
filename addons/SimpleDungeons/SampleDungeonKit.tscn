@@ -1,4 +1,4 @@
-[gd_scene load_steps=17 format=3 uid="uid://c43g1igpy61ii"]
+[gd_scene load_steps=16 format=3 uid="uid://c43g1igpy61ii"]
 
 [ext_resource type="Texture2D" uid="uid://wvh1xmoax4ok" path="res://addons/SimpleDungeons/sample_assets/texture_01.png" id="1_77sy1"]
 [ext_resource type="Script" path="res://addons/SimpleDungeons/DungeonKit.gd" id="1_hqoq6"]
@@ -7,7 +7,6 @@
 [ext_resource type="Texture2D" uid="uid://0xved5vidvlq" path="res://addons/SimpleDungeons/sample_assets/texture_08.png" id="3_e22b6"]
 [ext_resource type="PackedScene" uid="uid://bak8ltrhbmlv5" path="res://addons/SimpleDungeons/sample_assets/CSGStairMaker3D.tscn" id="5_jturq"]
 [ext_resource type="Texture2D" uid="uid://27l2yd61n6wo" path="res://addons/SimpleDungeons/sample_assets/texture_09.png" id="5_njbn5"]
-[ext_resource type="PackedScene" uid="uid://byxj34ip8ttma" path="res://utils/DebugFlyCamera.tscn" id="8_ljpqy"]
 
 [sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_ayok2"]
 sky_horizon_color = Color(0.64625, 0.65575, 0.67075, 1)
@@ -258,7 +257,5 @@ size = Vector3(8, 0.2, 13)
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2.49155e-06, 0, 5)
 visible = false
 size = Vector3(30, 10, 20)
-
-[node name="DebugFlyCamera" parent="." instance=ExtResource("8_ljpqy")]
 
 [node name="Label3D" type="Label3D" parent="."]
