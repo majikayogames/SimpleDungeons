@@ -1,8 +1,8 @@
 [gd_scene load_steps=8 format=3 uid="uid://ba3rkgbyxsyo0"]
 
 [ext_resource type="PackedScene" uid="uid://b2c2jvx5vsfc0" path="res://addons/SimpleDungeons/SampleDungeonKitWithModels.tscn" id="2_52iw2"]
+[ext_resource type="PackedScene" uid="uid://f6kx848g5bco" path="res://FPSController/FPSController.tscn" id="3_brgjj"]
 [ext_resource type="Script" path="res://addons/SimpleDungeons/DungeonGenerator.gd" id="3_dysek"]
-[ext_resource type="PackedScene" uid="uid://g407w5bbx5ci" path="res://entities/Player/Player.tscn" id="3_efbs5"]
 
 [sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_ga1mx"]
 sky_horizon_color = Color(0.64625, 0.65575, 0.67075, 1)
@@ -35,8 +35,6 @@ script = ExtResource("3_dysek")
 dungeon_kit_scene = ExtResource("2_52iw2")
 generate_threaded = true
 
-[node name="Player" parent="." instance=ExtResource("3_efbs5")]
-
 [node name="CSGBox3D" type="CSGBox3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -1.93937, 0)
 use_collision = true
@@ -46,3 +44,5 @@ material = SubResource("StandardMaterial3D_y3oqi")
 [node name="Label3D" type="Label3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.930088, -5.1684)
 text = "Generating dungeon ahead. Press v to noclip and fly in."
+
+[node name="CharacterBody3D" parent="." instance=ExtResource("3_brgjj")]

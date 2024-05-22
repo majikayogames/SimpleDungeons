@@ -1,0 +1,61 @@
+[gd_scene load_steps=7 format=3 uid="uid://f6kx848g5bco"]
+
+[ext_resource type="Script" path="res://FPSController/FPSController.gd" id="1_o4fvy"]
+[ext_resource type="PackedScene" uid="uid://gvm0me264r32" path="res://FPSController/models/disguise-glasses.glb" id="2_jjg3x"]
+[ext_resource type="PackedScene" uid="uid://7dm87wp0hyjg" path="res://FPSController/models/wiggly_hair.tscn" id="3_ieiqk"]
+
+[sub_resource type="CapsuleShape3D" id="CapsuleShape3D_60k8k"]
+
+[sub_resource type="CapsuleMesh" id="CapsuleMesh_airj4"]
+
+[sub_resource type="SphereShape3D" id="SphereShape3D_7ebel"]
+radius = 0.25
+
+[node name="CharacterBody3D" type="CharacterBody3D"]
+platform_on_leave = 2
+script = ExtResource("1_o4fvy")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0)
+shape = SubResource("CapsuleShape3D_60k8k")
+
+[node name="WorldModel" type="Node3D" parent="."]
+unique_name_in_owner = true
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="WorldModel"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0)
+mesh = SubResource("CapsuleMesh_airj4")
+
+[node name="disguise-glasses" parent="WorldModel" instance=ExtResource("2_jjg3x")]
+transform = Transform3D(-2.2, 0, -3.32191e-07, 0, 2.2, 0, 3.32191e-07, 0, -2.2, 0, 1.1, -0.0612435)
+
+[node name="WigglyHair" parent="WorldModel" instance=ExtResource("3_ieiqk")]
+transform = Transform3D(2.58393, 0, 3.97904e-13, 0, 2.13661, 0, -3.97904e-13, 0, 2.58393, 0, 1.6983, 0)
+
+[node name="HeadOriginalPosition" type="Node3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.79, 0)
+
+[node name="Head" type="Node3D" parent="HeadOriginalPosition"]
+unique_name_in_owner = true
+
+[node name="CameraSmooth" type="Node3D" parent="HeadOriginalPosition/Head"]
+unique_name_in_owner = true
+
+[node name="Camera3D" type="Camera3D" parent="HeadOriginalPosition/Head/CameraSmooth"]
+unique_name_in_owner = true
+cull_mask = 1048573
+
+[node name="InteractShapeCast3D" type="ShapeCast3D" parent="HeadOriginalPosition/Head/CameraSmooth/Camera3D"]
+unique_name_in_owner = true
+shape = SubResource("SphereShape3D_7ebel")
+target_position = Vector3(0, 0, -2.235)
+max_results = 2
+collide_with_areas = true
+
+[node name="StairsAheadRayCast3D" type="RayCast3D" parent="."]
+unique_name_in_owner = true
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.552223, -0.821683)
+target_position = Vector3(0, -0.55, 0)
+
+[node name="StairsBelowRayCast3D" type="RayCast3D" parent="."]
+unique_name_in_owner = true
