@@ -375,11 +375,17 @@ func get_transform_rel_to(child_node : Node3D, parent_node : Node3D) -> Transfor
 ## VALIDATION ##
 ################
 
+# printerr() and push_warning() eat my outputs a lot. Regular prints are more reliable.
+func _printerr(str : String, str2 : String = "", str3 : String = "", str4 : String = ""):
+	print_rich("[color=#FF3531]"+(str+str2+str3+str4)+"[/color]")
+func _printwarning(str : String, str2 : String = "", str3 : String = "", str4 : String = ""):
+	print_rich("[color=#FFF831]"+(str+str2+str3+str4)+"[/color]")
+
 # Returns true if no errors found before generating.
 # Calls callbacks with warning/error string if any.
 func validate_room(error_callback = null, warning_callback = null) -> bool:
-	if not warning_callback is Callable: warning_callback = (func(str): print(str))
-	if not error_callback is Callable: error_callback = (func(str): print(str))
+	if not warning_callback is Callable: warning_callback = (func(str): _printwarning(str))
+	if not error_callback is Callable: error_callback = (func(str): _printerr(str))
 	var any_errors := {"err": false} # So lambda closure captures
 	error_callback = func(str): any_errors["err"] = true; error_callback.call(str)
 	
