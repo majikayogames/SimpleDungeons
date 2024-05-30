@@ -75,7 +75,7 @@ var stage : BuildStage = BuildStage.NOT_STARTED :
 	set(value):
 		if is_currently_generating:
 			call_deferred_thread_group("abort_generation_and_fail", "Aborted from editor button.")
-		else: print("Not currently generating.")
+		else: _printwarning("Not currently generating.")
 
 @export_group("Debug options")
 @export var show_debug_in_editor : bool = true
@@ -147,13 +147,13 @@ var _is_generating_threaded = false
 
 func generate(seed : int = int(generate_seed) if generate_seed.is_valid_int() else randi()) -> void:
 	if is_currently_generating:
-		print("SimpleDungeons Error: Dungeon currently generating, cannot generate.")
+		_printerr("SimpleDungeons Error: Dungeon currently generating, cannot generate.")
 		return
 	
 	stage = BuildStage.NOT_STARTED
 	
 	if not validate_dungeon():
-		print("SimpleDungeons Error: Cannot generate.")
+		_printerr("SimpleDungeons Error: Cannot generate.")
 		return
 	
 	rng = RandomNumberGenerator.new()
@@ -180,13 +180,13 @@ func generate(seed : int = int(generate_seed) if generate_seed.is_valid_int() el
 	
 	if _is_generating_threaded and not visualize_generation_progress and Engine.is_editor_hint():
 		_is_generating_threaded = false
-		print("Disabling threaded generation because in editor. Kept running into crashes with editor threads, looked like Godot bugs, so disabling for now. You can still use visualize generation in editor. Threaded generation in game seems to work fine.")
+		_printwarning("Disabling threaded generation because in editor. Kept running into crashes with editor threads, looked like Godot bugs, so disabling for now. You can still use visualize generation in editor. Threaded generation in game seems to work fine.")
 	
 	if Engine.is_editor_hint():
-		print("Generating in editor is broken atm. Probably won't generate correctly. Hopefully will fix in next day or two. Just in game generation works for now.")
+		_printwarning("Generating in editor is broken atm. Probably won't generate correctly. Hopefully will fix in next day or two. Just in game generation works for now.")
 	
 	if _is_generating_threaded:
-		print("Threading broken atm. Probably won't generate correctly. Hopefully will fix in next day or two. Just in game generation works for now.")
+		_printwarning("Threading broken atm. Probably won't generate correctly. Hopefully will fix in next day or two. Just in game generation works for now.")
 		running_thread = Thread.new()
 		running_thread.start(_run_generate_loop)
 	else:
@@ -244,8 +244,8 @@ func _run_one_loop_iteration_and_increment_iterations() -> void:
 	iterations += 1
 
 func abort_generation_and_fail(error : String) -> void:
-	print("SimpleDungeons Error: ", error)
-	print("SimpleDungeons Error: Failed to generate dungeon")
+	_printerr("SimpleDungeons Error: ", error)
+	_printerr("SimpleDungeons Error: Failed to generate dungeon")
 	failed_to_generate = true
 
 func _finalize_rooms() -> void:
@@ -473,7 +473,7 @@ func _make_and_solve_floors_graph() -> Array:
 			continue
 		
 		abort_generation_and_fail("Failed to connect all floors together with stairs. Ensure you have at least 1 DungeonRoom3D with 'is_stair_room' set to true with 2 or more doors leading different floors. Simplest is a 2 floor room with 1 door on each floor.")
-		print("Stair algorithm failed. If your stairs are shaped very oddly it can fail, it's not an exhaustive search but should work for most cases.")
+		_printerr("Stair algorithm failed. If your stairs are shaped very oddly it can fail, it's not an exhaustive search but should work for most cases.")
 		return []
 	
 	if not floors_tree_graph.is_fully_connected():
@@ -646,14 +646,14 @@ func cleanup_and_reset_dungeon_generator() -> void:
 
 func setup_room_instances_and_validate_before_generate() -> bool:
 	if not room_scenes:
-		print("SimpleDungeons Error: No DungeonRoom3D room scenes set.")
+		_printerr("SimpleDungeons Error: No DungeonRoom3D room scenes set.")
 		return false
 	var inst_arr : Array[DungeonRoom3D] = []
 	for s in room_scenes:
 		if not s: continue
 		var inst = s.instantiate()
 		if not inst is DungeonRoom3D:
-			print("SimpleDungeons Error: "+s.resource_path+" room scene does not inherit DungeonRoom3D.")
+			_printerr("SimpleDungeons Error: "+s.resource_path+" room scene does not inherit DungeonRoom3D.")
 			return false
 		else:
 			inst.dungeon_generator = self
@@ -671,6 +671,12 @@ func setup_room_instances_and_validate_before_generate() -> bool:
 ####################
 ## UTIL FUNCTIONS ##
 ####################
+
+# printerr() and push_warning() eat my outputs a lot. Regular prints are more reliable.
+func _printerr(str : String, str2 : String = "", str3 : String = "", str4 : String = ""):
+	print_rich("[color=#FF3531]"+(str+str2+str3+str4)+"[/color]")
+func _printwarning(str : String, str2 : String = "", str3 : String = "", str4 : String = ""):
+	print_rich("[color=#FFF831]"+(str+str2+str3+str4)+"[/color]")
 
 func get_grid_aabbi() -> AABBi:
 	return AABBi.new(Vector3i(0,0,0), dungeon_size)
@@ -728,8 +734,8 @@ func get_stair_rooms_from_instances() -> Array[DungeonRoom3D]:
 # Upon generate, also calls validation checks on each of the rooms.
 func validate_dungeon(error_callback = null, warning_callback = null) -> bool:
 	# printerr and push_warning do not always work. Only print() seems to reliably output.
-	if not warning_callback is Callable: warning_callback = (func(str): print("SimpleDungeons Warning: ", str))
-	if not error_callback is Callable: error_callback = (func(str): print("SimpleDungeons Error: ", str))
+	if not warning_callback is Callable: warning_callback = (func(str): _printwarning("SimpleDungeons Warning: ", str))
+	if not error_callback is Callable: error_callback = (func(str): _printerr("SimpleDungeons Error: ", str))
 	var any_errors : = {"err": false} # So lambda closure captures
 	error_callback = (func(str): any_errors["err"] = true; error_callback.call(str))
 	
@@ -738,7 +744,7 @@ func validate_dungeon(error_callback = null, warning_callback = null) -> bool:
 	if room_scenes.size() == 0:
 		error_callback.call("No rooms added. Add DungeonRoom scenes to the room_scenes property.")
 	
-	if stage == BuildStage.NOT_STARTED or stage == BuildStage.DONE or failed_to_generate:
+	if not is_currently_generating:
 		return not any_errors["err"]
 	
 	# Build stage checks:

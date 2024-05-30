@@ -60,6 +60,7 @@ corridor_room_scene = ExtResource("10_pytn1")
 generate_seed = "1611996874"
 generate_threaded = true
 show_debug_in_game = true
+visualize_generation_progress = true
 
 [node name="DungeonRoom3D" type="Node3D" parent="DungeonGenerator3D"]
 transform = Transform3D(-4.37114e-08, 0, 1, 0, 1, 0, -1, 0, -4.37114e-08, 20, -35, -25)

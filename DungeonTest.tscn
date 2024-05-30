@@ -52,5 +52,5 @@ room_scenes = Array[PackedScene]([ExtResource("3_8cd0x"), ExtResource("4_7ptau")
 corridor_room_scene = ExtResource("7_w738r")
 generate_seed = "852516632"
 max_retries = 0
-visualize_generation_progress = true
+generate_threaded = true
 visualize_generation_wait_between_iterations = 191
