@@ -1,16 +1,12 @@
-[gd_scene load_steps=18 format=3 uid="uid://ba3rkgbyxsyo0"]
+[gd_scene load_steps=12 format=3 uid="uid://ba3rkgbyxsyo0"]
 
 [ext_resource type="Script" path="res://addons/SimpleDungeons/DungeonGenerator3D.gd" id="2_dv14t"]
 [ext_resource type="PackedScene" uid="uid://f6kx848g5bco" path="res://FPSController/FPSController.tscn" id="3_brgjj"]
-[ext_resource type="PackedScene" uid="uid://p0pnjftk0uda" path="res://addons/SimpleDungeons/sample_rooms/lowpoly_kit_1/bridge_room.tscn" id="3_v360q"]
-[ext_resource type="PackedScene" uid="uid://cf13frjr2u0oe" path="res://addons/SimpleDungeons/sample_rooms/lowpoly_kit_1/entrance_room.tscn" id="4_16rct"]
-[ext_resource type="PackedScene" uid="uid://b6t2tduxk8tfn" path="res://addons/SimpleDungeons/sample_rooms/lowpoly_kit_1/living_room.tscn" id="5_bueld"]
-[ext_resource type="PackedScene" uid="uid://b0m7fmmvtfcnk" path="res://addons/SimpleDungeons/sample_rooms/lowpoly_kit_1/spike_hallway.tscn" id="6_sbnpf"]
-[ext_resource type="PackedScene" uid="uid://c5lo6wkhhg76p" path="res://addons/SimpleDungeons/sample_rooms/lowpoly_kit_1/stair.tscn" id="7_2yw7v"]
-[ext_resource type="PackedScene" uid="uid://bicoj8112x1ra" path="res://addons/SimpleDungeons/sample_rooms/lowpoly_kit_1/trap_room.tscn" id="8_bv6o1"]
-[ext_resource type="PackedScene" uid="uid://b1c7nsr0vdiq" path="res://addons/SimpleDungeons/sample_rooms/lowpoly_kit_1/treasure_room.tscn" id="9_6h61g"]
-[ext_resource type="PackedScene" uid="uid://dvdly7xo8rxig" path="res://addons/SimpleDungeons/sample_rooms/lowpoly_kit_1/corridor.tscn" id="10_xsp47"]
-[ext_resource type="Script" path="res://addons/SimpleDungeons/DungeonRoom3D.gd" id="11_dinsu"]
+[ext_resource type="PackedScene" uid="uid://c74pq22tm4lts" path="res://addons/SimpleDungeons/sample_rooms/with_dev_textures/bridge_room.tscn" id="3_xfaes"]
+[ext_resource type="PackedScene" uid="uid://jcrublu8sywn" path="res://addons/SimpleDungeons/sample_rooms/with_dev_textures/entrance_room.tscn" id="4_yqujq"]
+[ext_resource type="PackedScene" uid="uid://b8bnbf7bch1s0" path="res://addons/SimpleDungeons/sample_rooms/with_dev_textures/living_room.tscn" id="5_o1e71"]
+[ext_resource type="PackedScene" uid="uid://dxmljn5pbp0b1" path="res://addons/SimpleDungeons/sample_rooms/with_dev_textures/stair.tscn" id="6_0kgk7"]
+[ext_resource type="PackedScene" uid="uid://c30fpfkorbyl6" path="res://addons/SimpleDungeons/sample_rooms/with_dev_textures/corridor.tscn" id="7_xcj1d"]
 
 [sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_ga1mx"]
 sky_horizon_color = Color(0.64625, 0.65575, 0.67075, 1)
@@ -27,28 +23,6 @@ glow_enabled = true
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_y3oqi"]
 albedo_color = Color(0, 0, 0, 1)
-
-[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_v26oc"]
-albedo_color = Color(0, 0.623529, 0, 1)
-
-[sub_resource type="GDScript" id="GDScript_nbyfi"]
-script/source = "@tool
-extends DungeonRoom3D
-
-var pressed_lever_down = false
-
-# Called when the node enters the scene tree for the first time.
-func _process(delta):
-	var has_character_body = false
-	for body in $Area3D.get_overlapping_bodies():
-		if body is CharacterBody3D:
-			has_character_body = true
-	if has_character_body and not pressed_lever_down and Input.is_action_just_pressed(\"interact\"):
-		pressed_lever_down = true
-		$Models/Lever/lever.rotation.x *= -1
-		$TrapFloor.queue_free()
-		$Models/floor.queue_free()
-"
 
 [node name="DungeonTest" type="Node3D"]
 
@@ -74,151 +48,8 @@ text = "Generating dungeon ahead. Press v to noclip and fly in."
 [node name="DungeonGenerator3D" type="Node3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -109)
 script = ExtResource("2_dv14t")
-room_scenes = Array[PackedScene]([ExtResource("3_v360q"), ExtResource("4_16rct"), ExtResource("5_bueld"), ExtResource("6_sbnpf"), ExtResource("7_2yw7v"), ExtResource("8_bv6o1"), ExtResource("9_6h61g")])
-corridor_room_scene = ExtResource("10_xsp47")
+room_scenes = Array[PackedScene]([ExtResource("3_xfaes"), ExtResource("4_yqujq"), ExtResource("5_o1e71"), ExtResource("6_0kgk7")])
+corridor_room_scene = ExtResource("7_xcj1d")
 generate_seed = "1611996874"
 max_retries = 0
 hide_debug_visuals_for_all_generated_rooms = false
-
-[node name="DungeonRoom3D" type="Node3D" parent="DungeonGenerator3D"]
-transform = Transform3D(-4.37114e-08, 0, 1, 0, 1, 0, -1, 0, -4.37114e-08, 20, -35, -25)
-script = ExtResource("11_dinsu")
-size_in_voxels = Vector3i(1, 1, 2)
-
-[node name="CSGBox3D" type="CSGBox3D" parent="DungeonGenerator3D/DungeonRoom3D"]
-material_override = SubResource("StandardMaterial3D_v26oc")
-use_collision = true
-size = Vector3(10, 10, 20)
-
-[node name="CSGBox3D2" type="CSGBox3D" parent="DungeonGenerator3D/DungeonRoom3D/CSGBox3D"]
-operation = 2
-size = Vector3(9, 9, 19)
-
-[node name="CSGBox3D3" type="CSGBox3D" parent="DungeonGenerator3D/DungeonRoom3D/CSGBox3D"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.5, 0)
-operation = 2
-size = Vector3(5, 8, 20)
-
-[node name="DOOR" type="Node3D" parent="DungeonGenerator3D/DungeonRoom3D"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 9)
-
-[node name="DOOR2" type="Node3D" parent="DungeonGenerator3D/DungeonRoom3D"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -9)
-
-[node name="RoomsContainer" type="Node3D" parent="DungeonGenerator3D"]
-
-[node name="BridgeRoom_0" type="Node3D" parent="DungeonGenerator3D/RoomsContainer" instance=ExtResource("3_v360q")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -5, 25, -30)
-script = ExtResource("11_dinsu")
-size_in_voxels = Vector3i(1, 1, 2)
-
-[node name="TrapRoom_1" type="Node3D" parent="DungeonGenerator3D/RoomsContainer" instance=ExtResource("8_bv6o1")]
-transform = Transform3D(-4.37114e-08, 0, 1, 0, 1, 0, -1, 0, -4.37114e-08, 35, -20, 25)
-script = SubResource("GDScript_nbyfi")
-size_in_voxels = Vector3i(1, 2, 1)
-
-[node name="TreasureRoom_2" type="Node3D" parent="DungeonGenerator3D/RoomsContainer" instance=ExtResource("9_6h61g")]
-transform = Transform3D(1.19249e-08, 0, -1, 0, 1, 0, 1, 0, 1.19249e-08, -25, -10, 25)
-script = ExtResource("11_dinsu")
-size_in_voxels = Vector3i(3, 2, 3)
-max_count = 2
-
-[node name="TrapRoom_3" type="Node3D" parent="DungeonGenerator3D/RoomsContainer" instance=ExtResource("8_bv6o1")]
-transform = Transform3D(1.19249e-08, 0, -1, 0, 1, 0, 1, 0, 1.19249e-08, -35, -30, 45)
-script = SubResource("GDScript_nbyfi")
-size_in_voxels = Vector3i(1, 2, 1)
-
-[node name="EntranceRoom_4" type="Node3D" parent="DungeonGenerator3D/RoomsContainer" instance=ExtResource("4_16rct")]
-transform = Transform3D(-1, 0, -8.74228e-08, 0, 1, 0, 8.74228e-08, 0, -1, -35, 5, 35)
-script = ExtResource("11_dinsu")
-min_count = 1
-max_count = 1
-
-[node name="BridgeRoom_5" type="Node3D" parent="DungeonGenerator3D/RoomsContainer" instance=ExtResource("3_v360q")]
-transform = Transform3D(1.19249e-08, 0, -1, 0, 1, 0, 1, 0, 1.19249e-08, 30, 15, -35)
-script = ExtResource("11_dinsu")
-size_in_voxels = Vector3i(1, 1, 2)
-
-[node name="LivingRoom_6" type="Node3D" parent="DungeonGenerator3D/RoomsContainer" instance=ExtResource("5_bueld")]
-transform = Transform3D(-4.37114e-08, 0, 1, 0, 1, 0, -1, 0, -4.37114e-08, 30, -25, -15)
-script = ExtResource("11_dinsu")
-size_in_voxels = Vector3i(3, 1, 2)
-
-[node name="LivingRoom_7" type="Node3D" parent="DungeonGenerator3D/RoomsContainer" instance=ExtResource("5_bueld")]
-transform = Transform3D(-4.37114e-08, 0, 1, 0, 1, 0, -1, 0, -4.37114e-08, 0, 45, -15)
-script = ExtResource("11_dinsu")
-size_in_voxels = Vector3i(3, 1, 2)
-
-[node name="SpikeHallway_8" type="Node3D" parent="DungeonGenerator3D/RoomsContainer" instance=ExtResource("6_sbnpf")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 5, -10, -45)
-script = ExtResource("11_dinsu")
-size_in_voxels = Vector3i(3, 2, 1)
-max_count = 3
-
-[node name="SpikeHallway_9" type="Node3D" parent="DungeonGenerator3D/RoomsContainer" instance=ExtResource("6_sbnpf")]
-transform = Transform3D(1.19249e-08, 0, -1, 0, 1, 0, 1, 0, 1.19249e-08, -45, 20, -25)
-script = ExtResource("11_dinsu")
-size_in_voxels = Vector3i(3, 2, 1)
-max_count = 3
-
-[node name="TreasureRoom_10" type="Node3D" parent="DungeonGenerator3D/RoomsContainer" instance=ExtResource("9_6h61g")]
-transform = Transform3D(-1, 0, -8.74228e-08, 0, 1, 0, 8.74228e-08, 0, -1, -15, -30, 5)
-script = ExtResource("11_dinsu")
-size_in_voxels = Vector3i(3, 2, 3)
-max_count = 2
-
-[node name="Stair_11" type="Node3D" parent="DungeonGenerator3D/RoomsContainer" instance=ExtResource("7_2yw7v")]
-transform = Transform3D(-1, 0, -8.74228e-08, 0, 1, 0, 8.74228e-08, 0, -1, -30, 40, 45)
-script = ExtResource("11_dinsu")
-size_in_voxels = Vector3i(2, 2, 1)
-max_count = 10
-is_stair_room = true
-
-[node name="Stair_12" type="Node3D" parent="DungeonGenerator3D/RoomsContainer" instance=ExtResource("7_2yw7v")]
-transform = Transform3D(-1, 0, -8.74228e-08, 0, 1, 0, 8.74228e-08, 0, -1, 20, 30, -5)
-script = ExtResource("11_dinsu")
-size_in_voxels = Vector3i(2, 2, 1)
-max_count = 10
-is_stair_room = true
-
-[node name="Stair_13" type="Node3D" parent="DungeonGenerator3D/RoomsContainer" instance=ExtResource("7_2yw7v")]
-transform = Transform3D(-4.37114e-08, 0, 1, 0, 1, 0, -1, 0, -4.37114e-08, -5, -30, -30)
-script = ExtResource("11_dinsu")
-size_in_voxels = Vector3i(2, 2, 1)
-max_count = 10
-is_stair_room = true
-
-[node name="Stair_14" type="Node3D" parent="DungeonGenerator3D/RoomsContainer" instance=ExtResource("7_2yw7v")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 10, 20, 35)
-script = ExtResource("11_dinsu")
-size_in_voxels = Vector3i(2, 2, 1)
-max_count = 10
-is_stair_room = true
-
-[node name="Stair_15" type="Node3D" parent="DungeonGenerator3D/RoomsContainer" instance=ExtResource("7_2yw7v")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 10, 10, -5)
-script = ExtResource("11_dinsu")
-size_in_voxels = Vector3i(2, 2, 1)
-max_count = 10
-is_stair_room = true
-
-[node name="Stair_16" type="Node3D" parent="DungeonGenerator3D/RoomsContainer" instance=ExtResource("7_2yw7v")]
-transform = Transform3D(1.19249e-08, 0, -1, 0, 1, 0, 1, 0, 1.19249e-08, -25, -20, -30)
-script = ExtResource("11_dinsu")
-size_in_voxels = Vector3i(2, 2, 1)
-max_count = 10
-is_stair_room = true
-
-[node name="Stair_17" type="Node3D" parent="DungeonGenerator3D/RoomsContainer" instance=ExtResource("7_2yw7v")]
-transform = Transform3D(-1, 0, -8.74228e-08, 0, 1, 0, 8.74228e-08, 0, -1, 10, 0, 25)
-script = ExtResource("11_dinsu")
-size_in_voxels = Vector3i(2, 2, 1)
-max_count = 10
-is_stair_room = true
-
-[node name="Stair_18" type="Node3D" parent="DungeonGenerator3D/RoomsContainer" instance=ExtResource("7_2yw7v")]
-transform = Transform3D(-1, 0, -8.74228e-08, 0, 1, 0, 8.74228e-08, 0, -1, -30, -10, -45)
-script = ExtResource("11_dinsu")
-size_in_voxels = Vector3i(2, 2, 1)
-max_count = 10
-is_stair_room = true

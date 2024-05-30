@@ -8,6 +8,7 @@
 script = ExtResource("1_6obq4")
 size_in_voxels = Vector3i(2, 2, 1)
 max_count = 10
+is_stair_room = true
 
 [node name="CSGBox3D" type="CSGBox3D" parent="."]
 transform = Transform3D(-1, 0, -8.74228e-08, 0, 1, 0, 8.74228e-08, 0, -1, 0, 0, 0)
