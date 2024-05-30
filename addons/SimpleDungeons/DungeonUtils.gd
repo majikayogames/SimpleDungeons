@@ -20,6 +20,10 @@ static func vec3_to_direction(vec : Vector3) -> Direction:
 			closest = dir
 	return closest
 
+#static func rotate_vec3i(vec : Vector3i, angle : float, axis : Vector3 = Vector3.UP) -> Vector3i:
+	#for i in wrapi(cc_90_turns, 0, 4): vec = Vector3i(-vec.z, vec.y, vec.x)
+#	return vec
+
 static func _make_set(arr: Array) -> Array:
 	var unique_elements = []
 	for element in arr:
@@ -42,36 +46,6 @@ static func _vec3i_min(a : Vector3i, b : Vector3i) -> Vector3i:
 
 static func _vec3i_max(a : Vector3i, b : Vector3i) -> Vector3i:
 	return Vector3i(max(a.x, b.x), max(a.y, b.y), max(a.z, b.z))
-
-## TreeGraph: A utility class used to ensure all rooms and floors on the dungeon are connected.
-class TreeGraph:
-	var _nodes
-	var _roots = {}
-	
-	func _init(nodes : Array):
-		self._nodes = nodes
-		# Initially, each node is its own root.
-		for node in nodes:
-			self._roots[node] = node
-	
-	func find_root(node):
-		if _roots[node] != node:
-			# Compress the path and set all nodes along the way to the root
-			_roots[node] = find_root(_roots[node])
-		return _roots[node]
-	
-	func connect_nodes(node_a, node_b) -> void:
-		if find_root(node_a) != find_root(node_b):
-			if _nodes.find(node_a) < _nodes.find(node_b):
-				_roots[node_b] = _roots[node_a]
-			else:
-				_roots[node_a] = _roots[node_b]
-	
-	func are_nodes_connected(node_a, node_b) -> bool:
-		return find_root(node_a) == find_root(node_b)
-	
-	func is_fully_connected() -> bool:
-		return len(_nodes) == 0 or _nodes.all(func(node): return find_root(node) == find_root(_nodes[0]))
 
 class DungeonFloorAStarGrid2D extends AStarGrid2D:
 	var corridors = [] as Array[Vector2i]

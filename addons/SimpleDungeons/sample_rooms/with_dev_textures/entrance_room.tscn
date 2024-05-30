@@ -1,0 +1,43 @@
+[gd_scene load_steps=5 format=3 uid="uid://jcrublu8sywn"]
+
+[ext_resource type="Script" path="res://addons/SimpleDungeons/DungeonRoom3D.gd" id="1_0k746"]
+[ext_resource type="Texture2D" uid="uid://wvh1xmoax4ok" path="res://addons/SimpleDungeons/sample_assets/texture_01.png" id="2_y8cer"]
+[ext_resource type="Material" uid="uid://r3rtjl181fpd" path="res://addons/SimpleDungeons/sample_assets/texture_02.tres" id="3_fup0v"]
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_57r0k"]
+albedo_texture = ExtResource("2_y8cer")
+
+[node name="EntranceRoom" type="Node3D"]
+script = ExtResource("1_0k746")
+min_count = 1
+max_count = 1
+
+[node name="FrontDoor" type="CSGBox3D" parent="."]
+transform = Transform3D(-1, 0, -8.74228e-08, 0, 1, 0, 8.74228e-08, 0, -1, -1.83588e-06, -2.75, -4.5)
+material_override = SubResource("StandardMaterial3D_57r0k")
+size = Vector3(5, 4, 0.5)
+
+[node name="CSGBox3D" type="CSGBox3D" parent="."]
+transform = Transform3D(-1, 0, -8.74228e-08, 0, 1, 0, 8.74228e-08, 0, -1, -1.44248e-06, 0, 0)
+material_override = ExtResource("3_fup0v")
+use_collision = true
+size = Vector3(10, 10, 10)
+
+[node name="CSGBox3D2" type="CSGBox3D" parent="CSGBox3D"]
+operation = 2
+size = Vector3(9.5, 9.5, 9.5)
+
+[node name="DOOR_F_CUT" type="CSGBox3D" parent="CSGBox3D"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -2.75, -5)
+operation = 2
+size = Vector3(2, 4, 1)
+
+[node name="DOOR_R_CUT" type="CSGBox3D" parent="CSGBox3D"]
+transform = Transform3D(-4.37114e-08, 0, -1, 0, 1, 0, 1, 0, -4.37114e-08, 5, -2.75, 0)
+operation = 2
+size = Vector3(2, 4, 1)
+
+[node name="DOOR_L_CUT" type="CSGBox3D" parent="CSGBox3D"]
+transform = Transform3D(-4.37114e-08, 0, -1, 0, 1, 0, 1, 0, -4.37114e-08, -5, -2.75, 0)
+operation = 2
+size = Vector3(2, 4, 1)

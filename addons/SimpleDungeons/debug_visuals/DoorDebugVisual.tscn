@@ -1,0 +1,53 @@
+[gd_scene load_steps=4 format=3 uid="uid://cjxyp5lrix0pu"]
+
+[ext_resource type="Material" uid="uid://pq2fqq4ophsy" path="res://addons/SimpleDungeons/debug_visuals/WireframeColorMat.tres" id="1_3h4gq"]
+
+[sub_resource type="GDScript" id="GDScript_18siu"]
+script/source = "@tool
+extends Node3D
+
+@export var text = \"DOOR\"
+@export var color = Color(0, 1, 0)
+
+func _ready():
+	set_process_input(false)
+
+func _process(_delta):
+	$CSGCylinder3D2.material.set_shader_parameter(\"color\", Vector3(color.r, color.g, color.b))
+	$CSGBox3D2.material.set_shader_parameter(\"color\", Vector3(color.r, color.g, color.b))
+	$MeshInstance3D.mesh.material.set_shader_parameter(\"color\", Vector3(color.r, color.g, color.b))
+	$Label3D.modulate = color
+	$Label3D.text = text
+"
+
+[sub_resource type="QuadMesh" id="QuadMesh_35eqg"]
+resource_local_to_scene = true
+material = ExtResource("1_3h4gq")
+size = Vector2(10, 10)
+
+[node name="DoorDebugVisual" type="Node3D"]
+script = SubResource("GDScript_18siu")
+metadata/_edit_lock_ = true
+
+[node name="Label3D" type="Label3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.657576, 0)
+pixel_size = 0.01
+no_depth_test = true
+modulate = Color(0, 1, 0, 1)
+text = "DOOR"
+
+[node name="CSGCylinder3D2" type="CSGCylinder3D" parent="."]
+transform = Transform3D(0.48016, 1.27422e-07, 0.48016, 0.48016, -2.09885e-08, -0.48016, -7.52601e-08, 0.679049, -1.04942e-07, 0, 0, 0.997)
+radius = 0.423
+height = 0.716463
+sides = 4
+cone = true
+material = ExtResource("1_3h4gq")
+
+[node name="CSGBox3D2" type="CSGBox3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0.464)
+size = Vector3(0.166, 0.166, 0.682)
+material = ExtResource("1_3h4gq")
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="."]
+mesh = SubResource("QuadMesh_35eqg")

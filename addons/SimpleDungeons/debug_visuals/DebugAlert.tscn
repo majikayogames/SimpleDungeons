@@ -1,0 +1,20 @@
+[gd_scene load_steps=3 format=3 uid="uid://djjvvvx7svoux"]
+
+[ext_resource type="Script" path="res://addons/SimpleDungeons/debug_visuals/DebugAlert.gd" id="1_ngt8o"]
+[ext_resource type="Texture2D" uid="uid://byywkosue8x0q" path="res://addons/SimpleDungeons/res/warning-sign.svg" id="2_q7g1p"]
+
+[node name="DebugAlert" type="Node3D"]
+visible = false
+script = ExtResource("1_ngt8o")
+metadata/_edit_lock_ = true
+
+[node name="Label3D" type="Label3D" parent="."]
+pixel_size = 0.02
+billboard = 1
+no_depth_test = true
+
+[node name="Sprite3D" type="Sprite3D" parent="."]
+transform = Transform3D(0.5, 0, 0, 0, 0.5, 0, 0, 0, 0.5, 0, 4.17956, 0)
+billboard = 1
+no_depth_test = true
+texture = ExtResource("2_q7g1p")

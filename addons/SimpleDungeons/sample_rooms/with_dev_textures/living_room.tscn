@@ -1,0 +1,53 @@
+[gd_scene load_steps=5 format=3 uid="uid://b8bnbf7bch1s0"]
+
+[ext_resource type="Script" path="res://addons/SimpleDungeons/DungeonRoom3D.gd" id="1_y1oj8"]
+[ext_resource type="Material" uid="uid://r3rtjl181fpd" path="res://addons/SimpleDungeons/sample_assets/texture_02.tres" id="2_pcrjh"]
+[ext_resource type="Texture2D" uid="uid://0xved5vidvlq" path="res://addons/SimpleDungeons/sample_assets/texture_08.png" id="3_tx0x8"]
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_y4oqf"]
+albedo_texture = ExtResource("3_tx0x8")
+
+[node name="LivingRoom" type="Node3D"]
+script = ExtResource("1_y1oj8")
+size_in_voxels = Vector3i(3, 1, 2)
+
+[node name="CSGBox3D" type="CSGBox3D" parent="."]
+transform = Transform3D(-1, 0, -8.74228e-08, 0, 1, 0, 8.74228e-08, 0, -1, 2.49155e-06, 0, 0)
+material_override = ExtResource("2_pcrjh")
+use_collision = true
+size = Vector3(30, 10, 20)
+
+[node name="CSGBox3D3" type="CSGBox3D" parent="CSGBox3D"]
+operation = 2
+size = Vector3(29.5, 9.5, 19.5)
+
+[node name="DOOR?_B_CUT" type="CSGBox3D" parent="CSGBox3D"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -2.75, 9.75)
+operation = 2
+size = Vector3(2, 4, 1)
+
+[node name="DOOR?_R2_CUT2" type="CSGBox3D" parent="CSGBox3D"]
+transform = Transform3D(-4.37114e-08, 0, -1, 0, 1, 0, 1, 0, -4.37114e-08, 15, -2.75, -5)
+operation = 2
+size = Vector3(2, 4, 1)
+
+[node name="DOOR?_R1_CUT2" type="CSGBox3D" parent="CSGBox3D"]
+transform = Transform3D(-4.37114e-08, 0, -1, 0, 1, 0, 1, 0, -4.37114e-08, 15, -2.75, 5)
+operation = 2
+size = Vector3(2, 4, 1)
+
+[node name="DOOR?_L2_CUT" type="CSGBox3D" parent="CSGBox3D"]
+transform = Transform3D(-4.37114e-08, 0, -1, 0, 1, 0, 1, 0, -4.37114e-08, -15, -2.75, -5)
+operation = 2
+size = Vector3(2, 4, 1)
+
+[node name="DOOR?_L1_CUT" type="CSGBox3D" parent="CSGBox3D"]
+transform = Transform3D(-4.37114e-08, 0, -1, 0, 1, 0, 1, 0, -4.37114e-08, -15, -2.75, 5)
+operation = 2
+size = Vector3(2, 4, 1)
+
+[node name="CSGBox3D2" type="CSGBox3D" parent="."]
+transform = Transform3D(-1, 0, -8.74228e-08, 0, 1, 0, 8.74228e-08, 0, -1, 2.49155e-06, -4.825, 0)
+material_override = SubResource("StandardMaterial3D_y4oqf")
+use_collision = true
+size = Vector3(8, 0.2, 13)

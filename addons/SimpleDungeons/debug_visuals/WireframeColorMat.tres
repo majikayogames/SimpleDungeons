@@ -1,0 +1,23 @@
+[gd_resource type="ShaderMaterial" load_steps=2 format=3 uid="uid://pq2fqq4ophsy"]
+
+[sub_resource type="Shader" id="Shader_xtf8b"]
+resource_local_to_scene = true
+code = "shader_type spatial;
+render_mode wireframe, unshaded, cull_disabled, depth_draw_never, depth_test_disabled;
+uniform vec3 color = vec3(0., 1., 0.);
+
+void fragment() {
+	ALBEDO = color;
+}
+
+//void light() {
+	// Called for every pixel for every light affecting the material.
+	// Uncomment to replace the default light processing function with this one.
+//}
+"
+
+[resource]
+resource_local_to_scene = true
+render_priority = 0
+shader = SubResource("Shader_xtf8b")
+shader_parameter/color = Vector3(0, 1, 0)
