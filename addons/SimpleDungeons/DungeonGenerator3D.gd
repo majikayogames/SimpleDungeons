@@ -260,8 +260,10 @@ func _finalize_rooms() -> void:
 	for room in room_instances:
 		if room and is_instance_valid(room):
 			room.queue_free()
+	room_instances = []
 	if corridor_room_instance and is_instance_valid(corridor_room_instance):
 		corridor_room_instance.queue_free()
+	corridor_room_instance = null
 
 func _dungeon_finished_generating() -> void:
 	_finalize_rooms()
@@ -542,7 +544,7 @@ func connect_rooms_iteration(first_call_in_loop : bool) -> void:
 		# Cap off all required doors. Bad solution. TODO Think of a better one of this and Astar in general.
 		for room in _non_corridor_rooms:
 			for door in room.get_doors_cached():
-				if not _quick_room_check_dict.has(door.exit_pos_grid):
+				if not door.optional and not _quick_room_check_dict.has(door.exit_pos_grid):
 					var corridor_cap_room := corridor_room_instance.create_clone_and_make_virtual_unless_visualizing()
 					corridor_cap_room.set_position_by_grid_pos(door.exit_pos_grid)
 					place_room(corridor_cap_room)
@@ -736,7 +738,7 @@ func validate_dungeon(error_callback = null, warning_callback = null) -> bool:
 	if room_scenes.size() == 0:
 		error_callback.call("No rooms added. Add DungeonRoom scenes to the room_scenes property.")
 	
-	if stage == BuildStage.NOT_STARTED or failed_to_generate:
+	if stage == BuildStage.NOT_STARTED or stage == BuildStage.DONE or failed_to_generate:
 		return not any_errors["err"]
 	
 	# Build stage checks:

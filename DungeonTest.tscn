@@ -1,15 +1,12 @@
-[gd_scene load_steps=15 format=3 uid="uid://ba3rkgbyxsyo0"]
+[gd_scene load_steps=12 format=3 uid="uid://ba3rkgbyxsyo0"]
 
 [ext_resource type="Script" path="res://addons/SimpleDungeons/DungeonGenerator3D.gd" id="2_dv14t"]
+[ext_resource type="PackedScene" uid="uid://c74pq22tm4lts" path="res://addons/SimpleDungeons/sample_rooms/with_dev_textures/bridge_room.tscn" id="3_8cd0x"]
 [ext_resource type="PackedScene" uid="uid://f6kx848g5bco" path="res://FPSController/FPSController.tscn" id="3_brgjj"]
-[ext_resource type="PackedScene" uid="uid://p0pnjftk0uda" path="res://addons/SimpleDungeons/sample_rooms/lowpoly_kit_1/bridge_room.tscn" id="3_v360q"]
-[ext_resource type="PackedScene" uid="uid://cf13frjr2u0oe" path="res://addons/SimpleDungeons/sample_rooms/lowpoly_kit_1/entrance_room.tscn" id="4_16rct"]
-[ext_resource type="PackedScene" uid="uid://b6t2tduxk8tfn" path="res://addons/SimpleDungeons/sample_rooms/lowpoly_kit_1/living_room.tscn" id="5_bueld"]
-[ext_resource type="PackedScene" uid="uid://b0m7fmmvtfcnk" path="res://addons/SimpleDungeons/sample_rooms/lowpoly_kit_1/spike_hallway.tscn" id="6_sbnpf"]
-[ext_resource type="PackedScene" uid="uid://c5lo6wkhhg76p" path="res://addons/SimpleDungeons/sample_rooms/lowpoly_kit_1/stair.tscn" id="7_2yw7v"]
-[ext_resource type="PackedScene" uid="uid://bicoj8112x1ra" path="res://addons/SimpleDungeons/sample_rooms/lowpoly_kit_1/trap_room.tscn" id="8_bv6o1"]
-[ext_resource type="PackedScene" uid="uid://b1c7nsr0vdiq" path="res://addons/SimpleDungeons/sample_rooms/lowpoly_kit_1/treasure_room.tscn" id="9_6h61g"]
-[ext_resource type="PackedScene" uid="uid://dvdly7xo8rxig" path="res://addons/SimpleDungeons/sample_rooms/lowpoly_kit_1/corridor.tscn" id="10_yl6tc"]
+[ext_resource type="PackedScene" uid="uid://jcrublu8sywn" path="res://addons/SimpleDungeons/sample_rooms/with_dev_textures/entrance_room.tscn" id="4_7ptau"]
+[ext_resource type="PackedScene" uid="uid://b8bnbf7bch1s0" path="res://addons/SimpleDungeons/sample_rooms/with_dev_textures/living_room.tscn" id="5_in8rf"]
+[ext_resource type="PackedScene" uid="uid://dxmljn5pbp0b1" path="res://addons/SimpleDungeons/sample_rooms/with_dev_textures/stair.tscn" id="6_brxuc"]
+[ext_resource type="PackedScene" uid="uid://c30fpfkorbyl6" path="res://addons/SimpleDungeons/sample_rooms/with_dev_textures/corridor.tscn" id="7_w738r"]
 
 [sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_ga1mx"]
 sky_horizon_color = Color(0.64625, 0.65575, 0.67075, 1)
@@ -51,8 +48,9 @@ text = "Generating dungeon ahead. Press v to noclip and fly in."
 [node name="DungeonGenerator3D" type="Node3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -109)
 script = ExtResource("2_dv14t")
-room_scenes = Array[PackedScene]([ExtResource("3_v360q"), ExtResource("4_16rct"), ExtResource("5_bueld"), ExtResource("6_sbnpf"), ExtResource("7_2yw7v"), ExtResource("8_bv6o1"), ExtResource("9_6h61g")])
-corridor_room_scene = ExtResource("10_yl6tc")
-generate_seed = "1611996874"
+room_scenes = Array[PackedScene]([ExtResource("3_8cd0x"), ExtResource("4_7ptau"), ExtResource("5_in8rf"), ExtResource("6_brxuc")])
+corridor_room_scene = ExtResource("7_w738r")
+generate_seed = "852516632"
 max_retries = 0
-generate_threaded = true
+visualize_generation_progress = true
+visualize_generation_wait_between_iterations = 191

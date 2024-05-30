@@ -1,0 +1,87 @@
+[gd_scene load_steps=17 format=3 uid="uid://bnnmastpc8fbv"]
+
+[ext_resource type="Script" path="res://addons/SimpleDungeons/DungeonGenerator3D.gd" id="2_2hvux"]
+[ext_resource type="PackedScene" uid="uid://f6kx848g5bco" path="res://FPSController/FPSController.tscn" id="3_brgjj"]
+[ext_resource type="PackedScene" uid="uid://p0pnjftk0uda" path="res://addons/SimpleDungeons/sample_rooms/lowpoly_kit_1/bridge_room.tscn" id="3_ghk5s"]
+[ext_resource type="PackedScene" uid="uid://cf13frjr2u0oe" path="res://addons/SimpleDungeons/sample_rooms/lowpoly_kit_1/entrance_room.tscn" id="4_m46ui"]
+[ext_resource type="PackedScene" uid="uid://b6t2tduxk8tfn" path="res://addons/SimpleDungeons/sample_rooms/lowpoly_kit_1/living_room.tscn" id="5_rkgee"]
+[ext_resource type="PackedScene" uid="uid://b0m7fmmvtfcnk" path="res://addons/SimpleDungeons/sample_rooms/lowpoly_kit_1/spike_hallway.tscn" id="6_uiloq"]
+[ext_resource type="PackedScene" uid="uid://c5lo6wkhhg76p" path="res://addons/SimpleDungeons/sample_rooms/lowpoly_kit_1/stair.tscn" id="7_w83qg"]
+[ext_resource type="PackedScene" uid="uid://bicoj8112x1ra" path="res://addons/SimpleDungeons/sample_rooms/lowpoly_kit_1/trap_room.tscn" id="8_ytc0r"]
+[ext_resource type="PackedScene" uid="uid://b1c7nsr0vdiq" path="res://addons/SimpleDungeons/sample_rooms/lowpoly_kit_1/treasure_room.tscn" id="9_332cg"]
+[ext_resource type="PackedScene" uid="uid://dvdly7xo8rxig" path="res://addons/SimpleDungeons/sample_rooms/lowpoly_kit_1/corridor.tscn" id="10_pytn1"]
+[ext_resource type="Script" path="res://addons/SimpleDungeons/DungeonRoom3D.gd" id="11_dinsu"]
+
+[sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_ga1mx"]
+sky_horizon_color = Color(0.64625, 0.65575, 0.67075, 1)
+ground_horizon_color = Color(0.64625, 0.65575, 0.67075, 1)
+
+[sub_resource type="Sky" id="Sky_c72ol"]
+sky_material = SubResource("ProceduralSkyMaterial_ga1mx")
+
+[sub_resource type="Environment" id="Environment_omyfu"]
+background_mode = 2
+sky = SubResource("Sky_c72ol")
+tonemap_mode = 2
+glow_enabled = true
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_y3oqi"]
+albedo_color = Color(0, 0, 0, 1)
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_v26oc"]
+albedo_color = Color(0, 0.623529, 0, 1)
+
+[node name="DungeonTest" type="Node3D"]
+
+[node name="DirectionalLight3D" type="DirectionalLight3D" parent="."]
+transform = Transform3D(-0.866023, -0.433016, 0.250001, 0, 0.499998, 0.866027, -0.500003, 0.749999, -0.43301, 0, 0, 0)
+shadow_enabled = true
+
+[node name="WorldEnvironment" type="WorldEnvironment" parent="."]
+environment = SubResource("Environment_omyfu")
+
+[node name="CSGBox3D" type="CSGBox3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -1.93937, 0)
+use_collision = true
+size = Vector3(15, 1, 15)
+material = SubResource("StandardMaterial3D_y3oqi")
+
+[node name="Label3D" type="Label3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.930088, -5.1684)
+text = "Generating dungeon ahead. Press v to noclip and fly in."
+
+[node name="CharacterBody3D" parent="." instance=ExtResource("3_brgjj")]
+
+[node name="DungeonGenerator3D" type="Node3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -109)
+script = ExtResource("2_2hvux")
+room_scenes = Array[PackedScene]([ExtResource("3_ghk5s"), ExtResource("4_m46ui"), ExtResource("5_rkgee"), ExtResource("6_uiloq"), ExtResource("7_w83qg"), ExtResource("8_ytc0r"), ExtResource("9_332cg")])
+corridor_room_scene = ExtResource("10_pytn1")
+generate_seed = "1611996874"
+generate_threaded = true
+show_debug_in_game = true
+
+[node name="DungeonRoom3D" type="Node3D" parent="DungeonGenerator3D"]
+transform = Transform3D(-4.37114e-08, 0, 1, 0, 1, 0, -1, 0, -4.37114e-08, 20, -35, -25)
+script = ExtResource("11_dinsu")
+size_in_voxels = Vector3i(1, 1, 2)
+
+[node name="CSGBox3D" type="CSGBox3D" parent="DungeonGenerator3D/DungeonRoom3D"]
+material_override = SubResource("StandardMaterial3D_v26oc")
+use_collision = true
+size = Vector3(10, 10, 20)
+
+[node name="CSGBox3D2" type="CSGBox3D" parent="DungeonGenerator3D/DungeonRoom3D/CSGBox3D"]
+operation = 2
+size = Vector3(9, 9, 19)
+
+[node name="CSGBox3D3" type="CSGBox3D" parent="DungeonGenerator3D/DungeonRoom3D/CSGBox3D"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.5, 0)
+operation = 2
+size = Vector3(5, 8, 20)
+
+[node name="DOOR" type="Node3D" parent="DungeonGenerator3D/DungeonRoom3D"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 9)
+
+[node name="DOOR2" type="Node3D" parent="DungeonGenerator3D/DungeonRoom3D"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -9)

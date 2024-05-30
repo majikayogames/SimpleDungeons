@@ -105,7 +105,8 @@ func _get_dungeon_room_props_names():
 	return _dungeon_room_props_names
 func copy_all_props(from : DungeonRoom3D, to : DungeonRoom3D) -> void:
 	for prop in _get_dungeon_room_props_names():
-		to.set(prop, from.get(prop))
+		if from.get(prop) != to.get(prop): # Don't trigger editor button setters
+			to.set(prop, from.get(prop))
 	to.name = from.name
 	to.dungeon_generator = from.dungeon_generator
 
@@ -242,8 +243,8 @@ func ensure_doors_and_or_transform_cached_for_threads_and_virtualized_rooms() ->
 
 var _doors_cache : Array[Door]
 func get_doors() -> Array[Door]:
-	if virtualized_from != null:
-		# Ensure using get_doors_cached() when dealing with virtual rooms.
+	if OS.get_thread_caller_id() != OS.get_main_thread_id() or virtualized_from != null:
+		# Ensure using get_doors_cached() when dealing with virtual rooms/threads.
 		return get_doors_cached()
 	var real_aabb_local = get_local_aabb()
 	
