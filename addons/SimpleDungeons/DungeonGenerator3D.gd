@@ -257,6 +257,11 @@ func _finalize_rooms() -> void:
 		var unvirtualized = room.unvirtualize_and_free_clone_if_needed(rooms_container)
 		unvirtualized.owner = self.owner
 		_rooms_placed.push_back(unvirtualized)
+	for room in room_instances:
+		if room and is_instance_valid(room):
+			room.queue_free()
+	if corridor_room_instance and is_instance_valid(corridor_room_instance):
+		corridor_room_instance.queue_free()
 
 func _dungeon_finished_generating() -> void:
 	_finalize_rooms()
