@@ -13,6 +13,7 @@ You can download this repo and open its folder in Godot to run the sample projec
 
 1. Clone this repo or download as a zip by clicking the `Code` button above.
 2. Copy the contents of the `addons` folder to your project's `addons` directory.
+3. Enable the plugin in Project Settings > Plugins > SimpleDungeons
 
 ## Usage
 
