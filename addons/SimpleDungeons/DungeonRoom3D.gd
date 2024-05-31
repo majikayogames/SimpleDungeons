@@ -298,7 +298,9 @@ func snap_room_to_dungeon_grid() -> void:
 	constrain_room_to_bounds_with_doors()
 
 func constrain_room_to_bounds_with_doors():
-	var aabbi_with_doors := get_grid_aabbi(true)
+	#var aabbi_with_doors := get_grid_aabbi(true)
+	# For stair rooms, also ensure optional doors can be reached. So stairs don't get their path blocked against wall
+	var aabbi_with_doors := get_grid_aabbi(true) if not is_stair_room else get_grid_aabbi_with_optional_doors()
 	var aabbi_with_doors_constrained := aabbi_with_doors.push_within(dungeon_generator.get_grid_aabbi(), false)
 	set_position_by_grid_pos(get_grid_pos() + (aabbi_with_doors_constrained.position - aabbi_with_doors.position))
 
@@ -353,6 +355,12 @@ func get_grid_aabbi(include_doors : bool) -> AABBi:
 	if include_doors: # Include doors after to keep position the same
 		for door in get_doors().filter(func(d : Door): return !d.optional):
 			grid_aabbi = grid_aabbi.expand_to_include(door.exit_pos_grid)
+	return grid_aabbi
+
+func get_grid_aabbi_with_optional_doors() -> AABBi:
+	var grid_aabbi = AABBi.from_AABB_rounded(xform_aabb(get_local_aabb(), get_xform_to(SPACE.LOCAL_SPACE, SPACE.DUNGEON_GRID)))
+	for door in get_doors():
+		grid_aabbi = grid_aabbi.expand_to_include(door.exit_pos_grid)
 	return grid_aabbi
 
 func local_grid_pos_to_dungeon_grid_pos(local_pos : Vector3i) -> Vector3i:

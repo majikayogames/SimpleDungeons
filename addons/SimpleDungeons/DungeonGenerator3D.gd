@@ -519,6 +519,7 @@ func connect_rooms_iteration(first_call_in_loop : bool) -> void:
 		_astar3d = DungeonAStar3D.new(self, get_all_placed_and_preplaced_rooms())
 		_rooms_to_connect = []
 		_non_corridor_rooms = []
+		_quick_room_check_dict = {}
 		for room in get_all_placed_and_preplaced_rooms():
 			if room.get_doors_cached().size() > 0:
 				_rooms_to_connect.push_back(room)
@@ -531,8 +532,11 @@ func connect_rooms_iteration(first_call_in_loop : bool) -> void:
 		var room_0_pos := _rooms_to_connect[0].get_grid_aabbi(false).position
 		var room_1_pos := _rooms_to_connect[1].get_grid_aabbi(false).position
 		var connect_path := _astar3d.get_vec3i_path(room_0_pos, room_1_pos)
-		_rooms_to_connect.remove_at(0)
-		#print("Connecting ", room_0_pos, " to ", room_1_pos, ". Result: ", connect_path)
+		var room_a := _rooms_to_connect.pop_front()
+		if len(connect_path) == 0:
+			_rooms_to_connect.insert(rng.randi_range(1, len(_rooms_to_connect)), room_a)
+			return
+		#print("Connecting ", room_a.name, " to ", _rooms_to_connect[0].name, ". Result: ", connect_path)
 		for corridor_pos in connect_path:
 			if not _quick_room_check_dict.has(corridor_pos):
 				var room := corridor_room_instance.create_clone_and_make_virtual_unless_visualizing()
