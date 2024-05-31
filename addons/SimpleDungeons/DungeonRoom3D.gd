@@ -130,8 +130,8 @@ func create_clone_and_make_virtual_unless_visualizing() -> DungeonRoom3D:
 		make_clone_virtual = false
 	var _clone
 	if make_clone_virtual:
-		if not self.virtual_self._doors_cache:
-			printerr("Cloning dungeon room without doors cached!!! Make sure to call .get_doors() at least once for all rooms.")
+		#if not self.virtual_self._doors_cache:
+		#	printerr("Cloning dungeon room without doors cached!!! Make sure to call .get_doors() at least once for all rooms.")
 		_clone = DungeonRoom3D.new()
 		_clone.virtualized_from = self.virtual_self
 	else: _clone = get_original_packed_scene().instantiate()
@@ -194,7 +194,7 @@ class Door:
 		self.door_node = door_node
 	func fits_other_door(other_room_door : Door) -> bool:
 		return other_room_door.exit_pos_grid == grid_pos and other_room_door.grid_pos == exit_pos_grid
-	func find_duplicates() -> Array[Door]:
+	func find_duplicates() -> Array:
 		return room.get_doors().filter(func (d : Door): return d.exit_pos_local == exit_pos_local and d.local_pos == local_pos)
 	func validate_door() -> bool:
 		if not AABBi.new(Vector3i(), room.size_in_voxels).contains_point(local_pos):
@@ -224,13 +224,14 @@ func get_door_by_node(node : Node) -> Door:
 	return null
 
 # For calling on other threads/for virtualized rooms
-func get_doors_cached() -> Array[Door]:
+func get_doors_cached() -> Array:
 	if self._doors_cache:
 		return self._doors_cache
-	if not virtual_self._doors_cache:
-		printerr("Doors were not cached! Call get_doors() at least once first.")
+	# For some reason this is causing crash in threads
+	#if not virtual_self._doors_cache:
+	#	printerr("Doors were not cached! Call get_doors() at least once first.")
 	
-	var ret : Array[Door] = []
+	var ret := []
 	ret.assign(virtual_self._doors_cache.map(func(d : Door):
 		return Door.new(d.local_pos, d.dir, d.optional, self, d.door_node)))
 	self._doors_cache = ret
@@ -241,14 +242,14 @@ func ensure_doors_and_or_transform_cached_for_threads_and_virtualized_rooms() ->
 		virtual_transform = self.transform
 	get_doors()
 
-var _doors_cache : Array[Door]
-func get_doors() -> Array[Door]:
+var _doors_cache : Array
+func get_doors() -> Array:
 	if OS.get_thread_caller_id() != OS.get_main_thread_id() or virtualized_from != null:
 		# Ensure using get_doors_cached() when dealing with virtual rooms/threads.
 		return get_doors_cached()
 	var real_aabb_local = get_local_aabb()
 	
-	var room_doors = [] as Array[Door]
+	var room_doors = []
 	for door in get_door_nodes():
 		# Get door pos from min corner of aabb, then divide by the full aabb size.
 		var door_pos_pct_across = (get_transform_rel_to(door, self).origin - real_aabb_local.position) / real_aabb_local.size

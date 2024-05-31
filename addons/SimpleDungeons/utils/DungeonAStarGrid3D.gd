@@ -8,7 +8,7 @@ var positions_with_door_leading_in_to = {}
 var pt_id_to_vec3i = {}
 var vec3i_to_pt_id = {}
 
-func _init(dungeon_generator : DungeonGenerator3D, rooms_placed : Array[DungeonRoom3D]):
+func _init(dungeon_generator : DungeonGenerator3D, rooms_placed : Array):
 	for room in rooms_placed:
 		for door in room.get_doors():
 			if not dungeon_generator.get_grid_aabbi().contains_point(door.exit_pos_grid): continue

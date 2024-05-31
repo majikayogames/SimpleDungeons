@@ -250,7 +250,8 @@ blend_shape_mode = 0
 shadow_mesh = SubResource("ArrayMesh_gogk2")
 
 [sub_resource type="GDScript" id="GDScript_nrt7b"]
-script/source = "extends Node
+script/source = "@tool
+extends Node
 
 # Called when the node enters the scene tree for the first time.
 func _ready():

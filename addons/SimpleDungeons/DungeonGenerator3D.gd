@@ -512,8 +512,8 @@ func separate_rooms_iteration(first_call_in_loop : bool) -> void:
 
 var _astar3d : DungeonAStar3D
 var _quick_room_check_dict = {}
-var _non_corridor_rooms : Array[DungeonRoom3D] = []
-var _rooms_to_connect : Array[DungeonRoom3D] = [] as Array[DungeonRoom3D]
+var _non_corridor_rooms : Array = []
+var _rooms_to_connect : Array = []
 func connect_rooms_iteration(first_call_in_loop : bool) -> void:
 	if first_call_in_loop:
 		_astar3d = DungeonAStar3D.new(self, get_all_placed_and_preplaced_rooms())
@@ -524,13 +524,13 @@ func connect_rooms_iteration(first_call_in_loop : bool) -> void:
 			if room.get_doors_cached().size() > 0:
 				_rooms_to_connect.push_back(room)
 				_non_corridor_rooms.push_back(room)
-			var aabbi := room.get_grid_aabbi(false)
+			var aabbi = room.get_grid_aabbi(false)
 			for x in aabbi.size.x: for y in aabbi.size.y: for z in aabbi.size.z:
 				_quick_room_check_dict[aabbi.position + Vector3i(x,y,z)] = room
 	
 	if len(_rooms_to_connect) >= 2:
-		var room_0_pos := _rooms_to_connect[0].get_grid_aabbi(false).position
-		var room_1_pos := _rooms_to_connect[1].get_grid_aabbi(false).position
+		var room_0_pos = _rooms_to_connect[0].get_grid_aabbi(false).position
+		var room_1_pos = _rooms_to_connect[1].get_grid_aabbi(false).position
 		var connect_path := _astar3d.get_vec3i_path(room_0_pos, room_1_pos)
 		var room_a := _rooms_to_connect.pop_front()
 		if len(connect_path) == 0:
@@ -702,9 +702,9 @@ func get_room_at_pos(grid_pos : Vector3i) -> DungeonRoom3D:
 			return room
 	return null
 	
-var _preplaced_rooms_cached : Array[DungeonRoom3D] = []
-func get_preplaced_rooms() -> Array[DungeonRoom3D]:
-	var rooms : Array[DungeonRoom3D] = []
+var _preplaced_rooms_cached : Array = []
+func get_preplaced_rooms() -> Array:
+	var rooms := []
 	if OS.get_thread_caller_id() != OS.get_main_thread_id():
 		return _preplaced_rooms_cached.slice(0)
 	else:
@@ -712,14 +712,14 @@ func get_preplaced_rooms() -> Array[DungeonRoom3D]:
 		_preplaced_rooms_cached = rooms.slice(0)
 		return rooms
 
-func get_all_placed_and_preplaced_rooms() -> Array[DungeonRoom3D]:
-	var rooms : Array[DungeonRoom3D] = get_preplaced_rooms()
+func get_all_placed_and_preplaced_rooms() -> Array:
+	var rooms := get_preplaced_rooms()
 	rooms.append_array(_rooms_placed)
 	return rooms
 
 # Any rooms with doors leading to more than 1 floor are considered stairs
-func get_stair_rooms_from_instances() -> Array[DungeonRoom3D]:
-	var rooms : Array[DungeonRoom3D] = []
+func get_stair_rooms_from_instances() -> Array:
+	var rooms := []
 	rooms.assign(room_instances.filter(func(c):
 		if not c is DungeonRoom3D: return false
 		if not c.is_stair_room: return false
