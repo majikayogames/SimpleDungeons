@@ -182,11 +182,7 @@ func generate(seed : int = int(generate_seed) if generate_seed.is_valid_int() el
 		_is_generating_threaded = false
 		_printwarning("Disabling threaded generation because in editor. Kept running into crashes with editor threads, looked like Godot bugs, so disabling for now. You can still use visualize generation in editor. Threaded generation in game seems to work fine.")
 	
-	if Engine.is_editor_hint():
-		_printwarning("Generating in editor is broken atm. Probably won't generate correctly. Hopefully will fix in next day or two. Just in game generation works for now.")
-	
 	if _is_generating_threaded:
-		_printwarning("Threading broken atm. Probably won't generate correctly. Hopefully will fix in next day or two. Just in game generation works for now.")
 		running_thread = Thread.new()
 		running_thread.start(_run_generate_loop)
 	else:
