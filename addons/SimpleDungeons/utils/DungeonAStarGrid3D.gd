@@ -3,7 +3,6 @@ extends AStar3D
 
 var corridors = [] as Array[Vector3i]
 var doors_list = []
-# Dict with grid_pos:Array[grid_direction, grid_direction, ...] of which way you can walk in doors from grid positions
 var pt_id_to_vec3i = {}
 var vec3i_to_pt_id = {}
 
