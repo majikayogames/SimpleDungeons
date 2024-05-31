@@ -231,7 +231,7 @@ func get_doors_cached() -> Array:
 	#if not virtual_self._doors_cache:
 	#	printerr("Doors were not cached! Call get_doors() at least once first.")
 	
-	self._doors_cache = virtual_self._doors_cache.map(func(d : Door):
+	self._doors_cache = virtual_self._doors_cache.map(func(d):
 		return Door.new(d.local_pos, d.dir, d.optional, self, d.door_node))
 	return self._doors_cache
 
@@ -273,13 +273,13 @@ func push_away_from_and_stay_within_bounds(other_room : DungeonRoom3D) -> void:
 		-1 if diff.x > 0 else 1,
 		0,
 		-1 if diff.z > 0 else 1)
-	var dpos = get_grid_aabbi(true)
+	var dpos = get_grid_aabbi(true, is_stair_room)
 	var able_to_move = dpos.translated(move).push_within(dungeon_generator.get_grid_aabbi(), true).position - dpos.position
 	if able_to_move.x != 0 or able_to_move.z != 0:
 		set_position_by_grid_pos(get_grid_pos() + able_to_move)
 
 func overlaps_room(other_room : DungeonRoom3D) -> bool:
-	var aabbis = { self: self.get_grid_aabbi(false), other_room: other_room.get_grid_aabbi(false) }
+	var aabbis = { self: self.get_grid_aabbi(false, self.is_stair_room), other_room: other_room.get_grid_aabbi(false, other_room.is_stair_room) }
 	if aabbis[self].intersects(aabbis[other_room]): return true
 	# Separate with a margin for doors, but allow if 2 opposing doors fit together
 	var door_intersects = (func(door : Door, room : DungeonRoom3D):
@@ -297,9 +297,8 @@ func snap_room_to_dungeon_grid() -> void:
 	constrain_room_to_bounds_with_doors()
 
 func constrain_room_to_bounds_with_doors():
-	#var aabbi_with_doors := get_grid_aabbi(true)
 	# For stair rooms, also ensure optional doors can be reached. So stairs don't get their path blocked against wall
-	var aabbi_with_doors := get_grid_aabbi(true) if not is_stair_room else get_grid_aabbi_with_optional_doors()
+	var aabbi_with_doors := get_grid_aabbi(true, is_stair_room)
 	var aabbi_with_doors_constrained := aabbi_with_doors.push_within(dungeon_generator.get_grid_aabbi(), false)
 	set_position_by_grid_pos(get_grid_pos() + (aabbi_with_doors_constrained.position - aabbi_with_doors.position))
 
@@ -309,7 +308,7 @@ func snap_rotation_and_scale_to_dungeon_grid() -> void:
 
 ## Returns room pos from corner (min) of AABB on dungeon grid 
 func get_grid_pos() -> Vector3i:
-	return get_grid_aabbi(false).position
+	return get_grid_aabbi(false, false).position
 
 ## Set position of room from corner (min) of AABB on dungeon grid
 func set_position_by_grid_pos(new_grid_pos : Vector3i = get_grid_pos()) -> void:
@@ -349,17 +348,11 @@ func get_local_aabb() -> AABB:
 	var size := Vector3(size_in_voxels) * voxel_scale
 	return AABB(-size/2.0, size)
 
-func get_grid_aabbi(include_doors : bool) -> AABBi:
+func get_grid_aabbi(include_doors : bool, include_optional_doors : bool = false) -> AABBi:
 	var grid_aabbi = AABBi.from_AABB_rounded(xform_aabb(get_local_aabb(), get_xform_to(SPACE.LOCAL_SPACE, SPACE.DUNGEON_GRID)))
 	if include_doors: # Include doors after to keep position the same
-		for door in get_doors().filter(func(d : Door): return !d.optional):
+		for door in get_doors().filter(func(d : Door): return include_optional_doors or !d.optional):
 			grid_aabbi = grid_aabbi.expand_to_include(door.exit_pos_grid)
-	return grid_aabbi
-
-func get_grid_aabbi_with_optional_doors() -> AABBi:
-	var grid_aabbi = AABBi.from_AABB_rounded(xform_aabb(get_local_aabb(), get_xform_to(SPACE.LOCAL_SPACE, SPACE.DUNGEON_GRID)))
-	for door in get_doors():
-		grid_aabbi = grid_aabbi.expand_to_include(door.exit_pos_grid)
 	return grid_aabbi
 
 func local_grid_pos_to_dungeon_grid_pos(local_pos : Vector3i) -> Vector3i:

@@ -8,6 +8,17 @@ var positions_with_door_leading_in_to = {}
 var pt_id_to_vec3i = {}
 var vec3i_to_pt_id = {}
 
+func can_walk_from_to(dungeon_generator : DungeonGenerator3D, pos_a : Vector3i, pos_b : Vector3i) -> bool:
+	if not dungeon_generator.get_grid_aabbi().contains_point(pos_a): return false
+	if not dungeon_generator.get_grid_aabbi().contains_point(pos_b): return false
+	var room_a := dungeon_generator.get_room_at_pos(pos_a)
+	var room_b := dungeon_generator.get_room_at_pos(pos_b)
+	if room_a == room_b: return true # Walking outside rooms, or inside same room
+	# Ensure walking through doorways if not a simple case:
+	var fits_room_a_door = room_a == null or room_a.get_doors_cached().filter(func(d): return d.grid_pos == pos_a and d.exit_pos_grid == pos_b).size() == 1
+	var fits_room_b_door = room_b == null or room_b.get_doors_cached().filter(func(d): return d.grid_pos == pos_b and d.exit_pos_grid == pos_a).size() == 1
+	return fits_room_a_door and fits_room_b_door
+
 func _init(dungeon_generator : DungeonGenerator3D, rooms_placed : Array):
 	for room in rooms_placed:
 		for door in room.get_doors():
@@ -36,23 +47,15 @@ func _init(dungeon_generator : DungeonGenerator3D, rooms_placed : Array):
 				# Inside room - allow walk inside room & check for doors leading out
 				var room := dungeon_generator.get_room_at_pos(Vector3i(x,y,z))
 				if room:
-					# Allow walk inside room, up & down too for stairs
+					# Allow walk in/out of room, up & down too for stairs
 					for dir in xyz_dirs:
-						if room.get_grid_aabbi(false).contains_point(Vector3i(x,y,z) + dir):
+						if can_walk_from_to(dungeon_generator, Vector3i(x,y,z), Vector3i(x,y,z) + dir):
 							connect_points(cur_pt_id, get_closest_point(Vector3(x,y,z) + Vector3(dir)))
-					# Allow walk out of all doors
-					for door in room.get_doors_cached():
-						if door.grid_pos == Vector3i(x,y,z) and dungeon_generator.get_grid_aabbi().contains_point(door.exit_pos_grid):
-							connect_points(cur_pt_id, get_closest_point(Vector3(door.exit_pos_grid)))
 				else: # Outside room - check for doors leading in
 					# Walk freely if not landing in any rooms. Only horizontally, can only traverse up & down with stairs
 					for dir in xz_dirs:
-						if dungeon_generator.get_room_at_pos(Vector3i(x,y,z) + dir) == null and dungeon_generator.get_grid_aabbi().contains_point(Vector3i(x,y,z) + dir):
+						if can_walk_from_to(dungeon_generator, Vector3i(x,y,z), Vector3i(x,y,z) + dir):
 							connect_points(cur_pt_id, get_closest_point(Vector3(x,y,z) + Vector3(dir)))
-					# Allow walk into room doors
-					if positions_with_door_leading_in_to.has(Vector3i(x,y,z)):
-						for in_dir in positions_with_door_leading_in_to[Vector3i(x,y,z)]:
-							connect_points(cur_pt_id, get_closest_point(Vector3(x,y,z) + Vector3(in_dir)))
 
 
 func get_vec3i_path(from : Vector3i, to : Vector3i) -> Array[Vector3i]:
