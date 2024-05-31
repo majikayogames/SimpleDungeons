@@ -231,11 +231,9 @@ func get_doors_cached() -> Array:
 	#if not virtual_self._doors_cache:
 	#	printerr("Doors were not cached! Call get_doors() at least once first.")
 	
-	var ret := []
-	ret.assign(virtual_self._doors_cache.map(func(d : Door):
-		return Door.new(d.local_pos, d.dir, d.optional, self, d.door_node)))
-	self._doors_cache = ret
-	return ret
+	self._doors_cache = virtual_self._doors_cache.map(func(d : Door):
+		return Door.new(d.local_pos, d.dir, d.optional, self, d.door_node))
+	return self._doors_cache
 
 func ensure_doors_and_or_transform_cached_for_threads_and_virtualized_rooms() -> void:
 	if is_inside_tree(): # transform cache only applies to preplaced rooms
