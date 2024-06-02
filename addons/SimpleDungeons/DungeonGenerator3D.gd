@@ -659,7 +659,7 @@ func setup_room_instances_and_validate_before_generate() -> bool:
 		if not s: continue
 		var inst = s.instantiate()
 		if not inst is DungeonRoom3D:
-			_printerr("SimpleDungeons Error: "+s.resource_path+" room scene does not inherit DungeonRoom3D.")
+			_printerr("SimpleDungeons Error: "+s.resource_path+" room scene does not inherit DungeonRoom3D. Also may need @tool annotation if generating in editor.")
 			return false
 		else:
 			inst.dungeon_generator = self
@@ -760,7 +760,7 @@ func validate_dungeon(error_callback = null, warning_callback = null) -> bool:
 	if room_instances is Array:
 		for room in room_instances:
 			if not room is DungeonRoom3D:
-				error_callback.call("Room "+room.name+" does not inherit DungeonRoom3D!")
+				error_callback.call("Room "+room.name+" does not inherit DungeonRoom3D! Also add @tool to dungeon room script if generating in editor.")
 			else:
 				if not room.has_method("validate_room"):
 					error_callback.call("validate_room() method not found on room "+room.name+". Ensure it inherits DungeonRoom3D and has the @tool annotation if you're trying to generate in editor.")
