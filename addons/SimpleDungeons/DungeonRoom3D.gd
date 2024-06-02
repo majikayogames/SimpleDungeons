@@ -136,6 +136,10 @@ func create_clone_and_make_virtual_unless_visualizing() -> DungeonRoom3D:
 		#	printerr("Cloning dungeon room without doors cached!!! Make sure to call .get_doors() at least once for all rooms.")
 		_clone = DungeonRoom3D.new()
 		_clone.virtualized_from = self.virtual_self
+		# Can't access door nodes on threads, also if it's a clone, won't have any door nodes to check door pos/dir.
+		#_clone._doors_cache = []
+		for d in _doors_cache:
+			_clone._doors_cache.push_back(Door.new(d.local_pos, d.dir, d.optional, _clone, d.door_node))
 	else: _clone = get_original_packed_scene().instantiate()
 	copy_all_props(virtual_self, _clone)
 	_clone.dungeon_generator = self.dungeon_generator
@@ -227,14 +231,6 @@ func get_door_by_node(node : Node) -> Door:
 
 # For calling on other threads/for virtualized rooms
 func get_doors_cached() -> Array:
-	if self._doors_cache:
-		return self._doors_cache
-	# For some reason this is causing crash in threads
-	#if not virtual_self._doors_cache:
-	#	printerr("Doors were not cached! Call get_doors() at least once first.")
-	
-	self._doors_cache = virtual_self._doors_cache.map(func(d):
-		return Door.new(d.local_pos, d.dir, d.optional, self, d.door_node))
 	return self._doors_cache
 
 func ensure_doors_and_or_transform_cached_for_threads_and_virtualized_rooms() -> void:
@@ -242,11 +238,23 @@ func ensure_doors_and_or_transform_cached_for_threads_and_virtualized_rooms() ->
 		virtual_transform = self.transform
 	get_doors()
 
-var _doors_cache : Array
+# For some reason this mutex is required or I get crashes all over the place on threads.
+# I never access _doors_cache from main thread so maybe it's overly sensitive thread guards.
+var _mtest := Mutex.new()
+var _doors_cache : Array = [] :
+	set(v):
+		_mtest.lock()
+		_doors_cache = v
+		_mtest.unlock()
+	get:
+		_mtest.lock()
+		var tmp = _doors_cache
+		_mtest.unlock()
+		return tmp
 func get_doors() -> Array:
 	if OS.get_thread_caller_id() != OS.get_main_thread_id() or virtualized_from != null:
 		# Ensure using get_doors_cached() when dealing with virtual rooms/threads.
-		return get_doors_cached()
+		return _doors_cache
 	var real_aabb_local = get_local_aabb()
 	
 	var room_doors = []
