@@ -1,7 +1,7 @@
 # SimpleDungeons for Godot 4
 
-### Under construction. A V2 version is in progress with bug fixes and adding new features. V2 will be breaking and you will have to set up your V1 dungeon kits again if you want to use V2.
-### May have some bugs in it right now while working on v2. Hope to fix these in the next few days.
+### V2 Update is out. If you used the first version and want to upgrade, you will have to set up your dungeons again. Now dungeon kits don't exist and you just define individual rooms.
+## Currently in the process of finishing up the v2 update including documentation, bug fixes, and eventually I'm going to do a tutorial.
 
 SimpleDungeons is a Godot 4 addon which allows for the creation of procedurally generated 3D dungeons/levels using user defined prefab rooms.
 
