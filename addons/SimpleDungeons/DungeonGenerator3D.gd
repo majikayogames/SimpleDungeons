@@ -638,7 +638,8 @@ func cleanup_and_reset_dungeon_generator() -> void:
 	if is_currently_generating:
 		abort_generation_and_fail("Dungeon reset while generating.")
 	if running_thread:
-		running_thread.wait_to_finish()
+		if running_thread.is_alive() or running_thread.is_started():
+			running_thread.wait_to_finish()
 		running_thread = null
 	if get_node_or_null("RoomsContainer"):
 		var rc = get_node_or_null("RoomsContainer")

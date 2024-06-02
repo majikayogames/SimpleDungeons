@@ -33,6 +33,10 @@ var dungeon_generator : DungeonGenerator3D :
 		virtual_transform = self.transform
 		snap_room_to_dungeon_grid()
 
+func _validate_property(property: Dictionary):
+	if property.name in ["force_align_with_grid_button"] and not get_parent() is DungeonGenerator3D:
+		property.usage = PROPERTY_USAGE_NO_EDITOR
+
 @export_group("Debug view")
 @export var show_debug_in_editor : bool = true
 @export var show_debug_in_game : bool = false
