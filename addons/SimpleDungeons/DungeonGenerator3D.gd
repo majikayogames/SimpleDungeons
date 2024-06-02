@@ -587,12 +587,20 @@ func connect_rooms_iteration(first_call_in_loop : bool) -> void:
 			_required_doors_dict.erase(required_door)
 			continue
 		# Get other room doors which are closest to the required door
-		var other_room_doors = _all_doors_dict.values().filter(func(d): return d.room != required_door.room)
-		other_room_doors.sort_custom(func(a,b):
-			return Vector3(b.exit_pos_grid - required_door.exit_pos_grid).length() > Vector3(a.exit_pos_grid - required_door.exit_pos_grid).length())
+		var closest_other_room_doors = _all_doors_dict.values().slice(0)#filter(func(d): return d.room != required_door.room)
+		closest_other_room_doors.sort_custom(func(a,b):
+			# Make sure doors not on same floor sorted far after
+			# Also make sure doors of same room sorted far after
+			var b_dist = Vector3(b.exit_pos_grid - required_door.exit_pos_grid).length()
+			var a_dist = Vector3(a.exit_pos_grid - required_door.exit_pos_grid).length()
+			if a.exit_pos_grid.y != required_door.exit_pos_grid.y or a.room == required_door.room:
+				a_dist += dungeon_size.x + dungeon_size.y + dungeon_size.z
+			if b.exit_pos_grid.y != required_door.exit_pos_grid.y or b.room == required_door.room:
+				b_dist += dungeon_size.x + dungeon_size.y + dungeon_size.z
+			return b_dist > a_dist)
 		
 		_astar3d.cap_required_doors_phase = true
-		var connect_path := _astar3d.get_vec3i_path(required_door.exit_pos_grid, other_room_doors[0].exit_pos_grid)
+		var connect_path := _astar3d.get_vec3i_path(required_door.exit_pos_grid, closest_other_room_doors[0].exit_pos_grid)
 		for corridor_pos in connect_path:
 			if not _quick_room_check_dict.has(corridor_pos) and not _quick_corridors_check_dict.has(corridor_pos):
 				var room := corridor_room_instance.create_clone_and_make_virtual_unless_visualizing()
