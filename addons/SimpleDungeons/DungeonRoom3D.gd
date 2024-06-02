@@ -240,17 +240,18 @@ func ensure_doors_and_or_transform_cached_for_threads_and_virtualized_rooms() ->
 
 # For some reason this mutex is required or I get crashes all over the place on threads.
 # I never access _doors_cache from main thread so maybe it's overly sensitive thread guards.
-var _mtest := Mutex.new()
+var _thread_fix_mutex := Mutex.new()
 var _doors_cache : Array = [] :
 	set(v):
-		_mtest.lock()
+		_thread_fix_mutex.lock()
 		_doors_cache = v
-		_mtest.unlock()
+		_thread_fix_mutex.unlock()
 	get:
-		_mtest.lock()
+		_thread_fix_mutex.lock()
 		var tmp = _doors_cache
-		_mtest.unlock()
+		_thread_fix_mutex.unlock()
 		return tmp
+
 func get_doors() -> Array:
 	if OS.get_thread_caller_id() != OS.get_main_thread_id() or virtualized_from != null:
 		# Ensure using get_doors_cached() when dealing with virtual rooms/threads.
