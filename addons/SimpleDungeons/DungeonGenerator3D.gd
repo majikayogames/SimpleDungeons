@@ -57,6 +57,8 @@ var stage : BuildStage = BuildStage.NOT_STARTED :
 ## a dungeon may not be able to correctly generate and have all rooms reachable/not overlapping.
 ## In that case, the algorithm can simply restart from the beginning and try again.
 @export var max_retries : int = 1
+## Max total iterations in generate loop running one pass for the current stage.
+## Generation stages: PLACE_ROOMS, PLACE_STAIRS, SEPARATE_ROOMS, CONNECT_ROOMS
 @export var max_safe_iterations : int = 250
 
 ## Run generation of dungeon on a separate thread.
@@ -76,6 +78,20 @@ var stage : BuildStage = BuildStage.NOT_STARTED :
 		if is_currently_generating:
 			call_deferred_thread_group("abort_generation_and_fail", "Aborted from editor button.")
 		else: _printwarning("Not currently generating.")
+
+@export_group("AStar room connection options")
+enum AStarHeuristics { NONE_DIJKSTRAS = 0, MANHATTAN = 1, EUCLIDEAN = 2 }
+## What heuristic to use for the AStar room connection algorithm.
+## Euclidan - Standard, tends towards straight corridors connecting rooms.
+## Manhattan - May lead to zigzagging corridors between rooms.
+## Dijkstra's - No heuristic, this turns AStar into Dijkstra's algorithm. Guaranteed to find the shortest possible path but may lead to zigzagging corridors.
+@export var astar_heuristic : AStarHeuristics = AStarHeuristics.EUCLIDEAN
+## By making the corridors cost less to walk through, the algorithm will tend towards merging into single corridors,
+## thus making hallways more compact.
+@export var corridor_cost_multiplier : float = 0.25
+## Similar to corridor cost, setting this lower makes it so the algorithm will walk through a rooms to connect 2 rooms/doors, thus saving corridors placements.
+## You could also set it greater than 1 to make the algorithm less likely to walk through existing (non-corridor) rooms.
+@export var room_cost_multiplier : float = 0.25
 
 @export_group("Debug options")
 @export var show_debug_in_editor : bool = true
@@ -514,14 +530,16 @@ func separate_rooms_iteration(first_call_in_loop : bool) -> void:
 
 var _astar3d : DungeonAStar3D
 var _quick_room_check_dict = {}
+var _quick_corridors_check_dict = {}
 var _non_corridor_rooms : Array = []
 var _rooms_to_connect : Array = []
 func connect_rooms_iteration(first_call_in_loop : bool) -> void:
 	if first_call_in_loop:
-		_astar3d = DungeonAStar3D.new(self, get_all_placed_and_preplaced_rooms())
 		_rooms_to_connect = []
 		_non_corridor_rooms = []
 		_quick_room_check_dict = {}
+		_quick_corridors_check_dict = {}
+		_astar3d = DungeonAStar3D.new(self, _quick_room_check_dict, _quick_corridors_check_dict)
 		for room in get_all_placed_and_preplaced_rooms():
 			if room.get_doors_cached().size() > 0:
 				_rooms_to_connect.push_back(room)
@@ -540,21 +558,21 @@ func connect_rooms_iteration(first_call_in_loop : bool) -> void:
 			return
 		#print("Connecting ", room_a.name, " to ", _rooms_to_connect[0].name, ". Result: ", connect_path)
 		for corridor_pos in connect_path:
-			if not _quick_room_check_dict.has(corridor_pos):
+			if not _quick_room_check_dict.has(corridor_pos) and not _quick_corridors_check_dict.has(corridor_pos):
 				var room := corridor_room_instance.create_clone_and_make_virtual_unless_visualizing()
 				room.set_position_by_grid_pos(corridor_pos)
 				place_room(room)
-				_quick_room_check_dict[corridor_pos] = room
+				_quick_corridors_check_dict[corridor_pos] = room
 	
 	if len(_rooms_to_connect) <= 1:
 		# Cap off all required doors. Bad solution. TODO Think of a better one of this and Astar in general.
 		for room in _non_corridor_rooms:
 			for door in room.get_doors_cached():
-				if not door.optional and not _quick_room_check_dict.has(door.exit_pos_grid):
+				if not door.optional and not _quick_room_check_dict.has(door.exit_pos_grid) and not _quick_corridors_check_dict.has(door.exit_pos_grid):
 					var corridor_cap_room := corridor_room_instance.create_clone_and_make_virtual_unless_visualizing()
 					corridor_cap_room.set_position_by_grid_pos(door.exit_pos_grid)
 					place_room(corridor_cap_room)
-					_quick_room_check_dict[door.exit_pos_grid] = corridor_cap_room
+					_quick_corridors_check_dict[door.exit_pos_grid] = corridor_cap_room
 		stage = BuildStage.FINALIZING
 
 ####################################

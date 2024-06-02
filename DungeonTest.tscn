@@ -11,7 +11,7 @@
 [ext_resource type="PackedScene" uid="uid://b1c7nsr0vdiq" path="res://addons/SimpleDungeons/sample_rooms/lowpoly_kit_1/treasure_room.tscn" id="9_6h61g"]
 [ext_resource type="PackedScene" uid="uid://dvdly7xo8rxig" path="res://addons/SimpleDungeons/sample_rooms/lowpoly_kit_1/corridor.tscn" id="10_yl6tc"]
 [ext_resource type="Script" path="res://addons/SimpleDungeons/DungeonRoom3D.gd" id="11_m6ytu"]
-[ext_resource type="Script" path="res://addons/SimpleDungeons/sample_rooms/lowpoly_kit_1/corridor.gd" id="12_ex51w"]
+[ext_resource type="Script" path="res://addons/SimpleDungeons/sample_rooms/lowpoly_kit_1/corridor.gd" id="12_celhw"]
 
 [sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_ga1mx"]
 sky_horizon_color = Color(0.64625, 0.65575, 0.67075, 1)
@@ -77,6 +77,7 @@ corridor_room_scene = ExtResource("10_yl6tc")
 generate_seed = "905750465"
 generate_threaded = true
 show_debug_in_game = true
+visualize_generation_progress = true
 visualize_generation_wait_between_iterations = 191
 
 [node name="RoomsContainer" type="Node3D" parent="DungeonGenerator3D"]
@@ -192,424 +193,336 @@ is_stair_room = true
 
 [node name="Corridor_18" type="Node3D" parent="DungeonGenerator3D/RoomsContainer" instance=ExtResource("10_yl6tc")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 15, 35, -25)
-script = ExtResource("12_ex51w")
+script = ExtResource("12_celhw")
 
 [node name="Corridor_19" type="Node3D" parent="DungeonGenerator3D/RoomsContainer" instance=ExtResource("10_yl6tc")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 15, 35, -35)
-script = ExtResource("12_ex51w")
+script = ExtResource("12_celhw")
 
 [node name="Corridor_20" type="Node3D" parent="DungeonGenerator3D/RoomsContainer" instance=ExtResource("10_yl6tc")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 25, 35, -35)
-script = ExtResource("12_ex51w")
+script = ExtResource("12_celhw")
 
 [node name="Corridor_21" type="Node3D" parent="DungeonGenerator3D/RoomsContainer" instance=ExtResource("10_yl6tc")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 5, 35, -35)
-script = ExtResource("12_ex51w")
+script = ExtResource("12_celhw")
 
 [node name="Corridor_22" type="Node3D" parent="DungeonGenerator3D/RoomsContainer" instance=ExtResource("10_yl6tc")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -5, 35, -35)
-script = ExtResource("12_ex51w")
+script = ExtResource("12_celhw")
 
 [node name="Corridor_23" type="Node3D" parent="DungeonGenerator3D/RoomsContainer" instance=ExtResource("10_yl6tc")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -5, 35, -45)
-script = ExtResource("12_ex51w")
+script = ExtResource("12_celhw")
 
 [node name="Corridor_24" type="Node3D" parent="DungeonGenerator3D/RoomsContainer" instance=ExtResource("10_yl6tc")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -45, 35, -45)
-script = ExtResource("12_ex51w")
+script = ExtResource("12_celhw")
 
 [node name="Corridor_25" type="Node3D" parent="DungeonGenerator3D/RoomsContainer" instance=ExtResource("10_yl6tc")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -45, 35, -35)
-script = ExtResource("12_ex51w")
+script = ExtResource("12_celhw")
 
 [node name="Corridor_26" type="Node3D" parent="DungeonGenerator3D/RoomsContainer" instance=ExtResource("10_yl6tc")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -45, 35, -25)
-script = ExtResource("12_ex51w")
+script = ExtResource("12_celhw")
 
 [node name="Corridor_27" type="Node3D" parent="DungeonGenerator3D/RoomsContainer" instance=ExtResource("10_yl6tc")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -45, 35, -15)
-script = ExtResource("12_ex51w")
+script = ExtResource("12_celhw")
 
 [node name="Corridor_28" type="Node3D" parent="DungeonGenerator3D/RoomsContainer" instance=ExtResource("10_yl6tc")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -45, 35, -5)
-script = ExtResource("12_ex51w")
+script = ExtResource("12_celhw")
 
 [node name="Corridor_29" type="Node3D" parent="DungeonGenerator3D/RoomsContainer" instance=ExtResource("10_yl6tc")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -45, 35, 5)
-script = ExtResource("12_ex51w")
+script = ExtResource("12_celhw")
 
 [node name="Corridor_30" type="Node3D" parent="DungeonGenerator3D/RoomsContainer" instance=ExtResource("10_yl6tc")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -45, 35, 15)
-script = ExtResource("12_ex51w")
+script = ExtResource("12_celhw")
 
 [node name="Corridor_31" type="Node3D" parent="DungeonGenerator3D/RoomsContainer" instance=ExtResource("10_yl6tc")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -35, 35, 5)
-script = ExtResource("12_ex51w")
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -35, 35, -5)
+script = ExtResource("12_celhw")
 
 [node name="Corridor_32" type="Node3D" parent="DungeonGenerator3D/RoomsContainer" instance=ExtResource("10_yl6tc")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -35, 35, -5)
-script = ExtResource("12_ex51w")
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -25, 35, -5)
+script = ExtResource("12_celhw")
 
 [node name="Corridor_33" type="Node3D" parent="DungeonGenerator3D/RoomsContainer" instance=ExtResource("10_yl6tc")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -25, 35, -5)
-script = ExtResource("12_ex51w")
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -15, 35, -5)
+script = ExtResource("12_celhw")
 
 [node name="Corridor_34" type="Node3D" parent="DungeonGenerator3D/RoomsContainer" instance=ExtResource("10_yl6tc")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -15, 35, -5)
-script = ExtResource("12_ex51w")
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -5, 35, -5)
+script = ExtResource("12_celhw")
 
 [node name="Corridor_35" type="Node3D" parent="DungeonGenerator3D/RoomsContainer" instance=ExtResource("10_yl6tc")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -5, 35, -5)
-script = ExtResource("12_ex51w")
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -5, 35, 5)
+script = ExtResource("12_celhw")
 
 [node name="Corridor_36" type="Node3D" parent="DungeonGenerator3D/RoomsContainer" instance=ExtResource("10_yl6tc")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -5, 35, 5)
-script = ExtResource("12_ex51w")
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -35, 25, 5)
+script = ExtResource("12_celhw")
 
 [node name="Corridor_37" type="Node3D" parent="DungeonGenerator3D/RoomsContainer" instance=ExtResource("10_yl6tc")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -35, 25, 5)
-script = ExtResource("12_ex51w")
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -35, 25, -5)
+script = ExtResource("12_celhw")
 
 [node name="Corridor_38" type="Node3D" parent="DungeonGenerator3D/RoomsContainer" instance=ExtResource("10_yl6tc")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -35, 25, -5)
-script = ExtResource("12_ex51w")
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -25, 25, -5)
+script = ExtResource("12_celhw")
 
 [node name="Corridor_39" type="Node3D" parent="DungeonGenerator3D/RoomsContainer" instance=ExtResource("10_yl6tc")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -25, 25, -5)
-script = ExtResource("12_ex51w")
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -15, 25, -5)
+script = ExtResource("12_celhw")
 
 [node name="Corridor_40" type="Node3D" parent="DungeonGenerator3D/RoomsContainer" instance=ExtResource("10_yl6tc")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -15, 25, -5)
-script = ExtResource("12_ex51w")
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -5, 25, -5)
+script = ExtResource("12_celhw")
 
 [node name="Corridor_41" type="Node3D" parent="DungeonGenerator3D/RoomsContainer" instance=ExtResource("10_yl6tc")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -5, 25, -5)
-script = ExtResource("12_ex51w")
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -5, 25, -15)
+script = ExtResource("12_celhw")
 
 [node name="Corridor_42" type="Node3D" parent="DungeonGenerator3D/RoomsContainer" instance=ExtResource("10_yl6tc")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -5, 25, -15)
-script = ExtResource("12_ex51w")
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -5, 25, -25)
+script = ExtResource("12_celhw")
 
 [node name="Corridor_43" type="Node3D" parent="DungeonGenerator3D/RoomsContainer" instance=ExtResource("10_yl6tc")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -5, 25, -25)
-script = ExtResource("12_ex51w")
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -5, 25, -35)
+script = ExtResource("12_celhw")
 
 [node name="Corridor_44" type="Node3D" parent="DungeonGenerator3D/RoomsContainer" instance=ExtResource("10_yl6tc")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -5, 25, -35)
-script = ExtResource("12_ex51w")
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 5, 25, -35)
+script = ExtResource("12_celhw")
 
 [node name="Corridor_45" type="Node3D" parent="DungeonGenerator3D/RoomsContainer" instance=ExtResource("10_yl6tc")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 5, 25, -35)
-script = ExtResource("12_ex51w")
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 5, 15, -5)
+script = ExtResource("12_celhw")
 
 [node name="Corridor_46" type="Node3D" parent="DungeonGenerator3D/RoomsContainer" instance=ExtResource("10_yl6tc")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 5, 15, -5)
-script = ExtResource("12_ex51w")
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 5, 15, 5)
+script = ExtResource("12_celhw")
 
 [node name="Corridor_47" type="Node3D" parent="DungeonGenerator3D/RoomsContainer" instance=ExtResource("10_yl6tc")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 5, 15, 5)
-script = ExtResource("12_ex51w")
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 5, 15, 15)
+script = ExtResource("12_celhw")
 
 [node name="Corridor_48" type="Node3D" parent="DungeonGenerator3D/RoomsContainer" instance=ExtResource("10_yl6tc")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 5, 15, 15)
-script = ExtResource("12_ex51w")
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 5, 15, 25)
+script = ExtResource("12_celhw")
 
 [node name="Corridor_49" type="Node3D" parent="DungeonGenerator3D/RoomsContainer" instance=ExtResource("10_yl6tc")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 5, 15, 25)
-script = ExtResource("12_ex51w")
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -5, 15, 25)
+script = ExtResource("12_celhw")
 
 [node name="Corridor_50" type="Node3D" parent="DungeonGenerator3D/RoomsContainer" instance=ExtResource("10_yl6tc")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -5, 15, 25)
-script = ExtResource("12_ex51w")
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -5, 15, 35)
+script = ExtResource("12_celhw")
 
 [node name="Corridor_51" type="Node3D" parent="DungeonGenerator3D/RoomsContainer" instance=ExtResource("10_yl6tc")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -5, 15, 35)
-script = ExtResource("12_ex51w")
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -5, 15, 45)
+script = ExtResource("12_celhw")
 
 [node name="Corridor_52" type="Node3D" parent="DungeonGenerator3D/RoomsContainer" instance=ExtResource("10_yl6tc")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -5, 15, 45)
-script = ExtResource("12_ex51w")
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 5, 15, 45)
+script = ExtResource("12_celhw")
 
 [node name="Corridor_53" type="Node3D" parent="DungeonGenerator3D/RoomsContainer" instance=ExtResource("10_yl6tc")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 5, 15, 45)
-script = ExtResource("12_ex51w")
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -35, 45, -35)
+script = ExtResource("12_celhw")
 
 [node name="Corridor_54" type="Node3D" parent="DungeonGenerator3D/RoomsContainer" instance=ExtResource("10_yl6tc")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -5, 15, 15)
-script = ExtResource("12_ex51w")
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -25, 45, -35)
+script = ExtResource("12_celhw")
 
 [node name="Corridor_55" type="Node3D" parent="DungeonGenerator3D/RoomsContainer" instance=ExtResource("10_yl6tc")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -5, 15, 5)
-script = ExtResource("12_ex51w")
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -15, 45, -35)
+script = ExtResource("12_celhw")
 
 [node name="Corridor_56" type="Node3D" parent="DungeonGenerator3D/RoomsContainer" instance=ExtResource("10_yl6tc")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -5, 15, -5)
-script = ExtResource("12_ex51w")
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 25, 5, 35)
+script = ExtResource("12_celhw")
 
 [node name="Corridor_57" type="Node3D" parent="DungeonGenerator3D/RoomsContainer" instance=ExtResource("10_yl6tc")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -15, 25, -35)
-script = ExtResource("12_ex51w")
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 25, 5, 25)
+script = ExtResource("12_celhw")
 
 [node name="Corridor_58" type="Node3D" parent="DungeonGenerator3D/RoomsContainer" instance=ExtResource("10_yl6tc")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -25, 25, -35)
-script = ExtResource("12_ex51w")
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 15, 5, 25)
+script = ExtResource("12_celhw")
 
 [node name="Corridor_59" type="Node3D" parent="DungeonGenerator3D/RoomsContainer" instance=ExtResource("10_yl6tc")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -25, 25, -25)
-script = ExtResource("12_ex51w")
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 5, 5, 25)
+script = ExtResource("12_celhw")
 
 [node name="Corridor_60" type="Node3D" parent="DungeonGenerator3D/RoomsContainer" instance=ExtResource("10_yl6tc")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -25, 25, -15)
-script = ExtResource("12_ex51w")
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -5, 5, 25)
+script = ExtResource("12_celhw")
 
 [node name="Corridor_61" type="Node3D" parent="DungeonGenerator3D/RoomsContainer" instance=ExtResource("10_yl6tc")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -35, 25, -15)
-script = ExtResource("12_ex51w")
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -15, 5, 25)
+script = ExtResource("12_celhw")
 
 [node name="Corridor_62" type="Node3D" parent="DungeonGenerator3D/RoomsContainer" instance=ExtResource("10_yl6tc")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -35, 45, -35)
-script = ExtResource("12_ex51w")
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -25, 5, 25)
+script = ExtResource("12_celhw")
 
 [node name="Corridor_63" type="Node3D" parent="DungeonGenerator3D/RoomsContainer" instance=ExtResource("10_yl6tc")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -25, 45, -35)
-script = ExtResource("12_ex51w")
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -25, 5, 15)
+script = ExtResource("12_celhw")
 
 [node name="Corridor_64" type="Node3D" parent="DungeonGenerator3D/RoomsContainer" instance=ExtResource("10_yl6tc")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -15, 45, -35)
-script = ExtResource("12_ex51w")
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 5, -5, 15)
+script = ExtResource("12_celhw")
 
 [node name="Corridor_65" type="Node3D" parent="DungeonGenerator3D/RoomsContainer" instance=ExtResource("10_yl6tc")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 25, 5, 35)
-script = ExtResource("12_ex51w")
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 15, -5, 15)
+script = ExtResource("12_celhw")
 
 [node name="Corridor_66" type="Node3D" parent="DungeonGenerator3D/RoomsContainer" instance=ExtResource("10_yl6tc")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 25, 5, 25)
-script = ExtResource("12_ex51w")
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 15, -5, 25)
+script = ExtResource("12_celhw")
 
 [node name="Corridor_67" type="Node3D" parent="DungeonGenerator3D/RoomsContainer" instance=ExtResource("10_yl6tc")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 15, 5, 25)
-script = ExtResource("12_ex51w")
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 5, 45, -25)
+script = ExtResource("12_celhw")
 
 [node name="Corridor_68" type="Node3D" parent="DungeonGenerator3D/RoomsContainer" instance=ExtResource("10_yl6tc")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 5, 5, 25)
-script = ExtResource("12_ex51w")
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 5, 45, -15)
+script = ExtResource("12_celhw")
 
 [node name="Corridor_69" type="Node3D" parent="DungeonGenerator3D/RoomsContainer" instance=ExtResource("10_yl6tc")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -5, 5, 25)
-script = ExtResource("12_ex51w")
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 5, 45, -5)
+script = ExtResource("12_celhw")
 
 [node name="Corridor_70" type="Node3D" parent="DungeonGenerator3D/RoomsContainer" instance=ExtResource("10_yl6tc")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -15, 5, 25)
-script = ExtResource("12_ex51w")
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 5, 45, 5)
+script = ExtResource("12_celhw")
 
 [node name="Corridor_71" type="Node3D" parent="DungeonGenerator3D/RoomsContainer" instance=ExtResource("10_yl6tc")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -25, 5, 25)
-script = ExtResource("12_ex51w")
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 5, -5, 5)
+script = ExtResource("12_celhw")
 
 [node name="Corridor_72" type="Node3D" parent="DungeonGenerator3D/RoomsContainer" instance=ExtResource("10_yl6tc")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -25, 5, 15)
-script = ExtResource("12_ex51w")
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -5, -5, 5)
+script = ExtResource("12_celhw")
 
 [node name="Corridor_73" type="Node3D" parent="DungeonGenerator3D/RoomsContainer" instance=ExtResource("10_yl6tc")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 5, -5, 15)
-script = ExtResource("12_ex51w")
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -15, -5, 5)
+script = ExtResource("12_celhw")
 
 [node name="Corridor_74" type="Node3D" parent="DungeonGenerator3D/RoomsContainer" instance=ExtResource("10_yl6tc")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 15, -5, 15)
-script = ExtResource("12_ex51w")
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -15, -5, -5)
+script = ExtResource("12_celhw")
 
 [node name="Corridor_75" type="Node3D" parent="DungeonGenerator3D/RoomsContainer" instance=ExtResource("10_yl6tc")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 15, -5, 25)
-script = ExtResource("12_ex51w")
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -45, -15, -5)
+script = ExtResource("12_celhw")
 
 [node name="Corridor_76" type="Node3D" parent="DungeonGenerator3D/RoomsContainer" instance=ExtResource("10_yl6tc")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 5, -5, 25)
-script = ExtResource("12_ex51w")
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -45, -15, -15)
+script = ExtResource("12_celhw")
 
 [node name="Corridor_77" type="Node3D" parent="DungeonGenerator3D/RoomsContainer" instance=ExtResource("10_yl6tc")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -25, 45, -25)
-script = ExtResource("12_ex51w")
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -35, -15, -15)
+script = ExtResource("12_celhw")
 
 [node name="Corridor_78" type="Node3D" parent="DungeonGenerator3D/RoomsContainer" instance=ExtResource("10_yl6tc")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -25, 45, -15)
-script = ExtResource("12_ex51w")
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -25, -15, -15)
+script = ExtResource("12_celhw")
 
 [node name="Corridor_79" type="Node3D" parent="DungeonGenerator3D/RoomsContainer" instance=ExtResource("10_yl6tc")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -25, 45, -5)
-script = ExtResource("12_ex51w")
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -15, -15, -15)
+script = ExtResource("12_celhw")
 
 [node name="Corridor_80" type="Node3D" parent="DungeonGenerator3D/RoomsContainer" instance=ExtResource("10_yl6tc")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -25, 45, 5)
-script = ExtResource("12_ex51w")
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -5, -15, -15)
+script = ExtResource("12_celhw")
 
 [node name="Corridor_81" type="Node3D" parent="DungeonGenerator3D/RoomsContainer" instance=ExtResource("10_yl6tc")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -15, 45, 5)
-script = ExtResource("12_ex51w")
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 5, -15, -15)
+script = ExtResource("12_celhw")
 
 [node name="Corridor_82" type="Node3D" parent="DungeonGenerator3D/RoomsContainer" instance=ExtResource("10_yl6tc")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -15, 45, 15)
-script = ExtResource("12_ex51w")
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 15, -15, -15)
+script = ExtResource("12_celhw")
 
 [node name="Corridor_83" type="Node3D" parent="DungeonGenerator3D/RoomsContainer" instance=ExtResource("10_yl6tc")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -15, 45, 25)
-script = ExtResource("12_ex51w")
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 15, -15, -25)
+script = ExtResource("12_celhw")
 
 [node name="Corridor_84" type="Node3D" parent="DungeonGenerator3D/RoomsContainer" instance=ExtResource("10_yl6tc")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 5, -5, 5)
-script = ExtResource("12_ex51w")
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -15, -25, -25)
+script = ExtResource("12_celhw")
 
 [node name="Corridor_85" type="Node3D" parent="DungeonGenerator3D/RoomsContainer" instance=ExtResource("10_yl6tc")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -5, -5, 5)
-script = ExtResource("12_ex51w")
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -15, -25, -15)
+script = ExtResource("12_celhw")
 
 [node name="Corridor_86" type="Node3D" parent="DungeonGenerator3D/RoomsContainer" instance=ExtResource("10_yl6tc")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -15, -5, 5)
-script = ExtResource("12_ex51w")
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -15, -25, -5)
+script = ExtResource("12_celhw")
 
 [node name="Corridor_87" type="Node3D" parent="DungeonGenerator3D/RoomsContainer" instance=ExtResource("10_yl6tc")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -15, -5, -5)
-script = ExtResource("12_ex51w")
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -15, -25, 5)
+script = ExtResource("12_celhw")
 
 [node name="Corridor_88" type="Node3D" parent="DungeonGenerator3D/RoomsContainer" instance=ExtResource("10_yl6tc")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -45, -15, -5)
-script = ExtResource("12_ex51w")
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -5, -25, 5)
+script = ExtResource("12_celhw")
 
 [node name="Corridor_89" type="Node3D" parent="DungeonGenerator3D/RoomsContainer" instance=ExtResource("10_yl6tc")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -45, -15, -15)
-script = ExtResource("12_ex51w")
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 5, -25, 5)
+script = ExtResource("12_celhw")
 
 [node name="Corridor_90" type="Node3D" parent="DungeonGenerator3D/RoomsContainer" instance=ExtResource("10_yl6tc")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -35, -15, -15)
-script = ExtResource("12_ex51w")
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -5, 35, -15)
+script = ExtResource("12_celhw")
 
 [node name="Corridor_91" type="Node3D" parent="DungeonGenerator3D/RoomsContainer" instance=ExtResource("10_yl6tc")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -25, -15, -15)
-script = ExtResource("12_ex51w")
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -15, -25, -35)
+script = ExtResource("12_celhw")
 
 [node name="Corridor_92" type="Node3D" parent="DungeonGenerator3D/RoomsContainer" instance=ExtResource("10_yl6tc")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -15, -15, -15)
-script = ExtResource("12_ex51w")
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 25, 35, -5)
+script = ExtResource("12_celhw")
 
 [node name="Corridor_93" type="Node3D" parent="DungeonGenerator3D/RoomsContainer" instance=ExtResource("10_yl6tc")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -5, -15, -15)
-script = ExtResource("12_ex51w")
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 45, 15, 45)
+script = ExtResource("12_celhw")
 
 [node name="Corridor_94" type="Node3D" parent="DungeonGenerator3D/RoomsContainer" instance=ExtResource("10_yl6tc")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 5, -15, -15)
-script = ExtResource("12_ex51w")
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 45, -5, 25)
+script = ExtResource("12_celhw")
 
 [node name="Corridor_95" type="Node3D" parent="DungeonGenerator3D/RoomsContainer" instance=ExtResource("10_yl6tc")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 15, -15, -15)
-script = ExtResource("12_ex51w")
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 5, 45, 45)
+script = ExtResource("12_celhw")
 
 [node name="Corridor_96" type="Node3D" parent="DungeonGenerator3D/RoomsContainer" instance=ExtResource("10_yl6tc")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 15, -15, -25)
-script = ExtResource("12_ex51w")
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -15, 45, 25)
+script = ExtResource("12_celhw")
 
 [node name="Corridor_97" type="Node3D" parent="DungeonGenerator3D/RoomsContainer" instance=ExtResource("10_yl6tc")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -15, -25, -25)
-script = ExtResource("12_ex51w")
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 25, 45, 25)
+script = ExtResource("12_celhw")
 
 [node name="Corridor_98" type="Node3D" parent="DungeonGenerator3D/RoomsContainer" instance=ExtResource("10_yl6tc")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -15, -25, -15)
-script = ExtResource("12_ex51w")
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -15, -25, 25)
+script = ExtResource("12_celhw")
 
 [node name="Corridor_99" type="Node3D" parent="DungeonGenerator3D/RoomsContainer" instance=ExtResource("10_yl6tc")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -15, -25, -5)
-script = ExtResource("12_ex51w")
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 25, -25, 25)
+script = ExtResource("12_celhw")
 
 [node name="Corridor_100" type="Node3D" parent="DungeonGenerator3D/RoomsContainer" instance=ExtResource("10_yl6tc")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -15, -25, 5)
-script = ExtResource("12_ex51w")
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 5, -25, 45)
+script = ExtResource("12_celhw")
 
 [node name="Corridor_101" type="Node3D" parent="DungeonGenerator3D/RoomsContainer" instance=ExtResource("10_yl6tc")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -5, -25, 5)
-script = ExtResource("12_ex51w")
-
-[node name="Corridor_102" type="Node3D" parent="DungeonGenerator3D/RoomsContainer" instance=ExtResource("10_yl6tc")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 5, -25, 5)
-script = ExtResource("12_ex51w")
-
-[node name="Corridor_103" type="Node3D" parent="DungeonGenerator3D/RoomsContainer" instance=ExtResource("10_yl6tc")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 5, -25, -5)
-script = ExtResource("12_ex51w")
-
-[node name="Corridor_104" type="Node3D" parent="DungeonGenerator3D/RoomsContainer" instance=ExtResource("10_yl6tc")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 5, -25, -15)
-script = ExtResource("12_ex51w")
-
-[node name="Corridor_105" type="Node3D" parent="DungeonGenerator3D/RoomsContainer" instance=ExtResource("10_yl6tc")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -5, -25, -15)
-script = ExtResource("12_ex51w")
-
-[node name="Corridor_106" type="Node3D" parent="DungeonGenerator3D/RoomsContainer" instance=ExtResource("10_yl6tc")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -5, -5, -5)
-script = ExtResource("12_ex51w")
-
-[node name="Corridor_107" type="Node3D" parent="DungeonGenerator3D/RoomsContainer" instance=ExtResource("10_yl6tc")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 5, -5, -5)
-script = ExtResource("12_ex51w")
-
-[node name="Corridor_108" type="Node3D" parent="DungeonGenerator3D/RoomsContainer" instance=ExtResource("10_yl6tc")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -15, 25, -15)
-script = ExtResource("12_ex51w")
-
-[node name="Corridor_109" type="Node3D" parent="DungeonGenerator3D/RoomsContainer" instance=ExtResource("10_yl6tc")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -5, 35, -15)
-script = ExtResource("12_ex51w")
-
-[node name="Corridor_110" type="Node3D" parent="DungeonGenerator3D/RoomsContainer" instance=ExtResource("10_yl6tc")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -35, 25, -25)
-script = ExtResource("12_ex51w")
-
-[node name="Corridor_111" type="Node3D" parent="DungeonGenerator3D/RoomsContainer" instance=ExtResource("10_yl6tc")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -35, 25, -35)
-script = ExtResource("12_ex51w")
-
-[node name="Corridor_112" type="Node3D" parent="DungeonGenerator3D/RoomsContainer" instance=ExtResource("10_yl6tc")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -25, -25, -25)
-script = ExtResource("12_ex51w")
-
-[node name="Corridor_113" type="Node3D" parent="DungeonGenerator3D/RoomsContainer" instance=ExtResource("10_yl6tc")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -35, -25, -25)
-script = ExtResource("12_ex51w")
-
-[node name="Corridor_114" type="Node3D" parent="DungeonGenerator3D/RoomsContainer" instance=ExtResource("10_yl6tc")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 25, 35, -5)
-script = ExtResource("12_ex51w")
-
-[node name="Corridor_115" type="Node3D" parent="DungeonGenerator3D/RoomsContainer" instance=ExtResource("10_yl6tc")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 45, 15, 45)
-script = ExtResource("12_ex51w")
-
-[node name="Corridor_116" type="Node3D" parent="DungeonGenerator3D/RoomsContainer" instance=ExtResource("10_yl6tc")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 45, -5, 25)
-script = ExtResource("12_ex51w")
-
-[node name="Corridor_117" type="Node3D" parent="DungeonGenerator3D/RoomsContainer" instance=ExtResource("10_yl6tc")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 5, 45, 45)
-script = ExtResource("12_ex51w")
-
-[node name="Corridor_118" type="Node3D" parent="DungeonGenerator3D/RoomsContainer" instance=ExtResource("10_yl6tc")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 5, 45, 5)
-script = ExtResource("12_ex51w")
-
-[node name="Corridor_119" type="Node3D" parent="DungeonGenerator3D/RoomsContainer" instance=ExtResource("10_yl6tc")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 25, 45, 25)
-script = ExtResource("12_ex51w")
-
-[node name="Corridor_120" type="Node3D" parent="DungeonGenerator3D/RoomsContainer" instance=ExtResource("10_yl6tc")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -15, -25, 25)
-script = ExtResource("12_ex51w")
-
-[node name="Corridor_121" type="Node3D" parent="DungeonGenerator3D/RoomsContainer" instance=ExtResource("10_yl6tc")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 25, -25, 25)
-script = ExtResource("12_ex51w")
-
-[node name="Corridor_122" type="Node3D" parent="DungeonGenerator3D/RoomsContainer" instance=ExtResource("10_yl6tc")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 5, -25, 45)
-script = ExtResource("12_ex51w")
-
-[node name="Corridor_123" type="Node3D" parent="DungeonGenerator3D/RoomsContainer" instance=ExtResource("10_yl6tc")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -15, 35, -25)
-script = ExtResource("12_ex51w")
+script = ExtResource("12_celhw")

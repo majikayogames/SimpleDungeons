@@ -1,10 +1,12 @@
 class_name DungeonAStar3D
 extends AStar3D
 
-var corridors = [] as Array[Vector3i]
 var doors_list = []
 var pt_id_to_vec3i = {}
 var vec3i_to_pt_id = {}
+var dungeon_generator : DungeonGenerator3D
+var rooms_check_dict : Dictionary # Vector3i : DungeonRoom3D (Non-Corridor) instance
+var corridors_check_dict : Dictionary # Vector3i : DungeonRoom3D (Corridor) instance
 
 func can_walk_from_to(dungeon_generator : DungeonGenerator3D, pos_a : Vector3i, pos_b : Vector3i) -> bool:
 	if not dungeon_generator.get_grid_aabbi().contains_point(pos_a): return false
@@ -17,7 +19,11 @@ func can_walk_from_to(dungeon_generator : DungeonGenerator3D, pos_a : Vector3i, 
 	var fits_room_b_door = room_b == null or room_b.get_doors_cached().filter(func(d): return d.grid_pos == pos_b and d.exit_pos_grid == pos_a).size() == 1
 	return fits_room_a_door and fits_room_b_door
 
-func _init(dungeon_generator : DungeonGenerator3D, rooms_placed : Array):
+func _init(dungeon_generator : DungeonGenerator3D, rooms_check_dict : Dictionary, corridors_check_dict : Dictionary):
+	self.dungeon_generator = dungeon_generator
+	self.rooms_check_dict = rooms_check_dict
+	self.corridors_check_dict = corridors_check_dict
+	
 	# Add points to the AStar3D grid
 	var point_id = 0
 	for x in range(dungeon_generator.dungeon_size.x):
@@ -48,6 +54,25 @@ func _init(dungeon_generator : DungeonGenerator3D, rooms_placed : Array):
 						if can_walk_from_to(dungeon_generator, Vector3i(x,y,z), Vector3i(x,y,z) + dir):
 							connect_points(cur_pt_id, get_closest_point(Vector3(x,y,z) + Vector3(dir)))
 
+func _estimate_cost(from_id : int, to_id : int) -> float:
+	if dungeon_generator.astar_heuristic == DungeonGenerator3D.AStarHeuristics.NONE_DIJKSTRAS:
+		return 0.0
+	elif dungeon_generator.astar_heuristic == DungeonGenerator3D.AStarHeuristics.MANHATTAN:
+		var diff := get_point_position(to_id) - get_point_position(from_id)
+		return abs(diff.x) + abs(diff.y) + abs(diff.z)
+	elif dungeon_generator.astar_heuristic == DungeonGenerator3D.AStarHeuristics.EUCLIDEAN:
+		var diff := get_point_position(to_id) - get_point_position(from_id)
+		return diff.length()
+	return 0.0
+
+func _compute_cost(from_id : int, to_id : int) -> float:
+	var diff := get_point_position(to_id) - get_point_position(from_id)
+	var cost := diff.length()
+	if rooms_check_dict.has(Vector3i(get_point_position(to_id).round())):
+		cost *= dungeon_generator.room_cost_multiplier
+	if corridors_check_dict.has(Vector3i(get_point_position(to_id).round())):
+		cost *= dungeon_generator.corridor_cost_multiplier
+	return cost
 
 func get_vec3i_path(from : Vector3i, to : Vector3i) -> Array[Vector3i]:
 	var path = get_id_path(vec3i_to_pt_id[from], vec3i_to_pt_id[to])
