@@ -67,7 +67,9 @@ var virtual_transform : Transform3D = Transform3D() :
 		if is_inside_tree() and OS.get_main_thread_id() == OS.get_thread_caller_id():
 			self.transform = v
 
+var original_ready_func_called := false # For error checking. Ensure noone inherits this class w/o calling _ready.
 func _ready():
+	original_ready_func_called = true
 	if not virtualized_from:
 		add_debug_view_if_not_exist()
 	# When spawning a room, make sure to set its transform to whatever its virtual/out of tree transform was set to.

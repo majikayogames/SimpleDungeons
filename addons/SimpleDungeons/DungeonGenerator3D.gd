@@ -272,9 +272,13 @@ func _dungeon_failed_generating() -> void:
 
 # Emit done signals for dungeon & place_room for all DungeonRooms.
 func _emit_done_signals():
+	if running_thread:
+		running_thread.wait_to_finish()
 	stage = BuildStage.DONE
 	# Also need to call emit signal for each of place_rooms
 	for room in _rooms_placed:
+		if not room.original_ready_func_called:
+			_printwarning("_ready not called on "+room.name+". Room placement may not work correctly. Make sure to call super._ready() at the top of your _ready func when inheriting DungeonRoom3D.")
 		room.dungeon_done_generating.emit()
 	for preplaced_room in find_children("*", "DungeonRoom3D", false):
 		preplaced_room.dungeon_done_generating.emit()
@@ -282,6 +286,8 @@ func _emit_done_signals():
 	done_generating.emit()
 
 func _emit_failed_signal(): # So I can call_deferred
+	if running_thread:
+		running_thread.wait_to_finish()
 	generating_failed.emit()
 
 #########################
@@ -756,12 +762,16 @@ func validate_dungeon(error_callback = null, warning_callback = null) -> bool:
 			if not room is DungeonRoom3D:
 				error_callback.call("Room "+room.name+" does not inherit DungeonRoom3D!")
 			else:
+				if not room.has_method("validate_room"):
+					error_callback.call("validate_room() method not found on room "+room.name+". Ensure it inherits DungeonRoom3D and has the @tool annotation if you're trying to generate in editor.")
 				room.validate_room(error_callback, warning_callback)
 	if not corridor_room_instance is DungeonRoom3D:
 		var corridor_name = corridor_room_instance.name if corridor_room_instance else "null"
 		error_callback.call("Corridor Room "+corridor_name+" does not inherit DungeonRoom3D!")
 	if corridor_room_instance is DungeonRoom3D and corridor_room_instance.size_in_voxels != Vector3i(1,1,1):
 		error_callback.call("Corridor Room must be 1x1x1 in voxels.")
+	if corridor_room_instance and not corridor_room_instance.has_method("get_doors"):
+		error_callback.call("get_doors() method not found on the corridor room. Ensure it inherits DungeonRoom3D and has the @tool annotation if you're trying to generate in editor.")
 	if corridor_room_instance is DungeonRoom3D and (corridor_room_instance.get_doors().size() != 4 or corridor_room_instance.get_doors().any(func(d): return not d.optional)):
 		error_callback.call("Corridor Room must have 4 optional doors")
 	if corridor_room_instance is DungeonRoom3D:
