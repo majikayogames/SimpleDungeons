@@ -8,6 +8,8 @@ var dungeon_generator : DungeonGenerator3D
 var rooms_check_dict : Dictionary # Vector3i : DungeonRoom3D (Non-Corridor) instance
 var corridors_check_dict : Dictionary # Vector3i : DungeonRoom3D (Corridor) instance
 
+var cap_required_doors_phase := false
+
 func can_walk_from_to(dungeon_generator : DungeonGenerator3D, pos_a : Vector3i, pos_b : Vector3i) -> bool:
 	if not dungeon_generator.get_grid_aabbi().contains_point(pos_a): return false
 	if not dungeon_generator.get_grid_aabbi().contains_point(pos_b): return false
@@ -69,7 +71,10 @@ func _compute_cost(from_id : int, to_id : int) -> float:
 	var diff := get_point_position(to_id) - get_point_position(from_id)
 	var cost := diff.length()
 	if rooms_check_dict.has(Vector3i(get_point_position(to_id).round())):
-		cost *= dungeon_generator.room_cost_multiplier
+		if not cap_required_doors_phase:
+			cost *= dungeon_generator.room_cost_multiplier
+		else:
+			cost *= dungeon_generator.room_cost_at_end_for_required_doors
 	if corridors_check_dict.has(Vector3i(get_point_position(to_id).round())):
 		cost *= dungeon_generator.corridor_cost_multiplier
 	return cost

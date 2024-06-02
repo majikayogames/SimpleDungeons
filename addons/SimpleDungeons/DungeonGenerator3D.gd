@@ -92,6 +92,10 @@ enum AStarHeuristics { NONE_DIJKSTRAS = 0, MANHATTAN = 1, EUCLIDEAN = 2 }
 ## Similar to corridor cost, setting this lower makes it so the algorithm will walk through a rooms to connect 2 rooms/doors, thus saving corridors placements.
 ## You could also set it greater than 1 to make the algorithm less likely to walk through existing (non-corridor) rooms.
 @export var room_cost_multiplier : float = 0.25
+## After connecting all rooms, some doors may not have been connected.
+## By setting the cost for astar to walk through rooms higher at this stage, it encourages more interesting room connections,
+## rather than just putting 1x1x1 corridor caps at doors.
+@export var room_cost_at_end_for_required_doors : float = 2.0
 
 @export_group("Debug options")
 @export var show_debug_in_editor : bool = true
@@ -529,25 +533,36 @@ func separate_rooms_iteration(first_call_in_loop : bool) -> void:
 # Connecting rooms:
 
 var _astar3d : DungeonAStar3D
-var _quick_room_check_dict = {}
-var _quick_corridors_check_dict = {}
-var _non_corridor_rooms : Array = []
-var _rooms_to_connect : Array = []
+var _quick_room_check_dict : Dictionary
+var _quick_corridors_check_dict : Dictionary
+var _non_corridor_rooms : Array
+var _rooms_to_connect : Array
+var _all_doors_dict : Dictionary
+var _required_doors_dict : Dictionary
 func connect_rooms_iteration(first_call_in_loop : bool) -> void:
 	if first_call_in_loop:
 		_rooms_to_connect = []
 		_non_corridor_rooms = []
 		_quick_room_check_dict = {}
 		_quick_corridors_check_dict = {}
+		_all_doors_dict = {}
+		_required_doors_dict = {}
 		_astar3d = DungeonAStar3D.new(self, _quick_room_check_dict, _quick_corridors_check_dict)
 		for room in get_all_placed_and_preplaced_rooms():
+			var doors = room.get_doors_cached()
 			if room.get_doors_cached().size() > 0:
 				_rooms_to_connect.push_back(room)
 				_non_corridor_rooms.push_back(room)
+			for door in doors:
+				if get_grid_aabbi().contains_point(door.exit_pos_grid):
+					_all_doors_dict[door.exit_pos_grid] = door
+					if not door.optional:
+						_required_doors_dict[door.exit_pos_grid] = door
 			var aabbi = room.get_grid_aabbi(false)
 			for x in aabbi.size.x: for y in aabbi.size.y: for z in aabbi.size.z:
 				_quick_room_check_dict[aabbi.position + Vector3i(x,y,z)] = room
 	
+	# First, just pathfind through all the rooms, one to the next, until all rooms are connected
 	if len(_rooms_to_connect) >= 2:
 		var room_0_pos = _rooms_to_connect[0].get_grid_aabbi(false).position
 		var room_1_pos = _rooms_to_connect[1].get_grid_aabbi(false).position
@@ -563,17 +578,31 @@ func connect_rooms_iteration(first_call_in_loop : bool) -> void:
 				room.set_position_by_grid_pos(corridor_pos)
 				place_room(room)
 				_quick_corridors_check_dict[corridor_pos] = room
+		return
 	
-	if len(_rooms_to_connect) <= 1:
-		# Cap off all required doors. Bad solution. TODO Think of a better one of this and Astar in general.
-		for room in _non_corridor_rooms:
-			for door in room.get_doors_cached():
-				if not door.optional and not _quick_room_check_dict.has(door.exit_pos_grid) and not _quick_corridors_check_dict.has(door.exit_pos_grid):
-					var corridor_cap_room := corridor_room_instance.create_clone_and_make_virtual_unless_visualizing()
-					corridor_cap_room.set_position_by_grid_pos(door.exit_pos_grid)
-					place_room(corridor_cap_room)
-					_quick_corridors_check_dict[door.exit_pos_grid] = corridor_cap_room
-		stage = BuildStage.FINALIZING
+	# Next, not all the doors may be connected, so we have to do some strategy to nicely connect the required doors remaining.
+	for required_door in _required_doors_dict.values().slice(0): # Slice necessary? Not sure.
+		# No need to connect doors which already have a corridor
+		if _quick_room_check_dict.has(required_door.exit_pos_grid) or _quick_corridors_check_dict.has(required_door.exit_pos_grid):
+			_required_doors_dict.erase(required_door)
+			continue
+		# Get other room doors which are closest to the required door
+		var other_room_doors = _all_doors_dict.values().filter(func(d): return d.room != required_door.room)
+		other_room_doors.sort_custom(func(a,b):
+			return Vector3(b.exit_pos_grid - required_door.exit_pos_grid).length() > Vector3(a.exit_pos_grid - required_door.exit_pos_grid).length())
+		
+		_astar3d.cap_required_doors_phase = true
+		var connect_path := _astar3d.get_vec3i_path(required_door.exit_pos_grid, other_room_doors[0].exit_pos_grid)
+		for corridor_pos in connect_path:
+			if not _quick_room_check_dict.has(corridor_pos) and not _quick_corridors_check_dict.has(corridor_pos):
+				var room := corridor_room_instance.create_clone_and_make_virtual_unless_visualizing()
+				room.set_position_by_grid_pos(corridor_pos)
+				place_room(room)
+				_quick_corridors_check_dict[corridor_pos] = room
+		_required_doors_dict.erase(required_door)
+		return
+	
+	stage = BuildStage.FINALIZING
 
 ####################################
 ## DUNGEON BUILD HELPER FUNCTIONS ##
