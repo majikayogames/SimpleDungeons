@@ -298,7 +298,7 @@ func _emit_done_signals():
 	# Also need to call emit signal for each of place_rooms
 	for room in _rooms_placed:
 		if not room.original_ready_func_called:
-			_printwarning("_ready not called on "+room.name+". Room placement may not work correctly. Make sure to call super._ready() at the top of your _ready func when inheriting DungeonRoom3D.")
+			_printwarning("_ready not called on "+room.name+". Room placement, finalization, and doors will be broken. Make sure to call super._ready() at the top of your _ready func when inheriting DungeonRoom3D.")
 		room.dungeon_done_generating.emit()
 	for preplaced_room in find_children("*", "DungeonRoom3D", false):
 		preplaced_room.dungeon_done_generating.emit()

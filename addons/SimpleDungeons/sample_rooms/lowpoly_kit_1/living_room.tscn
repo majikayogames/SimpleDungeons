@@ -1,7 +1,7 @@
 [gd_scene load_steps=52 format=3 uid="uid://b6t2tduxk8tfn"]
 
-[ext_resource type="Script" path="res://addons/SimpleDungeons/DungeonRoom3D.gd" id="1_pn57u"]
 [ext_resource type="Material" uid="uid://r3rtjl181fpd" path="res://addons/SimpleDungeons/sample_assets/texture_02.tres" id="1_vmsou"]
+[ext_resource type="Script" path="res://addons/SimpleDungeons/sample_rooms/lowpoly_kit_1/living_room.gd" id="1_y5hb7"]
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_upkxj"]
 resource_name = "dark grey"
@@ -864,7 +864,7 @@ blend_shape_mode = 0
 shadow_mesh = SubResource("ArrayMesh_cm8wt")
 
 [node name="LivingRoom" type="Node3D"]
-script = ExtResource("1_pn57u")
+script = ExtResource("1_y5hb7")
 size_in_voxels = Vector3i(3, 1, 2)
 
 [node name="CSGBox3D" type="CSGBox3D" parent="."]
