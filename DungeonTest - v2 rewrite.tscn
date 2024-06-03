@@ -42,5 +42,5 @@ text = "Generating dungeon ahead. Press v to noclip and fly in."
 
 [node name="DungeonGenerator3dInheritedClass" parent="." instance=ExtResource("2_v3y8m")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -109)
-visualize_generation_progress = true
+generate_threaded = true
 visualize_generation_wait_between_iterations = 111

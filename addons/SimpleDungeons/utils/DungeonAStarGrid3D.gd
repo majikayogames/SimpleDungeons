@@ -13,8 +13,8 @@ var cap_required_doors_phase := false
 func can_walk_from_to(dungeon_generator : DungeonGenerator3D, pos_a : Vector3i, pos_b : Vector3i) -> bool:
 	if not dungeon_generator.get_grid_aabbi().contains_point(pos_a): return false
 	if not dungeon_generator.get_grid_aabbi().contains_point(pos_b): return false
-	var room_a := dungeon_generator.get_room_at_pos(pos_a)
-	var room_b := dungeon_generator.get_room_at_pos(pos_b)
+	var room_a = rooms_check_dict[pos_a] if rooms_check_dict.has(pos_a) else null
+	var room_b = rooms_check_dict[pos_b] if rooms_check_dict.has(pos_b) else null
 	if room_a == room_b: return true # Walking outside rooms, or inside same room
 	# Ensure walking through doorways if not a simple case:
 	var fits_room_a_door = room_a == null or room_a.get_doors_cached().filter(func(d): return d.grid_pos == pos_a and d.exit_pos_grid == pos_b).size() == 1
