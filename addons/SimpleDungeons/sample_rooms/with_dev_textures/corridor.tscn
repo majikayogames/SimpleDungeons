@@ -1,4 +1,4 @@
-[gd_scene load_steps=4 format=3 uid="uid://c30fpfkorbyl6"]
+[gd_scene load_steps=5 format=3 uid="uid://c30fpfkorbyl6"]
 
 [ext_resource type="Script" path="res://addons/SimpleDungeons/DungeonRoom3D.gd" id="1_6msra"]
 [ext_resource type="Texture2D" uid="uid://27l2yd61n6wo" path="res://addons/SimpleDungeons/sample_assets/texture_09.png" id="1_hhx5e"]
@@ -6,6 +6,18 @@
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_orb45"]
 albedo_texture = ExtResource("1_hhx5e")
 uv1_triplanar = true
+
+[sub_resource type="GDScript" id="GDScript_8geu6"]
+script/source = "extends Node
+
+func remove_unused_doors():
+	for door in $\"..\".get_doors():
+		if door.get_room_leads_to() == null:
+			door.door_node.queue_free()
+
+func _on_corridor_dungeon_done_generating():
+	remove_unused_doors()
+"
 
 [node name="Corridor" type="Node3D"]
 script = ExtResource("1_6msra")
@@ -39,3 +51,8 @@ size = Vector3(2, 4, 1)
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -2.75, 5)
 operation = 2
 size = Vector3(2, 4, 1)
+
+[node name="RemoveUnusedDoors" type="Node" parent="."]
+script = SubResource("GDScript_8geu6")
+
+[connection signal="dungeon_done_generating" from="." to="RemoveUnusedDoors" method="_on_corridor_dungeon_done_generating"]
