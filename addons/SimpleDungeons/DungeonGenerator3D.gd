@@ -107,7 +107,7 @@ enum AStarHeuristics { NONE_DIJKSTRAS = 0, MANHATTAN = 1, EUCLIDEAN = 2 }
 @export var hide_debug_visuals_for_all_generated_rooms : bool = true
 @export var cycle_debug_draw_when_press_n : bool = false
 ## A timer will be called with this wait time for the next iteration of the generation loop
-@export_range(0, 1000, 0.01, "or_greater", "suffix:ms") var visualize_generation_wait_between_iterations : int = 0
+@export_range(0, 1000, 1, "or_greater", "suffix:ms") var visualize_generation_wait_between_iterations : int = 100
 
 ###########################
 ## INIT/PROCESS/BUILTINS ##
