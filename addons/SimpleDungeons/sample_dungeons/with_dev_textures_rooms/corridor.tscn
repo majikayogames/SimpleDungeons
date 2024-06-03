@@ -1,0 +1,59 @@
+[gd_scene load_steps=5 format=3 uid="uid://c30fpfkorbyl6"]
+
+[ext_resource type="Script" path="res://addons/SimpleDungeons/DungeonRoom3D.gd" id="1_6msra"]
+[ext_resource type="Texture2D" uid="uid://bxbtgil61x5sx" path="res://addons/SimpleDungeons/sample_assets/kenney-orange-checkerboard-cc0.png" id="2_6nmer"]
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_orb45"]
+albedo_texture = ExtResource("2_6nmer")
+uv1_triplanar = true
+
+[sub_resource type="GDScript" id="GDScript_8geu6"]
+script/source = "@tool
+extends Node
+
+func remove_unused_doors():
+	for door in $\"..\".get_doors():
+		if door.get_room_leads_to() == null:
+			door.door_node.queue_free()
+
+func _on_corridor_dungeon_done_generating():
+	remove_unused_doors()
+"
+
+[node name="Corridor" type="Node3D"]
+script = ExtResource("1_6msra")
+
+[node name="CSGBox3D" type="CSGBox3D" parent="."]
+transform = Transform3D(-1, 0, -8.74228e-08, 0, 1, 0, 8.74228e-08, 0, -1, -5.68248e-07, 0, 0)
+material_override = SubResource("StandardMaterial3D_orb45")
+use_collision = true
+size = Vector3(10, 10, 10)
+
+[node name="CSGBox3D2" type="CSGBox3D" parent="CSGBox3D"]
+operation = 2
+size = Vector3(9.5, 9.5, 9.5)
+
+[node name="DOOR?_F_CUT" type="CSGBox3D" parent="CSGBox3D"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -2.75, -5.25)
+operation = 2
+size = Vector3(2, 4, 1)
+
+[node name="DOOR?_R_CUT" type="CSGBox3D" parent="CSGBox3D"]
+transform = Transform3D(-4.37114e-08, 0, -1, 0, 1, 0, 1, 0, -4.37114e-08, 5, -2.75, 0)
+operation = 2
+size = Vector3(2, 4, 1)
+
+[node name="DOOR?_L_CUT" type="CSGBox3D" parent="CSGBox3D"]
+transform = Transform3D(-4.37114e-08, 0, -1, 0, 1, 0, 1, 0, -4.37114e-08, -5, -2.75, 0)
+operation = 2
+size = Vector3(2, 4, 1)
+
+[node name="DOOR?_B_CUT" type="CSGBox3D" parent="CSGBox3D"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -2.75, 5)
+operation = 2
+size = Vector3(2, 4, 1)
+
+[node name="RemoveUnusedDoors" type="Node" parent="."]
+script = SubResource("GDScript_8geu6")
+
+[connection signal="dungeon_done_generating" from="." to="RemoveUnusedDoors" method="_on_corridor_dungeon_done_generating"]

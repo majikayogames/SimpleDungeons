@@ -2,8 +2,8 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://0xved5vidvlq"
-path.s3tc="res://.godot/imported/texture_08.png-bb1b3f3425b070c9882b526541c40e85.s3tc.ctex"
+uid="uid://djhy80eyqjqpv"
+path.s3tc="res://.godot/imported/kenney-dark-grey-checkboard-cc0.png-a474cdcb7f780d0c1f0fbe07f09dca20.s3tc.ctex"
 metadata={
 "imported_formats": ["s3tc_bptc"],
 "vram_texture": true
@@ -11,8 +11,8 @@ metadata={
 
 [deps]
 
-source_file="res://addons/SimpleDungeons/sample_assets/texture_08.png"
-dest_files=["res://.godot/imported/texture_08.png-bb1b3f3425b070c9882b526541c40e85.s3tc.ctex"]
+source_file="res://addons/SimpleDungeons/sample_assets/kenney-dark-grey-checkboard-cc0.png"
+dest_files=["res://.godot/imported/kenney-dark-grey-checkboard-cc0.png-a474cdcb7f780d0c1f0fbe07f09dca20.s3tc.ctex"]
 
 [params]
 

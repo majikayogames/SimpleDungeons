@@ -12,7 +12,7 @@ signal generating_failed()
 # The x and z will be moved in the separation phase.
 # You can create a DungeonRoom from the existing ones by instantiating it manually, or using
 # DungeonRoom3D.create_clone() on the room instances stored in room_instances.
-var custom_get_randomly_positioned_room_function = null
+var custom_get_rooms_function = null
 
 # For any vars which may be accessed from multiple threads
 var t_mutex := Mutex.new()
@@ -316,21 +316,32 @@ func _emit_failed_signal(): # So I can call_deferred
 
 # Placing rooms: A random room is selected from room_scenes until the min_count of all is matched
 
-var _rooms_placed : Array[DungeonRoom3D] = []
+var _rooms_placed : Array[DungeonRoom3D]
+var _custom_rand_rooms : Array[DungeonRoom3D]
+var _use_custom_rand_rooms := false
 func place_room_iteration(first_call_in_loop : bool) -> void:
 	if first_call_in_loop:
 		_rooms_placed = []
+		_custom_rand_rooms = []
+		_use_custom_rand_rooms = false
+		if custom_get_rooms_function is Callable:
+			_use_custom_rand_rooms = true
+			_custom_rand_rooms = custom_get_rooms_function.call(room_instances, rng)
+			if not _custom_rand_rooms is Array or len(_custom_rand_rooms) == 0:
+				abort_generation_and_fail("custom_get_rooms_function takes should return a non-empty Array of DungeonRoom3Ds.")
+				_printwarning("custom_get_rooms_function takes (room_instances : Array[DungeonRoom3D], rng_seeded : RandomNumberGenerator) as the arguments and should use .create_clone_and_make_virtual_unless_visualizing() to clone and then position with .set_position_by_grid_pos(Vector3i) or .rotation = 0 through 3 for number of 90 degree y rotations for the room.")
+				return
+			for room in _custom_rand_rooms:
+				if not room is DungeonRoom3D:
+					abort_generation_and_fail("custom_get_rooms_function supplied an object that is not a DungeonRoom3D. Ensure all rooms supplied inherit DungeonRoom3D, and use the @tool annotation if generating in editor.")
+					return
+				if room_instances.find(room) != -1:
+					abort_generation_and_fail("custom_get_rooms_function supplied a room instance without cloning it. Always use DungeonRoom3D.create_clone_and_make_virtual_unless_visualizing() to create room instances.")
+					return
 	
 	var rand_room : DungeonRoom3D
-	if custom_get_randomly_positioned_room_function is Callable:
-		var custom_rand_room = custom_get_randomly_positioned_room_function.call()
-		if not custom_rand_room is DungeonRoom3D:
-			abort_generation_and_fail("Invalid custom_pick_rand_room_function provided. Did not return DungeonRoom3D.")
-			return
-		if OS.get_main_thread_id() != OS.get_thread_caller_id() and not custom_rand_room.virtualized_from:
-			abort_generation_and_fail("When threaded all rooms must be virtual/clones created with .create_clone_and_make_virtual_unless_visualizing")
-			return
-		rand_room = custom_rand_room
+	if _use_custom_rand_rooms:
+		rand_room = _custom_rand_rooms.pop_front()
 	else:
 		if get_rooms_less_than_max_count(false).size() > 0:
 			rand_room = get_randomly_positioned_room()
@@ -338,10 +349,15 @@ func place_room_iteration(first_call_in_loop : bool) -> void:
 	if rand_room:
 		place_room(rand_room)
 	
-	if get_rooms_less_than_min_count(false).size() == 0:
-		if _rooms_placed.size() == 0: abort_generation_and_fail("Unable to place any rooms. Ensure min_count and max_count are set correctly on rooms.")
-		else:
+	if _use_custom_rand_rooms:
+		if _custom_rand_rooms.size() == 0:
 			stage += 1
+	else:
+		if get_rooms_less_than_min_count(false).size() == 0:
+			if _rooms_placed.size() == 0:
+				abort_generation_and_fail("Unable to place any rooms. Ensure min_count and max_count are set correctly on rooms.")
+			else:
+				stage += 1
 
 # Placing stairs:
 

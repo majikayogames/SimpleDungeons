@@ -1,0 +1,36 @@
+[gd_scene load_steps=4 format=3 uid="uid://br3pjd5mcjj11"]
+
+[ext_resource type="Script" path="res://addons/SimpleDungeons/DungeonRoom3D.gd" id="1_pixse"]
+[ext_resource type="Material" uid="uid://r3rtjl181fpd" path="res://addons/SimpleDungeons/sample_assets/texture_02.tres" id="2_fof05"]
+[ext_resource type="PackedScene" uid="uid://bak8ltrhbmlv5" path="res://addons/SimpleDungeons/utils/CSGStairMaker3D.tscn" id="3_dobr2"]
+
+[node name="Stairs" type="Node3D"]
+script = ExtResource("1_pixse")
+size_in_voxels = Vector3i(2, 2, 1)
+is_stair_room = true
+
+[node name="CSGBox3D" type="CSGBox3D" parent="."]
+transform = Transform3D(-1, 0, -8.74228e-08, 0, 1, 0, 8.74228e-08, 0, -1, 0, 0, 0)
+material_override = ExtResource("2_fof05")
+use_collision = true
+size = Vector3(20, 20, 10)
+
+[node name="CSGBox3D2" type="CSGBox3D" parent="CSGBox3D"]
+operation = 2
+size = Vector3(19.5, 19.5, 9.5)
+
+[node name="DOOR?_R_CUT" type="CSGBox3D" parent="CSGBox3D"]
+transform = Transform3D(-4.37114e-08, 0, -1, 0, 1, 0, 1, 0, -4.37114e-08, 9.8, -7.75, 0)
+operation = 2
+size = Vector3(2, 4, 1)
+
+[node name="DOOR?_L_CUT" type="CSGBox3D" parent="CSGBox3D"]
+transform = Transform3D(-4.37114e-08, 0, -1, 0, 1, 0, 1, 0, -4.37114e-08, -9.9, 2.25, 0)
+operation = 2
+size = Vector3(2, 4, 1)
+
+[node name="CSGStairMaker3D" parent="." instance=ExtResource("3_dobr2")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2.75, -4.75, 0)
+use_collision = true
+size = Vector3(14, 10, 9.5)
+num_stairs = 32

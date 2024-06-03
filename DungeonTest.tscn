@@ -2,14 +2,14 @@
 
 [ext_resource type="Script" path="res://addons/SimpleDungeons/DungeonGenerator3D.gd" id="2_eg2pk"]
 [ext_resource type="PackedScene" uid="uid://f6kx848g5bco" path="res://FPSController/FPSController.tscn" id="3_brgjj"]
-[ext_resource type="PackedScene" uid="uid://p0pnjftk0uda" path="res://addons/SimpleDungeons/sample_rooms/lowpoly_kit_1/bridge_room.tscn" id="3_v360q"]
-[ext_resource type="PackedScene" uid="uid://cf13frjr2u0oe" path="res://addons/SimpleDungeons/sample_rooms/lowpoly_kit_1/entrance_room.tscn" id="4_16rct"]
-[ext_resource type="PackedScene" uid="uid://b6t2tduxk8tfn" path="res://addons/SimpleDungeons/sample_rooms/lowpoly_kit_1/living_room.tscn" id="5_bueld"]
-[ext_resource type="PackedScene" uid="uid://b0m7fmmvtfcnk" path="res://addons/SimpleDungeons/sample_rooms/lowpoly_kit_1/spike_hallway.tscn" id="6_sbnpf"]
-[ext_resource type="PackedScene" uid="uid://c5lo6wkhhg76p" path="res://addons/SimpleDungeons/sample_rooms/lowpoly_kit_1/stair.tscn" id="7_2yw7v"]
-[ext_resource type="PackedScene" uid="uid://bicoj8112x1ra" path="res://addons/SimpleDungeons/sample_rooms/lowpoly_kit_1/trap_room.tscn" id="8_bv6o1"]
-[ext_resource type="PackedScene" uid="uid://b1c7nsr0vdiq" path="res://addons/SimpleDungeons/sample_rooms/lowpoly_kit_1/treasure_room.tscn" id="9_6h61g"]
-[ext_resource type="PackedScene" uid="uid://dvdly7xo8rxig" path="res://addons/SimpleDungeons/sample_rooms/lowpoly_kit_1/corridor.tscn" id="10_yl6tc"]
+[ext_resource type="PackedScene" uid="uid://p0pnjftk0uda" path="res://addons/SimpleDungeons/sample_dungeons/lowpoly_kit_1_rooms/bridge_room.tscn" id="3_v360q"]
+[ext_resource type="PackedScene" uid="uid://cf13frjr2u0oe" path="res://addons/SimpleDungeons/sample_dungeons/lowpoly_kit_1_rooms/entrance_room.tscn" id="4_16rct"]
+[ext_resource type="PackedScene" uid="uid://b6t2tduxk8tfn" path="res://addons/SimpleDungeons/sample_dungeons/lowpoly_kit_1_rooms/living_room.tscn" id="5_bueld"]
+[ext_resource type="PackedScene" uid="uid://b0m7fmmvtfcnk" path="res://addons/SimpleDungeons/sample_dungeons/lowpoly_kit_1_rooms/spike_hallway.tscn" id="6_sbnpf"]
+[ext_resource type="PackedScene" uid="uid://c5lo6wkhhg76p" path="res://addons/SimpleDungeons/sample_dungeons/lowpoly_kit_1_rooms/stair.tscn" id="7_2yw7v"]
+[ext_resource type="PackedScene" uid="uid://bicoj8112x1ra" path="res://addons/SimpleDungeons/sample_dungeons/lowpoly_kit_1_rooms/trap_room.tscn" id="8_bv6o1"]
+[ext_resource type="PackedScene" uid="uid://b1c7nsr0vdiq" path="res://addons/SimpleDungeons/sample_dungeons/lowpoly_kit_1_rooms/treasure_room.tscn" id="9_6h61g"]
+[ext_resource type="PackedScene" uid="uid://dvdly7xo8rxig" path="res://addons/SimpleDungeons/sample_dungeons/lowpoly_kit_1_rooms/corridor.tscn" id="10_yl6tc"]
 
 [sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_ga1mx"]
 sky_horizon_color = Color(0.64625, 0.65575, 0.67075, 1)

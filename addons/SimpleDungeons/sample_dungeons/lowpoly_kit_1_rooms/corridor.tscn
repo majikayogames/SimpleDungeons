@@ -1,11 +1,6 @@
-[gd_scene load_steps=16 format=3 uid="uid://dvdly7xo8rxig"]
+[gd_scene load_steps=14 format=3 uid="uid://dvdly7xo8rxig"]
 
-[ext_resource type="Texture2D" uid="uid://27l2yd61n6wo" path="res://addons/SimpleDungeons/sample_assets/texture_09.png" id="1_3nicl"]
-[ext_resource type="Script" path="res://addons/SimpleDungeons/sample_rooms/lowpoly_kit_1/corridor.gd" id="1_sogev"]
-
-[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_orb45"]
-albedo_texture = ExtResource("1_3nicl")
-uv1_triplanar = true
+[ext_resource type="Script" path="res://addons/SimpleDungeons/sample_dungeons/lowpoly_kit_1_rooms/corridor.gd" id="1_sogev"]
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_upkxj"]
 resource_name = "dark grey"
@@ -255,7 +250,6 @@ script = ExtResource("1_sogev")
 [node name="CSGBox3D" type="CSGBox3D" parent="."]
 transform = Transform3D(-1, 0, -8.74228e-08, 0, 1, 0, 8.74228e-08, 0, -1, -5.68248e-07, 0, 0)
 visible = false
-material_override = SubResource("StandardMaterial3D_orb45")
 use_collision = true
 size = Vector3(10, 10, 10)
 

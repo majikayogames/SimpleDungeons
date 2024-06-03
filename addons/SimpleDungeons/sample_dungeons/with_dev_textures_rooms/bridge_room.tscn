@@ -1,12 +1,11 @@
 [gd_scene load_steps=5 format=3 uid="uid://c74pq22tm4lts"]
 
 [ext_resource type="Script" path="res://addons/SimpleDungeons/DungeonRoom3D.gd" id="1_xaivw"]
-[ext_resource type="Texture2D" uid="uid://0xved5vidvlq" path="res://addons/SimpleDungeons/sample_assets/texture_08.png" id="2_vhww2"]
+[ext_resource type="Texture2D" uid="uid://djhy80eyqjqpv" path="res://addons/SimpleDungeons/sample_assets/kenney-dark-grey-checkboard-cc0.png" id="2_n22k3"]
 [ext_resource type="Material" uid="uid://r3rtjl181fpd" path="res://addons/SimpleDungeons/sample_assets/texture_02.tres" id="3_e7wwm"]
 
-[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_egqka"]
-albedo_texture = ExtResource("2_vhww2")
-uv1_triplanar = true
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_jbl8u"]
+albedo_texture = ExtResource("2_n22k3")
 
 [node name="BridgeRoom" type="Node3D"]
 script = ExtResource("1_xaivw")
@@ -14,7 +13,7 @@ size_in_voxels = Vector3i(1, 1, 2)
 
 [node name="bridge" type="CSGBox3D" parent="."]
 transform = Transform3D(-1, 0, -8.74228e-08, 0, 1, 0, 8.74228e-08, 0, -1, 0, -4.775, 0)
-material_override = SubResource("StandardMaterial3D_egqka")
+material_override = SubResource("StandardMaterial3D_jbl8u")
 operation = 2
 use_collision = true
 size = Vector3(2, 0.1, 19.5)

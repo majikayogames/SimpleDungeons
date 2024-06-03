@@ -1,7 +1,7 @@
 [gd_scene load_steps=5 format=3 uid="uid://jcrublu8sywn"]
 
 [ext_resource type="Script" path="res://addons/SimpleDungeons/DungeonRoom3D.gd" id="1_0k746"]
-[ext_resource type="Texture2D" uid="uid://wvh1xmoax4ok" path="res://addons/SimpleDungeons/sample_assets/texture_01.png" id="2_y8cer"]
+[ext_resource type="Texture2D" uid="uid://wvh1xmoax4ok" path="res://addons/SimpleDungeons/sample_assets/kenney-dark-grey-grid-cc0.png" id="2_y8cer"]
 [ext_resource type="Material" uid="uid://r3rtjl181fpd" path="res://addons/SimpleDungeons/sample_assets/texture_02.tres" id="3_fup0v"]
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_57r0k"]
