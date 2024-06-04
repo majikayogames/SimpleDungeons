@@ -563,7 +563,6 @@ func connect_rooms_iteration(first_call_in_loop : bool) -> void:
 		_quick_corridors_check_dict = {}
 		_all_doors_dict = {}
 		_required_doors_dict = {}
-		_astar3d = DungeonAStar3D.new(self, _quick_room_check_dict, _quick_corridors_check_dict)
 		for room in get_all_placed_and_preplaced_rooms():
 			var doors = room.get_doors_cached()
 			if room.get_doors_cached().size() > 0:
@@ -577,6 +576,8 @@ func connect_rooms_iteration(first_call_in_loop : bool) -> void:
 			var aabbi = room.get_grid_aabbi(false)
 			for x in aabbi.size.x: for y in aabbi.size.y: for z in aabbi.size.z:
 				_quick_room_check_dict[aabbi.position + Vector3i(x,y,z)] = room
+		# Init after corridors/room dict setup
+		_astar3d = DungeonAStar3D.new(self, _quick_room_check_dict, _quick_corridors_check_dict)
 	
 	# First, just pathfind through all the rooms, one to the next, until all rooms are connected
 	if len(_rooms_to_connect) >= 2:
@@ -587,7 +588,7 @@ func connect_rooms_iteration(first_call_in_loop : bool) -> void:
 		if len(connect_path) == 0:
 			_rooms_to_connect.insert(rng.randi_range(1, len(_rooms_to_connect)), room_a)
 			return
-		#print("Connecting ", room_a.name, " to ", _rooms_to_connect[0].name, ". Result: ", connect_path)
+		print("Connecting ", room_a.name, " to ", _rooms_to_connect[0].name, ". Result: ", connect_path)
 		for corridor_pos in connect_path:
 			if not _quick_room_check_dict.has(corridor_pos) and not _quick_corridors_check_dict.has(corridor_pos):
 				var room := corridor_room_instance.create_clone_and_make_virtual_unless_visualizing()
@@ -626,6 +627,8 @@ func connect_rooms_iteration(first_call_in_loop : bool) -> void:
 		_required_doors_dict.erase(required_door)
 		return
 	
+	#print("_quick_room_check_dict[Vector3i(0,9,2)]: ", _quick_room_check_dict[Vector3i(0,9,2)], ", name: ", _quick_room_check_dict[Vector3i(0,9,2)].name)
+	#print("_quick_room_check_dict[Vector3i(0,8,2)]: ", _quick_room_check_dict[Vector3i(0,8,2)], ", name: ", _quick_room_check_dict[Vector3i(0,8,2)].name)
 	stage = BuildStage.FINALIZING
 
 ####################################

@@ -15,7 +15,8 @@ func can_walk_from_to(dungeon_generator : DungeonGenerator3D, pos_a : Vector3i, 
 	if not dungeon_generator.get_grid_aabbi().contains_point(pos_b): return false
 	var room_a = rooms_check_dict[pos_a] if rooms_check_dict.has(pos_a) else null
 	var room_b = rooms_check_dict[pos_b] if rooms_check_dict.has(pos_b) else null
-	if room_a == room_b: return true # Walking outside rooms, or inside same room
+	if room_a == null and room_b == null: return pos_a.y == pos_b.y # Outside rooms, only move horizontal
+	if room_a == room_b: return true # Inside rooms, move anywhere, up and down, i.e. stairs
 	# Ensure walking through doorways if not a simple case:
 	var fits_room_a_door = room_a == null or room_a.get_doors_cached().filter(func(d): return d.grid_pos == pos_a and d.exit_pos_grid == pos_b).size() == 1
 	var fits_room_b_door = room_b == null or room_b.get_doors_cached().filter(func(d): return d.grid_pos == pos_b and d.exit_pos_grid == pos_a).size() == 1
@@ -36,25 +37,18 @@ func _init(dungeon_generator : DungeonGenerator3D, rooms_check_dict : Dictionary
 				vec3i_to_pt_id[Vector3i(x,y,z)] = point_id
 				point_id += 1
 	
-	var xz_dirs := [Vector3i(1,0,0), Vector3i(-1,0,0), Vector3i(0,0,1), Vector3i(0,0,-1)] as Array[Vector3i]
 	var xyz_dirs := [Vector3i(1,0,0), Vector3i(-1,0,0), Vector3i(0,0,1), Vector3i(0,0,-1), Vector3i(0,1,0), Vector3i(0,-1,0)] as Array[Vector3i]
 	# Connect points - allow walking in & out of all doors but don't connect where walls are.
 	for x in range(dungeon_generator.dungeon_size.x):
 		for y in range(dungeon_generator.dungeon_size.y):
 			for z in range(dungeon_generator.dungeon_size.z):
 				var cur_pt_id = get_closest_point(Vector3(x,y,z))
-				# Inside room - allow walk inside room & check for doors leading out
-				var room := dungeon_generator.get_room_at_pos(Vector3i(x,y,z))
-				if room:
-					# Allow walk in/out of room, up & down too for stairs
-					for dir in xyz_dirs:
-						if can_walk_from_to(dungeon_generator, Vector3i(x,y,z), Vector3i(x,y,z) + dir):
-							connect_points(cur_pt_id, get_closest_point(Vector3(x,y,z) + Vector3(dir)))
-				else: # Outside room - check for doors leading in
-					# Walk freely if not landing in any rooms. Only horizontally, can only traverse up & down with stairs
-					for dir in xz_dirs:
-						if can_walk_from_to(dungeon_generator, Vector3i(x,y,z), Vector3i(x,y,z) + dir):
-							connect_points(cur_pt_id, get_closest_point(Vector3(x,y,z) + Vector3(dir)))
+				# Allow walk in/out of room, up & down too for stairs
+				for dir in xyz_dirs:
+					if can_walk_from_to(dungeon_generator, Vector3i(x,y,z), Vector3i(x,y,z) + dir):
+						connect_points(cur_pt_id, get_closest_point(Vector3(x,y,z) + Vector3(dir)))
+	print("Are they connected? :")
+	print(are_points_connected(get_closest_point(Vector3(0,9,2)), get_closest_point(Vector3(0,8,2))))
 
 func _estimate_cost(from_id : int, to_id : int) -> float:
 	if dungeon_generator.astar_heuristic == DungeonGenerator3D.AStarHeuristics.NONE_DIJKSTRAS:
