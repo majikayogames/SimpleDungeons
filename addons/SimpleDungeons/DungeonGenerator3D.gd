@@ -588,7 +588,7 @@ func connect_rooms_iteration(first_call_in_loop : bool) -> void:
 		if len(connect_path) == 0:
 			_rooms_to_connect.insert(rng.randi_range(1, len(_rooms_to_connect)), room_a)
 			return
-		print("Connecting ", room_a.name, " to ", _rooms_to_connect[0].name, ". Result: ", connect_path)
+		#print("Connecting ", room_a.name, " to ", _rooms_to_connect[0].name, ". Result: ", connect_path)
 		for corridor_pos in connect_path:
 			if not _quick_room_check_dict.has(corridor_pos) and not _quick_corridors_check_dict.has(corridor_pos):
 				var room := corridor_room_instance.create_clone_and_make_virtual_unless_visualizing()

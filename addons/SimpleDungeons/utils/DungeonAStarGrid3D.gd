@@ -47,8 +47,6 @@ func _init(dungeon_generator : DungeonGenerator3D, rooms_check_dict : Dictionary
 				for dir in xyz_dirs:
 					if can_walk_from_to(dungeon_generator, Vector3i(x,y,z), Vector3i(x,y,z) + dir):
 						connect_points(cur_pt_id, get_closest_point(Vector3(x,y,z) + Vector3(dir)))
-	print("Are they connected? :")
-	print(are_points_connected(get_closest_point(Vector3(0,9,2)), get_closest_point(Vector3(0,8,2))))
 
 func _estimate_cost(from_id : int, to_id : int) -> float:
 	if dungeon_generator.astar_heuristic == DungeonGenerator3D.AStarHeuristics.NONE_DIJKSTRAS:
