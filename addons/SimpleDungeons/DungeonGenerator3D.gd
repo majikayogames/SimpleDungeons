@@ -264,7 +264,7 @@ func abort_generation_and_fail(error : String) -> void:
 	_printerr("SimpleDungeons Error: Failed to generate dungeon")
 	failed_to_generate = true
 
-func _finalize_rooms() -> void:
+func _finalize_rooms(ready_callback = null) -> void:
 	if not rooms_container.is_inside_tree():
 		add_child(rooms_container)
 	rooms_container.owner = self.owner
@@ -280,15 +280,20 @@ func _finalize_rooms() -> void:
 	if corridor_room_instance and is_instance_valid(corridor_room_instance):
 		corridor_room_instance.queue_free()
 	corridor_room_instance = null
+	if ready_callback is Callable:
+		if rooms_container.is_node_ready():
+			ready_callback.call_deferred()
+		else:
+			rooms_container.ready.connect(ready_callback)
+		
 
 func _dungeon_finished_generating() -> void:
-	_finalize_rooms()
-	_emit_done_signals.call_deferred() # Ensure rooms container placed.
+	_finalize_rooms(_emit_done_signals)
 
 func _dungeon_failed_generating() -> void:
 	if place_even_if_fail:
 		_finalize_rooms()
-	_emit_failed_signal.call_deferred() # Ensure rooms container placed.
+	_emit_failed_signal.call_deferred() # Ensure rooms container placed/might be on thread.
 
 # Emit done signals for dungeon & place_room for all DungeonRooms.
 func _emit_done_signals():
@@ -627,8 +632,6 @@ func connect_rooms_iteration(first_call_in_loop : bool) -> void:
 		_required_doors_dict.erase(required_door)
 		return
 	
-	#print("_quick_room_check_dict[Vector3i(0,9,2)]: ", _quick_room_check_dict[Vector3i(0,9,2)], ", name: ", _quick_room_check_dict[Vector3i(0,9,2)].name)
-	#print("_quick_room_check_dict[Vector3i(0,8,2)]: ", _quick_room_check_dict[Vector3i(0,8,2)], ", name: ", _quick_room_check_dict[Vector3i(0,8,2)].name)
 	stage = BuildStage.FINALIZING
 
 ####################################
