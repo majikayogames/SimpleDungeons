@@ -17,6 +17,8 @@ func custom_get_rand_rooms(room_instances : Array[DungeonRoom3D], rng_seeded : R
 	while num_red_rooms > 0:
 		var inst = red_room.create_clone_and_make_virtual_unless_visualizing()
 		rooms.push_back(inst)
+		# Set room_rotations before set_position_by_grid_pos as it is set by AABB positon. May change when rotated.
+		inst.room_rotations = rng_seeded.randi()
 		inst.set_position_by_grid_pos(
 			Vector3i(
 				(rng_seeded.randi() % dungeon_size.x) / 2,
@@ -26,6 +28,8 @@ func custom_get_rand_rooms(room_instances : Array[DungeonRoom3D], rng_seeded : R
 	while num_blue_rooms > 0:
 		var inst = blue_room.create_clone_and_make_virtual_unless_visualizing()
 		rooms.push_back(inst)
+		# Set room_rotations before set_position_by_grid_pos as it is set by AABB positon. May change when rotated.
+		inst.room_rotations = rng_seeded.randi()
 		inst.set_position_by_grid_pos(
 			Vector3i(
 				(rng_seeded.randi() % dungeon_size.x) / 2 + dungeon_size.x / 2,

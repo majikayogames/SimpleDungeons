@@ -7,6 +7,12 @@ render_mode wireframe, unshaded, cull_disabled, depth_draw_never, depth_test_dis
 uniform vec3 color = vec3(0., 1., 0.);
 
 void fragment() {
+	vec2 uv = fract(UV * 1.0);
+	vec2 eps = 0.0015 * vec2(1.0,1.0);
+	vec2 inv_eps = 1.0 - eps;
+	if(uv.x > eps.x && uv.x < inv_eps.x && uv.y > eps.y && uv.y < inv_eps.y) {
+		discard;
+	}
 	ALBEDO = color;
 }
 

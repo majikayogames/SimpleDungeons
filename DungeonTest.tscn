@@ -1,15 +1,11 @@
-[gd_scene load_steps=15 format=3 uid="uid://ba3rkgbyxsyo0"]
+[gd_scene load_steps=11 format=3 uid="uid://ba3rkgbyxsyo0"]
 
 [ext_resource type="Script" path="res://addons/SimpleDungeons/DungeonGenerator3D.gd" id="2_eg2pk"]
 [ext_resource type="PackedScene" uid="uid://f6kx848g5bco" path="res://FPSController/FPSController.tscn" id="3_brgjj"]
-[ext_resource type="PackedScene" uid="uid://p0pnjftk0uda" path="res://addons/SimpleDungeons/sample_dungeons/lowpoly_kit_1_rooms/bridge_room.tscn" id="3_v360q"]
-[ext_resource type="PackedScene" uid="uid://cf13frjr2u0oe" path="res://addons/SimpleDungeons/sample_dungeons/lowpoly_kit_1_rooms/entrance_room.tscn" id="4_16rct"]
-[ext_resource type="PackedScene" uid="uid://b6t2tduxk8tfn" path="res://addons/SimpleDungeons/sample_dungeons/lowpoly_kit_1_rooms/living_room.tscn" id="5_bueld"]
-[ext_resource type="PackedScene" uid="uid://b0m7fmmvtfcnk" path="res://addons/SimpleDungeons/sample_dungeons/lowpoly_kit_1_rooms/spike_hallway.tscn" id="6_sbnpf"]
-[ext_resource type="PackedScene" uid="uid://c5lo6wkhhg76p" path="res://addons/SimpleDungeons/sample_dungeons/lowpoly_kit_1_rooms/stair.tscn" id="7_2yw7v"]
-[ext_resource type="PackedScene" uid="uid://bicoj8112x1ra" path="res://addons/SimpleDungeons/sample_dungeons/lowpoly_kit_1_rooms/trap_room.tscn" id="8_bv6o1"]
-[ext_resource type="PackedScene" uid="uid://b1c7nsr0vdiq" path="res://addons/SimpleDungeons/sample_dungeons/lowpoly_kit_1_rooms/treasure_room.tscn" id="9_6h61g"]
-[ext_resource type="PackedScene" uid="uid://dvdly7xo8rxig" path="res://addons/SimpleDungeons/sample_dungeons/lowpoly_kit_1_rooms/corridor.tscn" id="10_yl6tc"]
+[ext_resource type="PackedScene" uid="uid://csrej0276i7aa" path="res://example_rooms/living_room.tscn" id="3_lhbkb"]
+[ext_resource type="PackedScene" uid="uid://uvjwegylgdb" path="res://example_rooms/stair.tscn" id="4_wb8ld"]
+[ext_resource type="PackedScene" uid="uid://b87nfkjf6vy6h" path="res://example_rooms/corridor.tscn" id="5_hvl01"]
+[ext_resource type="Script" path="res://addons/SimpleDungeons/DungeonRoom3D.gd" id="6_huxqn"]
 
 [sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_ga1mx"]
 sky_horizon_color = Color(0.64625, 0.65575, 0.67075, 1)
@@ -49,8 +45,139 @@ text = "Generating dungeon ahead. Press v to noclip and fly in."
 [node name="CharacterBody3D" parent="." instance=ExtResource("3_brgjj")]
 
 [node name="DungeonGenerator3D" type="Node3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -109)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -109.939)
 script = ExtResource("2_eg2pk")
-room_scenes = Array[PackedScene]([ExtResource("3_v360q"), ExtResource("4_16rct"), ExtResource("5_bueld"), ExtResource("6_sbnpf"), ExtResource("7_2yw7v"), ExtResource("8_bv6o1"), ExtResource("9_6h61g")])
-corridor_room_scene = ExtResource("10_yl6tc")
-generate_threaded = true
+room_scenes = Array[PackedScene]([ExtResource("3_lhbkb"), ExtResource("4_wb8ld")])
+corridor_room_scene = ExtResource("5_hvl01")
+visualize_generation_progress = true
+
+[node name="LivingRoom" parent="DungeonGenerator3D" instance=ExtResource("3_lhbkb")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -40, 45, 40)
+
+[node name="DungeonRoom3D" type="Node3D" parent="DungeonGenerator3D"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 5, 5, 45)
+script = ExtResource("6_huxqn")
+
+[node name="DOOR" type="Node3D" parent="DungeonGenerator3D/DungeonRoom3D"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -5)
+
+[node name="CSGBox3D" type="CSGBox3D" parent="DungeonGenerator3D/DungeonRoom3D"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -5, 26.65)
+use_collision = true
+size = Vector3(5, 1, 63.7)
+
+[node name="RoomsContainer" type="Node3D" parent="DungeonGenerator3D"]
+
+[node name="LivingRoom_0" parent="DungeonGenerator3D/RoomsContainer" instance=ExtResource("3_lhbkb")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 10, 5, -10)
+
+[node name="LivingRoom_1" parent="DungeonGenerator3D/RoomsContainer" instance=ExtResource("3_lhbkb")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 35, 0)
+
+[node name="Stair_2" parent="DungeonGenerator3D/RoomsContainer" instance=ExtResource("4_wb8ld")]
+transform = Transform3D(-1, 0, -8.74228e-08, 0, 1, 0, 8.74228e-08, 0, -1, 10, 30, 35)
+
+[node name="Stair_3" parent="DungeonGenerator3D/RoomsContainer" instance=ExtResource("4_wb8ld")]
+transform = Transform3D(-1, 0, -8.74228e-08, 0, 1, 0, 8.74228e-08, 0, -1, 30, 20, -35)
+
+[node name="Stair_4" parent="DungeonGenerator3D/RoomsContainer" instance=ExtResource("4_wb8ld")]
+transform = Transform3D(-4.37114e-08, 0, 1, 0, 1, 0, -1, 0, -4.37114e-08, -15, 10, -30)
+
+[node name="Stair_5" parent="DungeonGenerator3D/RoomsContainer" instance=ExtResource("4_wb8ld")]
+transform = Transform3D(1.19249e-08, 0, -1, 0, 1, 0, 1, 0, 1.19249e-08, -25, 40, 30)
+
+[node name="Corridor_6" parent="DungeonGenerator3D/RoomsContainer" instance=ExtResource("5_hvl01")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -25, 45, 45)
+
+[node name="Corridor_7" parent="DungeonGenerator3D/RoomsContainer" instance=ExtResource("5_hvl01")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -25, 35, 15)
+
+[node name="Corridor_8" parent="DungeonGenerator3D/RoomsContainer" instance=ExtResource("5_hvl01")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -15, 35, 15)
+
+[node name="Corridor_9" parent="DungeonGenerator3D/RoomsContainer" instance=ExtResource("5_hvl01")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -15, 35, 25)
+
+[node name="Corridor_10" parent="DungeonGenerator3D/RoomsContainer" instance=ExtResource("5_hvl01")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -15, 35, 35)
+
+[node name="Corridor_11" parent="DungeonGenerator3D/RoomsContainer" instance=ExtResource("5_hvl01")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -5, 35, 35)
+
+[node name="Corridor_12" parent="DungeonGenerator3D/RoomsContainer" instance=ExtResource("5_hvl01")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 25, 25, 35)
+
+[node name="Corridor_13" parent="DungeonGenerator3D/RoomsContainer" instance=ExtResource("5_hvl01")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 25, 25, 25)
+
+[node name="Corridor_14" parent="DungeonGenerator3D/RoomsContainer" instance=ExtResource("5_hvl01")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 15, 25, 25)
+
+[node name="Corridor_15" parent="DungeonGenerator3D/RoomsContainer" instance=ExtResource("5_hvl01")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 15, 25, 15)
+
+[node name="Corridor_16" parent="DungeonGenerator3D/RoomsContainer" instance=ExtResource("5_hvl01")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 15, 25, 5)
+
+[node name="Corridor_17" parent="DungeonGenerator3D/RoomsContainer" instance=ExtResource("5_hvl01")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 15, 25, -5)
+
+[node name="Corridor_18" parent="DungeonGenerator3D/RoomsContainer" instance=ExtResource("5_hvl01")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 15, 25, -15)
+
+[node name="Corridor_19" parent="DungeonGenerator3D/RoomsContainer" instance=ExtResource("5_hvl01")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 15, 25, -25)
+
+[node name="Corridor_20" parent="DungeonGenerator3D/RoomsContainer" instance=ExtResource("5_hvl01")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 15, 25, -35)
+
+[node name="Corridor_21" parent="DungeonGenerator3D/RoomsContainer" instance=ExtResource("5_hvl01")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 45, 15, -35)
+
+[node name="Corridor_22" parent="DungeonGenerator3D/RoomsContainer" instance=ExtResource("5_hvl01")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 45, 15, -45)
+
+[node name="Corridor_23" parent="DungeonGenerator3D/RoomsContainer" instance=ExtResource("5_hvl01")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 35, 15, -45)
+
+[node name="Corridor_24" parent="DungeonGenerator3D/RoomsContainer" instance=ExtResource("5_hvl01")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 25, 15, -45)
+
+[node name="Corridor_25" parent="DungeonGenerator3D/RoomsContainer" instance=ExtResource("5_hvl01")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 15, 15, -45)
+
+[node name="Corridor_26" parent="DungeonGenerator3D/RoomsContainer" instance=ExtResource("5_hvl01")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 5, 15, -45)
+
+[node name="Corridor_27" parent="DungeonGenerator3D/RoomsContainer" instance=ExtResource("5_hvl01")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -5, 15, -45)
+
+[node name="Corridor_28" parent="DungeonGenerator3D/RoomsContainer" instance=ExtResource("5_hvl01")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -15, 15, -45)
+
+[node name="Corridor_29" parent="DungeonGenerator3D/RoomsContainer" instance=ExtResource("5_hvl01")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -15, 5, -15)
+
+[node name="Corridor_30" parent="DungeonGenerator3D/RoomsContainer" instance=ExtResource("5_hvl01")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -15, 5, -5)
+
+[node name="Corridor_31" parent="DungeonGenerator3D/RoomsContainer" instance=ExtResource("5_hvl01")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -5, 5, -5)
+
+[node name="Corridor_32" parent="DungeonGenerator3D/RoomsContainer" instance=ExtResource("5_hvl01")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 5, 5, 5)
+
+[node name="Corridor_33" parent="DungeonGenerator3D/RoomsContainer" instance=ExtResource("5_hvl01")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 5, 5, 15)
+
+[node name="Corridor_34" parent="DungeonGenerator3D/RoomsContainer" instance=ExtResource("5_hvl01")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 5, 5, 25)
+
+[node name="Corridor_35" parent="DungeonGenerator3D/RoomsContainer" instance=ExtResource("5_hvl01")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 5, 5, 35)
+
+[node name="Corridor_36" parent="DungeonGenerator3D/RoomsContainer" instance=ExtResource("5_hvl01")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -5, 35, 25)
+
+[node name="Corridor_37" parent="DungeonGenerator3D/RoomsContainer" instance=ExtResource("5_hvl01")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -5, 35, 15)
