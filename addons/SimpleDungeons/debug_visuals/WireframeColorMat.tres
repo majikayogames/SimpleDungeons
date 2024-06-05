@@ -3,23 +3,37 @@
 [sub_resource type="Shader" id="Shader_xtf8b"]
 resource_local_to_scene = true
 code = "shader_type spatial;
-render_mode wireframe, unshaded, cull_disabled, depth_draw_never, depth_test_disabled;
-uniform vec3 color = vec3(0., 1., 0.);
+render_mode unshaded, cull_disabled, depth_draw_always, depth_test_disabled;
 
-void fragment() {
-	vec2 uv = fract(UV * 1.0);
-	vec2 eps = 0.0015 * vec2(1.0,1.0);
-	vec2 inv_eps = 1.0 - eps;
-	if(uv.x > eps.x && uv.x < inv_eps.x && uv.y > eps.y && uv.y < inv_eps.y) {
-		discard;
-	}
-	ALBEDO = color;
+uniform vec3 color = vec3(0.0, 1.0, 0.0);
+uniform float line_width : hint_range(0.0, 10.0) = 0.85;
+
+varying vec3 barycentric;
+
+void vertex() {
+	vec3 b_coords[3] = vec3[](vec3(1, 0, 0), vec3(0, 1, 0), vec3(0, 0, 1));
+	int vertex_id = int(VERTEX_ID) % 3;
+	barycentric = b_coords[vertex_id];
 }
 
-//void light() {
-	// Called for every pixel for every light affecting the material.
-	// Uncomment to replace the default light processing function with this one.
-//}
+void fragment() {
+	// Calculate the screen-space derivatives of the barycentric coordinates
+	vec3 dFdx_barycentric = dFdx(barycentric);
+	vec3 dFdy_barycentric = dFdy(barycentric);
+
+	// Calculate the minimum barycentric coordinate value
+	float min_bary = min(min(barycentric.x, barycentric.y), barycentric.z);
+
+	// Calculate the screen-space line width
+	float screen_line_width = line_width * length(vec2(dFdx_barycentric.x, dFdy_barycentric.x));
+
+	// Draw the line based on the calculated screen-space line width
+	if (min_bary < screen_line_width) {
+		ALBEDO = color;
+	} else {
+		discard;
+	}
+}
 "
 
 [resource]
@@ -27,3 +41,4 @@ resource_local_to_scene = true
 render_priority = 0
 shader = SubResource("Shader_xtf8b")
 shader_parameter/color = Vector3(0, 1, 0)
+shader_parameter/line_width = 0.85

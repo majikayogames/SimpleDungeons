@@ -42,6 +42,7 @@ radius = 0.423
 height = 0.716463
 sides = 4
 cone = true
+smooth_faces = false
 material = ExtResource("1_3h4gq")
 
 [node name="CSGBox3D2" type="CSGBox3D" parent="."]
