@@ -294,6 +294,12 @@ func _dungeon_finished_generating() -> void:
 func _dungeon_failed_generating() -> void:
 	if place_even_if_fail:
 		_finalize_rooms()
+	elif not visualize_generation_progress:
+		rooms_container.queue_free()
+		for room in _rooms_placed:
+			room.queue_free()
+	for room in room_instances:
+		room.queue_free()
 	_emit_failed_signal.call_deferred() # Ensure rooms container placed/might be on thread.
 
 # Emit done signals for dungeon & place_room for all DungeonRooms.
@@ -309,6 +315,8 @@ func _emit_done_signals():
 	for preplaced_room in find_children("*", "DungeonRoom3D", false):
 		preplaced_room.dungeon_done_generating.emit()
 	print("DungeonGenerator3D finished generating.")
+	for room in room_instances:
+		room.queue_free()
 	done_generating.emit()
 
 func _emit_failed_signal(): # So I can call_deferred
