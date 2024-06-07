@@ -815,6 +815,10 @@ func _call_from_main_thread_and_wait_if_not_on_already(f : Callable):
 		s.wait()
 
 func get_room_at_pos(grid_pos : Vector3i) -> DungeonRoom3D:
+	if stage > BuildStage.CONNECT_ROOMS:
+		 # Can use these vars for speedup if past the connect rooms stage where we set them
+		var quick_check = _quick_room_check_dict.get(grid_pos)
+		return quick_check if quick_check else _quick_corridors_check_dict.get(grid_pos)
 	for room in get_all_placed_and_preplaced_rooms():
 		if room.get_grid_aabbi(false).contains_point(grid_pos):
 			return room
