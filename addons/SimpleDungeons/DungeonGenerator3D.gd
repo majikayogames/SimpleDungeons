@@ -454,31 +454,32 @@ class StairRoomInfo:
 # There are a ton of edge cases, which I won't even check for.
 # This is some heuristic algorithm I thought of which just tries to find a set of rooms which when chained together,
 #  continually closes the gap between floors. Should work for basic cases and also some more advanced ones.
-func _find_stair_chain_to_connect_floors(floor_1 : int, floor_2 : int, floor_graph : TreeGraph, stair_info_arr : Array) -> Array:
+func _find_stair_chain_to_connect_floors(floor_1 : int, floor_2 : int, floor_graph : TreeGraph, stair_info_dict : Dictionary) -> Array:
 	var stair_chain := []
 	var bottom_floor : int = min(floor_1, floor_2)
 	var top_floor : int = max(floor_1, floor_2)
 	var cur_floor := bottom_floor
-	for s in stair_info_arr:
+	for s in stair_info_dict.values():
 		s.save_available_to_use()
 	while cur_floor != top_floor:
 		# Valid floor = any floor which is closer to top_floor than cur_floor.
 		var valid_to_floors := range(dungeon_size.y).filter(func(floor : int): return abs(floor - top_floor) < abs(top_floor - cur_floor))
 		var valid_stair_placements := {}
 		for to_floor in valid_to_floors:
-			for stair_info in stair_info_arr:
+			for stair_info in stair_info_dict.values():
 				var valid_connect = stair_info.get_valid_connect_positions(cur_floor, to_floor)
 				if valid_connect.size() > 0:
 					if not valid_stair_placements.has(to_floor): valid_stair_placements[to_floor] = []
 					valid_stair_placements[to_floor].append_array(valid_connect)
 		if valid_stair_placements.keys().size() == 0:
-			for s in stair_info_arr:
+			for s in stair_info_dict.values():
 				s.restore_available_to_use()
 			return [] # None found
 		var to_floor : int = valid_stair_placements.keys()[rng.randi() % valid_stair_placements.keys().size()]
 		var choose = valid_stair_placements[to_floor][rng.randi() % valid_stair_placements[to_floor].size()]
 		if not floor_graph.has_node(cur_floor) or not floor_graph.has_node(to_floor) or not floor_graph.are_nodes_connected(cur_floor, to_floor):
 			stair_chain.push_back(choose) # No need unless not connected already
+			stair_info_dict[choose[0]].available_to_use -= 1
 		cur_floor = to_floor
 	return stair_chain
 
@@ -540,7 +541,7 @@ func _make_and_solve_floors_graph() -> Array:
 			nearest_floors_up.sort_custom(func(fa,fb): return abs(fb - f1) > abs(fa - f1))
 			for f2 in nearest_floors_up:
 				if floors_tree_graph.are_nodes_connected(f1, f2): continue
-				stair_room_chain_to_connect_floors = _find_stair_chain_to_connect_floors(f1, f2, floors_tree_graph, stair_info_dict.values())
+				stair_room_chain_to_connect_floors = _find_stair_chain_to_connect_floors(f1, f2, floors_tree_graph, stair_info_dict)
 				if stair_room_chain_to_connect_floors.size() > 0:
 					break
 			if stair_room_chain_to_connect_floors.size() > 0: break
@@ -551,11 +552,13 @@ func _make_and_solve_floors_graph() -> Array:
 			continue
 		
 		abort_generation_and_fail("Failed to connect all floors together with stairs. Ensure you have at least 1 DungeonRoom3D with 'is_stair_room' set to true with 2 or more doors leading different floors. Simplest is a 2 floor room with 1 door on each floor.")
-		_printerr("Stair algorithm failed. If your stairs are shaped very oddly it can fail, it's not an exhaustive search but should work for most cases.")
+		_printerr("Stair algorithm failed. If your stairs are shaped very oddly it can fail, it's not an exhaustive search but should work for most cases. Also ensure stairs max_count is enough to connect all the floors in your dungeon.")
+		for s in stair_info_dict.values():
+			_printwarning("Room "+str(s.inst.name)+" max_count is "+str(s.inst.max_count)+". One potential reason this could fail is you need to increase the max_count on your stair room(s) so all floors can be connected.")
 		return []
 	
 	if not floors_tree_graph.is_fully_connected():
-		abort_generation_and_fail("Failed somehow")
+		abort_generation_and_fail("Failed somehow during stairs stage. This shouldn't happen. Likely a bug.")
 		return []
 	else:
 		return stairs_to_add

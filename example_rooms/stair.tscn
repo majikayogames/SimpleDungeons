@@ -20,8 +20,7 @@ func remove_unused_doors():
 [node name="Stair" type="Node3D"]
 script = ExtResource("1_owjkt")
 size_in_voxels = Vector3i(2, 2, 1)
-min_count = 10
-max_count = 15
+max_count = 10
 is_stair_room = true
 
 [node name="CSGBox3D" type="CSGBox3D" parent="."]
