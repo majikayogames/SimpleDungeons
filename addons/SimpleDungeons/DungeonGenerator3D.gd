@@ -233,6 +233,7 @@ func _run_generate_loop() -> void:
 			if visualize_generation_progress:
 				if retry_attempts <= max_retries:
 					_call_from_main_thread_and_wait_if_not_on_already(clear_rooms_container_and_setup_for_next_iteration)
+					_printwarning("Generation failed on attempt "+str(retry_attempts)+". Retrying generation.")
 			else: clear_rooms_container_and_setup_for_next_iteration()
 	
 	if not failed_to_generate: _call_from_main_thread_and_wait_if_not_on_already(_dungeon_finished_generating)
@@ -368,20 +369,36 @@ func place_room_iteration(first_call_in_loop : bool) -> void:
 
 # Array [DungeonRoom3D, grid_pos_y] for where to place rooms
 var _stair_rooms_and_placements = []
+var _stair_rooms_placed_count = {}
 func place_stairs_iteration(first_call_in_loop : bool) -> void:
 	if first_call_in_loop:
+		_stair_rooms_placed_count = {}
+		for s in get_stair_rooms_from_instances():
+			_stair_rooms_placed_count[s] = 0
 		_stair_rooms_and_placements = _make_and_solve_floors_graph()
 		if failed_to_generate:
 			return # solve failed and called abort
 	
 	if _stair_rooms_and_placements.size() > 0:
 		var stair_and_y_pos = _stair_rooms_and_placements.pop_back()
+		_stair_rooms_placed_count[stair_and_y_pos[0]] += 1
 		var room = stair_and_y_pos[0].create_clone_and_make_virtual_unless_visualizing()
 		var y_pos = stair_and_y_pos[1]
 		room.room_rotations = rng.randi_range(0,4)
 		room.set_position_by_grid_pos(Vector3i(
 			rng.randi_range(0, dungeon_size.x - room.get_grid_aabbi(true).size.x),
 			y_pos,
+			rng.randi_range(0, dungeon_size.z - room.get_grid_aabbi(true).size.z)))
+		place_room(room)
+	elif get_stair_rooms_from_instances().filter(func(s): return s.min_count > _stair_rooms_placed_count[s]).size() > 0:
+		var stairs_less_than_min = get_stair_rooms_from_instances().filter(func(s): return s.min_count > _stair_rooms_placed_count[s])
+		var room_original = stairs_less_than_min[rng.randi() % stairs_less_than_min.size()]
+		_stair_rooms_placed_count[room_original] += 1
+		var room = room_original.create_clone_and_make_virtual_unless_visualizing()
+		room.room_rotations = rng.randi_range(0,4)
+		room.set_position_by_grid_pos(Vector3i(
+			rng.randi_range(0, dungeon_size.x - room.get_grid_aabbi(true).size.x),
+			rng.randi_range(0, dungeon_size.y - room.get_grid_aabbi(true).size.y),
 			rng.randi_range(0, dungeon_size.z - room.get_grid_aabbi(true).size.z)))
 		place_room(room)
 	else:
@@ -393,8 +410,18 @@ class StairRoomInfo:
 	var stair_gaps = [] # Has door(s) leading 1 floors up, 2 floors up, etc.
 	var stair_gaps_dict = {} # Gap:local door y position. To check y offset to place room at when connecting floors.
 	var lowest_door_local_y_pos : int
+	var available_to_use : int # Make sure not to go above stair's max_count value
+	
+	# Helper funcs for the stair chains where it might fail
+	var _saved_available_to_use : int = 0
+	func save_available_to_use():
+		_saved_available_to_use = available_to_use
+	func restore_available_to_use():
+		available_to_use =_saved_available_to_use
+	
 	func _init(room_instance : DungeonRoom3D):
 		self.inst = room_instance
+		available_to_use = room_instance.max_count
 		
 		var door_y_positions = []
 		for door in room_instance.get_doors_cached():
@@ -411,6 +438,8 @@ class StairRoomInfo:
 	
 	# format: [[DungeonRoom3D, grid_pos_y], ...]. returns [] if no valid way to connect those floors
 	func get_valid_connect_positions(floor_1 : int, floor_2 : int) -> Array:
+		if available_to_use == 0: return []
+		
 		var bottom_floor : int = min(floor_1, floor_2)
 		var top_floor : int = max(floor_1, floor_2)
 		var gap : int = top_floor - bottom_floor
@@ -430,6 +459,8 @@ func _find_stair_chain_to_connect_floors(floor_1 : int, floor_2 : int, floor_gra
 	var bottom_floor : int = min(floor_1, floor_2)
 	var top_floor : int = max(floor_1, floor_2)
 	var cur_floor := bottom_floor
+	for s in stair_info_arr:
+		s.save_available_to_use()
 	while cur_floor != top_floor:
 		# Valid floor = any floor which is closer to top_floor than cur_floor.
 		var valid_to_floors := range(dungeon_size.y).filter(func(floor : int): return abs(floor - top_floor) < abs(top_floor - cur_floor))
@@ -440,7 +471,10 @@ func _find_stair_chain_to_connect_floors(floor_1 : int, floor_2 : int, floor_gra
 				if valid_connect.size() > 0:
 					if not valid_stair_placements.has(to_floor): valid_stair_placements[to_floor] = []
 					valid_stair_placements[to_floor].append_array(valid_connect)
-		if valid_stair_placements.keys().size() == 0: return [] # None found
+		if valid_stair_placements.keys().size() == 0:
+			for s in stair_info_arr:
+				s.restore_available_to_use()
+			return [] # None found
 		var to_floor : int = valid_stair_placements.keys()[rng.randi() % valid_stair_placements.keys().size()]
 		var choose = valid_stair_placements[to_floor][rng.randi() % valid_stair_placements[to_floor].size()]
 		if not floor_graph.has_node(cur_floor) or not floor_graph.has_node(to_floor) or not floor_graph.are_nodes_connected(cur_floor, to_floor):
@@ -473,9 +507,9 @@ func _make_and_solve_floors_graph() -> Array:
 	# Tried to think of something elegant to do this but it may be harder than I thought.
 	# This should be fine for 99% of cases. For truly odd stair patterns in dungeons you can preplace stairs or mod yourself.
 	
-	var stair_info_arr : Array[StairRoomInfo] = []
+	var stair_info_dict : Dictionary = {}
 	for room in get_stair_rooms_from_instances():
-		stair_info_arr.push_back(StairRoomInfo.new(room))
+		stair_info_dict[room] = StairRoomInfo.new(room)
 	
 	var stairs_to_add : Array = [] # element format: [DungeonRoom3D, grid_pos_y]
 	while not floors_tree_graph.is_fully_connected():
@@ -484,7 +518,7 @@ func _make_and_solve_floors_graph() -> Array:
 		for f1 in floors_tree_graph.get_all_nodes():
 			for f2 in floors_tree_graph.get_all_nodes().filter(func(_f2): return _f2 > f1):
 				if floors_tree_graph.are_nodes_connected(f1, f2): continue
-				for s in stair_info_arr:
+				for s in stair_info_dict.values():
 					# Just looking for 1 valid element [DungeonRoom3D, grid_pos_y]
 					stair_able_to_connect_floors_directly.append_array(s.get_valid_connect_positions(f1, f2))
 					if stair_able_to_connect_floors_directly.size() > 0:
@@ -495,6 +529,7 @@ func _make_and_solve_floors_graph() -> Array:
 			var stair_and_pos = stair_able_to_connect_floors_directly[rng.randi() % stair_able_to_connect_floors_directly.size()]
 			stairs_to_add.push_back(stair_and_pos)
 			add_room_to_floors_graph.call(stair_and_pos[0], stair_and_pos[1])
+			stair_info_dict[stair_and_pos[0]].available_to_use -= 1
 			continue
 		# There are many cases where it's not possible to directly connect floors,
 		#  but you could chain more than 1 stair room together to connect them.
@@ -505,7 +540,7 @@ func _make_and_solve_floors_graph() -> Array:
 			nearest_floors_up.sort_custom(func(fa,fb): return abs(fb - f1) > abs(fa - f1))
 			for f2 in nearest_floors_up:
 				if floors_tree_graph.are_nodes_connected(f1, f2): continue
-				stair_room_chain_to_connect_floors = _find_stair_chain_to_connect_floors(f1, f2, floors_tree_graph, stair_info_arr)
+				stair_room_chain_to_connect_floors = _find_stair_chain_to_connect_floors(f1, f2, floors_tree_graph, stair_info_dict.values())
 				if stair_room_chain_to_connect_floors.size() > 0:
 					break
 			if stair_room_chain_to_connect_floors.size() > 0: break
