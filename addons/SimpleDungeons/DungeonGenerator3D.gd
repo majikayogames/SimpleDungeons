@@ -557,11 +557,7 @@ func _make_and_solve_floors_graph() -> Array:
 			_printwarning("Room "+str(s.inst.name)+" max_count is "+str(s.inst.max_count)+". One potential reason this could fail is you need to increase the max_count on your stair room(s) so all floors can be connected.")
 		return []
 	
-	if not floors_tree_graph.is_fully_connected():
-		abort_generation_and_fail("Failed somehow during stairs stage. This shouldn't happen. Likely a bug.")
-		return []
-	else:
-		return stairs_to_add
+	return stairs_to_add
 
 # Separating rooms:
 
