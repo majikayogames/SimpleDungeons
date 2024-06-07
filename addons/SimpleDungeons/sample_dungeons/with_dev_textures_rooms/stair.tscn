@@ -7,7 +7,7 @@
 [node name="Stair" type="Node3D"]
 script = ExtResource("1_6obq4")
 size_in_voxels = Vector3i(2, 2, 1)
-max_count = 10
+max_count = 15
 is_stair_room = true
 
 [node name="CSGBox3D" type="CSGBox3D" parent="."]
