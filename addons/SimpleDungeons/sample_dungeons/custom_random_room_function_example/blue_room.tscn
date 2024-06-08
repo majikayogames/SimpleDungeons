@@ -56,4 +56,6 @@ size = Vector3(2, 4, 1)
 [node name="RemoveUnusedDoors" type="Node" parent="."]
 script = SubResource("GDScript_3qcmr")
 
+[node name="PlayerSpawnPoint" type="Node3D" parent="." groups=["player_spawn_point"]]
+
 [connection signal="dungeon_done_generating" from="." to="RemoveUnusedDoors" method="_on_dungeon_done_generating"]

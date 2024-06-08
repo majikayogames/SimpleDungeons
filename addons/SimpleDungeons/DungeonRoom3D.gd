@@ -95,22 +95,9 @@ func _process(delta):
 	if Engine.is_editor_hint():
 		return
 
-# Default node props. To filter & just copy over DungeonRoom ones. Hacky but not sure how else to do it.
-# Also want it to work for export props if someone inherits the DungeonRoom class.
-var _dungeon_room_props_names = null
-func _get_dungeon_room_props_names():
-	if _dungeon_room_props_names != null:
-		return _dungeon_room_props_names
-	if virtualized_from: return virtual_self._dungeon_room_props_names
-	var dummy = Node3D.new()
-	var _node_prop_names := dummy.get_property_list().map(func(d : Dictionary): return d["name"])
-	_dungeon_room_props_names = (get_property_list()
-		.filter(func(d : Dictionary): return d["usage"] & PROPERTY_USAGE_DEFAULT)
-		.map(func(d : Dictionary): return d["name"])
-		.filter(func(s : String): return not (s in _node_prop_names)))
-	return _dungeon_room_props_names
+const _dungeon_room_export_props_names = ["size_in_voxels", "voxel_scale", "min_count", "max_count", "is_stair_room", "show_debug_in_editor", "show_debug_in_game", "show_grid_aabb_with_doors"]
 func copy_all_props(from : DungeonRoom3D, to : DungeonRoom3D) -> void:
-	for prop in _get_dungeon_room_props_names():
+	for prop in _dungeon_room_export_props_names:
 		if from.get(prop) != to.get(prop): # Don't trigger editor button setters
 			to.set(prop, from.get(prop))
 	to.name = from.name

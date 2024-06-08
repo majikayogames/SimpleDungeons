@@ -609,3 +609,5 @@ skeleton = NodePath("")
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.98631, 2, 1.92644)
 mesh = SubResource("ArrayMesh_p6bjy")
 skeleton = NodePath("")
+
+[node name="PlayerSpawnPoint" type="Node3D" parent="." groups=["player_spawn_point"]]

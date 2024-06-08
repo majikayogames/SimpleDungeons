@@ -11,7 +11,7 @@ config_version=5
 [application]
 
 config/name="SimpleDungeonsDemo"
-run/main_scene="res://DungeonTest.tscn"
+run/main_scene="res://DemoScene.tscn"
 config/features=PackedStringArray("4.2", "Forward Plus")
 boot_splash/show_image=false
 

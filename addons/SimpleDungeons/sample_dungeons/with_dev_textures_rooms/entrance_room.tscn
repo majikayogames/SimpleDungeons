@@ -41,3 +41,5 @@ size = Vector3(2, 4, 1)
 transform = Transform3D(-4.37114e-08, 0, -1, 0, 1, 0, 1, 0, -4.37114e-08, -5, -2.75, 0)
 operation = 2
 size = Vector3(2, 4, 1)
+
+[node name="PlayerSpawnPoint" type="Node3D" parent="." groups=["player_spawn_point"]]

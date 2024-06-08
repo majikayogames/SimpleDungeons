@@ -6,12 +6,7 @@ signal done_generating()
 signal generating_failed()
 
 # This can be set to a callable to customize room spawning in a fine grained way.
-# Function signature should be Callable() -> DungeonRoom
-# You can return any DungeonRoom at any .position (set with set_position_by_grid_pos).
-# Unless out of bounds, the y position (from bottom of AABB) won't change after you place it.
-# The x and z will be moved in the separation phase.
-# You can create a DungeonRoom from the existing ones by instantiating it manually, or using
-# DungeonRoom3D.create_clone() on the room instances stored in room_instances.
+# Function signature should be Callable(room_instances : Array[DungeonRoom3D], rng : RandomNumberGenerator) -> Array[DungeonRoom3D]
 var custom_get_rooms_function = null
 
 # For any vars which may be accessed from multiple threads
@@ -75,9 +70,7 @@ var stage : BuildStage = BuildStage.NOT_STARTED :
 ## Abort the generation started in editor
 @export var abort_editor_button : bool = false :
 	set(value):
-		if is_currently_generating:
-			call_deferred_thread_group("abort_generation_and_fail", "Aborted from editor button.")
-		else: _printwarning("Not currently generating.")
+		abort_generation()
 
 @export_group("AStar room connection options")
 enum AStarHeuristics { NONE_DIJKSTRAS = 0, MANHATTAN = 1, EUCLIDEAN = 2 }
@@ -160,6 +153,9 @@ var running_thread : Thread
 var failed_to_generate := false :
 	set(v): t_mutex.lock(); failed_to_generate = v; t_mutex.unlock();
 	get: t_mutex.lock(); var v = failed_to_generate; t_mutex.unlock(); return v;
+var full_abort_triggered := false :
+	set(v): t_mutex.lock(); full_abort_triggered = v; t_mutex.unlock();
+	get: t_mutex.lock(); var v = full_abort_triggered; t_mutex.unlock(); return v;
 var is_currently_generating : bool :
 	get: return not (stage == BuildStage.NOT_STARTED or stage == BuildStage.DONE) and not failed_to_generate
 
@@ -187,13 +183,13 @@ func generate(seed : int = int(generate_seed) if generate_seed.is_valid_int() el
 	for room in get_preplaced_rooms():
 		room.snap_room_to_dungeon_grid()
 		if not room.validate_room():
-			abort_generation_and_fail("Could not validate preplaced rooms.")
+			_fail_generation("Could not validate preplaced rooms.")
 			return
 		room.ensure_doors_and_or_transform_cached_for_threads_and_virtualized_rooms()
 	
 	stage = BuildStage.PREPARING
 	if not setup_room_instances_and_validate_before_generate():
-		abort_generation_and_fail("DungeonGenerator3D generation failed while setting up rooms.")
+		_fail_generation("DungeonGenerator3D generation failed while setting up rooms.")
 		return
 	
 	_is_generating_threaded = generate_threaded or visualize_generation_progress
@@ -210,7 +206,7 @@ func generate(seed : int = int(generate_seed) if generate_seed.is_valid_int() el
 
 func _run_generate_loop() -> void:
 	retry_attempts = 0
-	while retry_attempts <= max_retries:
+	while retry_attempts <= max_retries and not full_abort_triggered:
 		failed_to_generate = false # Allow reset until max retries
 		iterations = 0
 		stage = BuildStage.PLACE_ROOMS
@@ -226,18 +222,20 @@ func _run_generate_loop() -> void:
 		# If the dungeon failed to generate after looping through all stages until max_safe_iterations, retry.
 		retry_attempts += 1
 		if retry_attempts > max_retries:
-			abort_generation_and_fail("Reached max generation retries. Failed to generate. Failed at stage "+BuildStage.find_key(stage))
+			_fail_generation("Reached max generation retries. Failed to generate. Failed at stage "+BuildStage.find_key(stage))
 			break
 		else:
 			# Rooms container will be in tree if visualizing so can't just directly clear children
 			if visualize_generation_progress:
-				if retry_attempts <= max_retries:
+				if retry_attempts <= max_retries and not full_abort_triggered:
 					_call_from_main_thread_and_wait_if_not_on_already(clear_rooms_container_and_setup_for_next_iteration)
 					_printwarning("Generation failed on attempt "+str(retry_attempts)+". Retrying generation.")
 			else: clear_rooms_container_and_setup_for_next_iteration()
 	
-	if not failed_to_generate: _call_from_main_thread_and_wait_if_not_on_already(_dungeon_finished_generating)
-	else: _call_from_main_thread_and_wait_if_not_on_already(_dungeon_failed_generating)
+	if not failed_to_generate: _dungeon_finished_generating.call_deferred()
+	else:
+		if not full_abort_triggered: # When full abort triggered, cleanup will be done there so threads don't fight.
+			_dungeon_failed_generating.call_deferred()
 
 var _stage_just_changed = false
 func _run_one_loop_iteration_and_increment_iterations() -> void:
@@ -260,10 +258,27 @@ func _run_one_loop_iteration_and_increment_iterations() -> void:
 	_stage_just_changed = stage != cur_stage
 	iterations += 1
 
-func abort_generation_and_fail(error : String) -> void:
+func _fail_generation(error : String = "Aborted generation") -> void:
 	_printerr("SimpleDungeons Error: ", error)
 	_printerr("SimpleDungeons Error: Failed to generate dungeon")
 	failed_to_generate = true
+
+func abort_generation():
+	if not is_currently_generating:
+		_printwarning("DungeonGenerator3D not currently generating.")
+		return
+	failed_to_generate = true
+	full_abort_triggered = true
+	_printerr("abort_generation() called")
+	if running_thread and running_thread.is_alive() and OS.get_main_thread_id() == OS.get_thread_caller_id():
+		running_thread.wait_to_finish()
+	for room in room_instances:
+		room.queue_free()
+	for room in _rooms_placed:
+		room.queue_free()
+	rooms_container.queue_free()
+	if rooms_container.is_inside_tree():
+		rooms_container.get_parent().remove_child(rooms_container)
 
 func _finalize_rooms(ready_callback = null) -> void:
 	if not rooms_container.is_inside_tree():
@@ -304,8 +319,6 @@ func _dungeon_failed_generating() -> void:
 
 # Emit done signals for dungeon & place_room for all DungeonRooms.
 func _emit_done_signals():
-	if running_thread:
-		running_thread.wait_to_finish()
 	stage = BuildStage.DONE
 	# Also need to call emit signal for each of place_rooms
 	for room in _rooms_placed:
@@ -342,15 +355,15 @@ func place_room_iteration(first_call_in_loop : bool) -> void:
 			_use_custom_rand_rooms = true
 			_custom_rand_rooms = custom_get_rooms_function.call(room_instances, rng)
 			if not _custom_rand_rooms is Array or len(_custom_rand_rooms) == 0:
-				abort_generation_and_fail("custom_get_rooms_function takes should return a non-empty Array of DungeonRoom3Ds.")
+				_fail_generation("custom_get_rooms_function takes should return a non-empty Array of DungeonRoom3Ds.")
 				_printwarning("custom_get_rooms_function takes (room_instances : Array[DungeonRoom3D], rng_seeded : RandomNumberGenerator) as the arguments and should use .create_clone_and_make_virtual_unless_visualizing() to clone and then position with .set_position_by_grid_pos(Vector3i) or .rotation = 0 through 3 for number of 90 degree y rotations for the room.")
 				return
 			for room in _custom_rand_rooms:
 				if not room is DungeonRoom3D:
-					abort_generation_and_fail("custom_get_rooms_function supplied an object that is not a DungeonRoom3D. Ensure all rooms supplied inherit DungeonRoom3D, and use the @tool annotation if generating in editor.")
+					_fail_generation("custom_get_rooms_function supplied an object that is not a DungeonRoom3D. Ensure all rooms supplied inherit DungeonRoom3D, and use the @tool annotation if generating in editor.")
 					return
 				if room_instances.find(room) != -1:
-					abort_generation_and_fail("custom_get_rooms_function supplied a room instance without cloning it. Always use DungeonRoom3D.create_clone_and_make_virtual_unless_visualizing() to create room instances.")
+					_fail_generation("custom_get_rooms_function supplied a room instance without cloning it. Always use DungeonRoom3D.create_clone_and_make_virtual_unless_visualizing() to create room instances.")
 					return
 	
 	var rand_room : DungeonRoom3D
@@ -369,7 +382,7 @@ func place_room_iteration(first_call_in_loop : bool) -> void:
 	else:
 		if get_rooms_less_than_min_count(false).size() == 0:
 			if _rooms_placed.size() == 0:
-				abort_generation_and_fail("Unable to place any rooms. Ensure min_count and max_count are set correctly on rooms.")
+				_fail_generation("Unable to place any rooms. Ensure min_count and max_count are set correctly on rooms.")
 			else:
 				stage += 1
 
@@ -509,7 +522,7 @@ func _make_and_solve_floors_graph() -> Array:
 		add_room_to_floors_graph.call(room, room.get_grid_pos().y)
 	
 	if not floors_tree_graph.is_fully_connected() and get_stair_rooms_from_instances().size() == 0:
-		abort_generation_and_fail("No stair rooms defined. Add a room with with is_stair_room set to true.")
+		_fail_generation("No stair rooms defined. Add a room with with is_stair_room set to true.")
 		return []
 	
 	# Solve the stair graph. We'll use a heuristic algorithm.
@@ -559,7 +572,7 @@ func _make_and_solve_floors_graph() -> Array:
 				stairs_to_add.push_back(room_and_pos)
 			continue
 		
-		abort_generation_and_fail("Failed to connect all floors together with stairs. Ensure you have at least 1 DungeonRoom3D with 'is_stair_room' set to true with 2 or more doors leading different floors. Simplest is a 2 floor room with 1 door on each floor.")
+		_fail_generation("Failed to connect all floors together with stairs. Ensure you have at least 1 DungeonRoom3D with 'is_stair_room' set to true with 2 or more doors leading different floors. Simplest is a 2 floor room with 1 door on each floor.")
 		_printerr("Stair algorithm failed. If your stairs are shaped very oddly it can fail, it's not an exhaustive search but should work for most cases. Also ensure stairs max_count is enough to connect all the floors in your dungeon.")
 		for s in stair_info_dict.values():
 			_printwarning("Room "+str(s.inst.name)+" max_count is "+str(s.inst.max_count)+". One potential reason this could fail is you need to increase the max_count on your stair room(s) so all floors can be connected.")
@@ -755,7 +768,7 @@ func _clear_room_instances() -> void:
 
 func cleanup_and_reset_dungeon_generator() -> void:
 	if is_currently_generating:
-		abort_generation_and_fail("Dungeon reset while generating.")
+		_fail_generation("Dungeon reset while generating.")
 	if running_thread:
 		if running_thread.is_alive() or running_thread.is_started():
 			running_thread.wait_to_finish()
@@ -766,6 +779,7 @@ func cleanup_and_reset_dungeon_generator() -> void:
 		rc.queue_free()
 	_clear_room_instances()
 	failed_to_generate = false
+	full_abort_triggered = false
 	iterations = 0
 	retry_attempts = 0
 	stage = BuildStage.NOT_STARTED
