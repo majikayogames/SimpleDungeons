@@ -229,13 +229,11 @@ func _run_generate_loop() -> void:
 			if visualize_generation_progress:
 				if retry_attempts <= max_retries and not full_abort_triggered:
 					_call_from_main_thread_and_wait_if_not_on_already(clear_rooms_container_and_setup_for_next_iteration)
-					_printwarning("Generation failed on attempt "+str(retry_attempts)+". Retrying generation.")
+					_printwarning("Generation failed on attempt "+str(retry_attempts)+" at stage "+BuildStage.find_key(stage)+". Retrying generation.")
 			else: clear_rooms_container_and_setup_for_next_iteration()
 	
-	if not failed_to_generate: _dungeon_finished_generating.call_deferred()
-	else:
-		if not full_abort_triggered: # When full abort triggered, cleanup will be done there so threads don't fight.
-			_dungeon_failed_generating.call_deferred()
+	if not failed_to_generate: _call_from_main_thread_and_wait_if_not_on_already(_dungeon_finished_generating)
+	else: _call_from_main_thread_and_wait_if_not_on_already(_dungeon_failed_generating)
 
 var _stage_just_changed = false
 func _run_one_loop_iteration_and_increment_iterations() -> void:
@@ -269,6 +267,9 @@ func abort_generation():
 		return
 	failed_to_generate = true
 	full_abort_triggered = true
+	if _waiting_for_semaphore_for_visualization:
+		# Ensure thread doesn't lock on semaphore. Also aborts whatever was called with _call_from_main_thread_and_wait_if_not_on_already
+		_waiting_for_semaphore_for_visualization.post()
 	_printerr("abort_generation() called")
 	if running_thread and running_thread.is_alive() and OS.get_main_thread_id() == OS.get_thread_caller_id():
 		running_thread.wait_to_finish()
@@ -615,9 +616,11 @@ var _non_corridor_rooms : Array
 var _rooms_to_connect : Array
 var _all_doors_dict : Dictionary
 var _required_doors_dict : Dictionary
+var _last_rooms_to_connect_counts := []
 func connect_rooms_iteration(first_call_in_loop : bool) -> void:
 	if first_call_in_loop:
 		_rooms_to_connect = []
+		_last_rooms_to_connect_counts = []
 		_non_corridor_rooms = []
 		_quick_room_check_dict = {}
 		_quick_corridors_check_dict = {}
@@ -639,6 +642,13 @@ func connect_rooms_iteration(first_call_in_loop : bool) -> void:
 		# Init after corridors/room dict setup
 		_astar3d = DungeonAStar3D.new(self, _quick_room_check_dict, _quick_corridors_check_dict)
 	
+	# Can exit early if _rooms_to_connect stops going down, aka we tried shuffling and couldn't find a connection
+	#_last_rooms_to_connect_counts.push_front(len(_rooms_to_connect))
+	#_last_rooms_to_connect_counts = _last_rooms_to_connect_counts.filter(func(c): return c == _last_rooms_to_connect_counts[0])
+	#if len(_last_rooms_to_connect_counts) > (len(_rooms_to_connect) * 4) and _last_rooms_to_connect_counts[0] == len(_rooms_to_connect):
+		#_fail_generation("Unable to connect all rooms")
+		#return
+	
 	# First, just pathfind through all the rooms, one to the next, until all rooms are connected
 	if len(_rooms_to_connect) >= 2:
 		var room_0_pos = _rooms_to_connect[0].get_grid_aabbi(false).position
@@ -646,7 +656,9 @@ func connect_rooms_iteration(first_call_in_loop : bool) -> void:
 		var connect_path := _astar3d.get_vec3i_path(room_0_pos, room_1_pos)
 		var room_a := _rooms_to_connect.pop_front()
 		if len(connect_path) == 0:
-			_rooms_to_connect.insert(rng.randi_range(1, len(_rooms_to_connect)), room_a)
+			#print("Failed somehow")
+			#_rooms_to_connect.insert(rng.randi_range(1, len(_rooms_to_connect)), room_a)
+			_fail_generation("Failed to fully connect dungeon rooms with corridors.")
 			return
 		#print("Connecting ", room_a.name, " to ", _rooms_to_connect[0].name, ". Result: ", connect_path)
 		for corridor_pos in connect_path:
@@ -821,16 +833,24 @@ func _printwarning(str : String, str2 : String = "", str3 : String = "", str4 : 
 func get_grid_aabbi() -> AABBi:
 	return AABBi.new(Vector3i(0,0,0), dungeon_size)
 
+# Only used for visualization to make that easier to integrate into the code calling some delay on separate thread.
+var _waiting_for_semaphore_for_visualization : Semaphore
 func _call_main_thread_then_post_semaphore(f : Callable, s : Semaphore):
+	if s != _waiting_for_semaphore_for_visualization:
+		s.post()
+		return # Generation must have been aborted & reset in abort_generation
 	f.call()
 	s.post()
 func _call_from_main_thread_and_wait_if_not_on_already(f : Callable):
+	if full_abort_triggered:
+		return
 	if OS.get_thread_caller_id() == OS.get_main_thread_id():
 		f.call()
 	else:
-		var s := Semaphore.new()
-		_call_main_thread_then_post_semaphore.call_deferred(f, s)
-		s.wait()
+		_waiting_for_semaphore_for_visualization = Semaphore.new()
+		_call_main_thread_then_post_semaphore.call_deferred(f, _waiting_for_semaphore_for_visualization)
+		_waiting_for_semaphore_for_visualization.wait()
+		_waiting_for_semaphore_for_visualization = null
 
 func get_room_at_pos(grid_pos : Vector3i) -> DungeonRoom3D:
 	if stage > BuildStage.CONNECT_ROOMS:

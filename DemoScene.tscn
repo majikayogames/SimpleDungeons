@@ -1,8 +1,7 @@
-[gd_scene load_steps=10 format=3 uid="uid://26v8vrtj6g87"]
+[gd_scene load_steps=16 format=3 uid="uid://26v8vrtj6g87"]
 
 [ext_resource type="Script" path="res://DemoScene.gd" id="1_7ldx6"]
 [ext_resource type="Script" path="res://addons/SimpleDungeons/DungeonGenerator3D.gd" id="1_wd02n"]
-[ext_resource type="Texture2D" uid="uid://byywkosue8x0q" path="res://addons/SimpleDungeons/res/warning-sign.svg" id="2_omfdv"]
 [ext_resource type="Script" path="res://CamOrbitCenter.gd" id="4_huxu7"]
 
 [sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_qyqmu"]
@@ -28,6 +27,30 @@ func _process(_delta):
 "
 
 [sub_resource type="Theme" id="Theme_am664"]
+
+[sub_resource type="Gradient" id="Gradient_0gfbx"]
+colors = PackedColorArray(0.19, 0.0988, 0.0988, 1, 0.356863, 0.607843, 1, 1)
+
+[sub_resource type="FastNoiseLite" id="FastNoiseLite_ay5m5"]
+
+[sub_resource type="NoiseTexture2D" id="NoiseTexture2D_ikcx8"]
+color_ramp = SubResource("Gradient_0gfbx")
+noise = SubResource("FastNoiseLite_ay5m5")
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_cjtu7"]
+albedo_texture = SubResource("NoiseTexture2D_ikcx8")
+
+[sub_resource type="Gradient" id="Gradient_ks6gq"]
+colors = PackedColorArray(0.352941, 0.25098, 0, 1, 0.190162, 0.128887, 0, 1)
+
+[sub_resource type="GradientTexture2D" id="GradientTexture2D_f0vc6"]
+gradient = SubResource("Gradient_ks6gq")
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_570wq"]
+albedo_texture = SubResource("GradientTexture2D_f0vc6")
+uv1_triplanar = true
+uv1_triplanar_sharpness = 0.00158643
+uv1_world_triplanar = true
 
 [node name="DemoScene" type="Node3D"]
 script = ExtResource("1_7ldx6")
@@ -94,21 +117,6 @@ focus_mode = 0
 [node name="Label5" type="Label" parent="GUI/MarginContainer/VBoxContainer"]
 layout_mode = 2
 text = "Dungeon Size"
-
-[node name="HBoxContainer2" type="HBoxContainer" parent="GUI/MarginContainer/VBoxContainer"]
-visible = false
-layout_mode = 2
-
-[node name="TextureRect" type="TextureRect" parent="GUI/MarginContainer/VBoxContainer/HBoxContainer2"]
-custom_minimum_size = Vector2(25, 25)
-layout_mode = 2
-texture = ExtResource("2_omfdv")
-expand_mode = 1
-stretch_mode = 5
-
-[node name="Label2" type="Label" parent="GUI/MarginContainer/VBoxContainer/HBoxContainer2"]
-layout_mode = 2
-text = "Size changed, gen may fail"
 
 [node name="HBoxContainer" type="HBoxContainer" parent="GUI/MarginContainer/VBoxContainer"]
 layout_mode = 2
@@ -193,6 +201,23 @@ auto_rotate = true
 [node name="Camera3D" type="Camera3D" parent="CamOrbitCenter"]
 unique_name_in_owner = true
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 152)
+
+[node name="House" type="CSGBox3D" parent="."]
+visible = false
+size = Vector3(101, 101, 101)
+material = SubResource("StandardMaterial3D_cjtu7")
+
+[node name="InsideCut" type="CSGBox3D" parent="House"]
+operation = 2
+size = Vector3(100, 100, 100)
+
+[node name="Roof" type="CSGCylinder3D" parent="House"]
+transform = Transform3D(0.707107, 0, 0.707107, 0, 1, 0, -0.707107, 0, 0.707107, 0, 68, 0)
+radius = 74.199
+height = 36.155
+sides = 4
+cone = true
+material = SubResource("StandardMaterial3D_570wq")
 
 [connection signal="pressed" from="GUI/MarginContainer/VBoxContainer/RegenerateButton" to="." method="regenerate"]
 [connection signal="pressed" from="GUI/MarginContainer/VBoxContainer/GenerateWithNewSeedButton" to="." method="_on_generate_with_new_seed_button_pressed"]
