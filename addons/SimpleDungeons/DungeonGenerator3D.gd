@@ -134,6 +134,8 @@ func _process(delta):
 			if c is DungeonRoom3D and not c.virtualized_from:
 				c.add_debug_view_if_not_exist()
 		return
+	if _visualization_in_progress and Time.get_ticks_msec() - _last_iteration_end_time > visualize_generation_wait_between_iterations:
+		_run_generate_loop(false)
 
 ###################################
 ## GENERATION ENTRY POINT & LOOP ##
@@ -160,6 +162,8 @@ var is_currently_generating : bool :
 	get: return not (stage == BuildStage.NOT_STARTED or stage == BuildStage.DONE) and not failed_to_generate
 
 var _is_generating_threaded = false
+var _visualization_in_progress = false
+var _last_iteration_end_time : int = Time.get_ticks_msec()
 
 func generate(seed : int = int(generate_seed) if generate_seed.is_valid_int() else randi()) -> void:
 	if is_currently_generating:
@@ -192,9 +196,10 @@ func generate(seed : int = int(generate_seed) if generate_seed.is_valid_int() el
 		_fail_generation("DungeonGenerator3D generation failed while setting up rooms.")
 		return
 	
-	_is_generating_threaded = generate_threaded or visualize_generation_progress
+	_is_generating_threaded = generate_threaded and not visualize_generation_progress
+	_visualization_in_progress = visualize_generation_progress
 	
-	if _is_generating_threaded and not visualize_generation_progress and Engine.is_editor_hint():
+	if _is_generating_threaded and Engine.is_editor_hint():
 		_is_generating_threaded = false
 		_printwarning("Disabling threaded generation because in editor. Kept running into crashes with editor threads, looked like Godot bugs, so disabling for now. You can still use visualize generation in editor. Threaded generation in game seems to work fine.")
 	
@@ -204,19 +209,19 @@ func generate(seed : int = int(generate_seed) if generate_seed.is_valid_int() el
 	else:
 		_run_generate_loop()
 
-func _run_generate_loop() -> void:
-	retry_attempts = 0
-	while retry_attempts <= max_retries and not full_abort_triggered:
-		failed_to_generate = false # Allow reset until max retries
+func _run_generate_loop(first_call : bool = true) -> void:
+	if first_call:
+		retry_attempts = 0
 		iterations = 0
+		failed_to_generate = false
 		stage = BuildStage.PLACE_ROOMS
+	while retry_attempts <= max_retries and not full_abort_triggered:
 		while iterations < max_safe_iterations and not failed_to_generate and stage != BuildStage.FINALIZING:
 			var start_stage := stage
-			if visualize_generation_progress and _is_generating_threaded:
-				_call_from_main_thread_and_wait_if_not_on_already(_run_one_loop_iteration_and_increment_iterations)
-				OS.delay_msec(visualize_generation_wait_between_iterations)
-			else:
-				_run_one_loop_iteration_and_increment_iterations()
+			_run_one_loop_iteration_and_increment_iterations()
+			_last_iteration_end_time = Time.get_ticks_msec()
+			if _visualization_in_progress and stage != BuildStage.FINALIZING and not failed_to_generate:
+				return # Will be called again from _process
 		if stage == BuildStage.FINALIZING:
 			break
 		# If the dungeon failed to generate after looping through all stages until max_safe_iterations, retry.
@@ -225,15 +230,21 @@ func _run_generate_loop() -> void:
 			_fail_generation("Reached max generation retries. Failed to generate. Failed at stage "+BuildStage.find_key(stage))
 			break
 		else:
-			# Rooms container will be in tree if visualizing so can't just directly clear children
-			if visualize_generation_progress:
-				if retry_attempts <= max_retries and not full_abort_triggered:
-					_call_from_main_thread_and_wait_if_not_on_already(clear_rooms_container_and_setup_for_next_iteration)
-					_printwarning("Generation failed on attempt "+str(retry_attempts)+" at stage "+BuildStage.find_key(stage)+". Retrying generation.")
-			else: clear_rooms_container_and_setup_for_next_iteration()
+			clear_rooms_container_and_setup_for_next_iteration()
+			iterations = 0
+			failed_to_generate = false
+			stage = BuildStage.PLACE_ROOMS
+			if _visualization_in_progress:
+				return # Will be called again from _process
+			_printwarning("Generation failed on attempt "+str(retry_attempts)+" at stage "+BuildStage.find_key(stage)+". Retrying generation.")
 	
-	if not failed_to_generate: _call_from_main_thread_and_wait_if_not_on_already(_dungeon_finished_generating)
-	else: _call_from_main_thread_and_wait_if_not_on_already(_dungeon_failed_generating)
+	_visualization_in_progress = false
+	if _is_generating_threaded:
+		if not failed_to_generate: _dungeon_finished_generating.call_deferred()
+		else: _dungeon_failed_generating.call_deferred()
+	else:
+		if not failed_to_generate: _dungeon_finished_generating()
+		else: _dungeon_failed_generating()
 
 var _stage_just_changed = false
 func _run_one_loop_iteration_and_increment_iterations() -> void:
@@ -267,9 +278,6 @@ func abort_generation():
 		return
 	failed_to_generate = true
 	full_abort_triggered = true
-	if _waiting_for_semaphore_for_visualization:
-		# Ensure thread doesn't lock on semaphore. Also aborts whatever was called with _call_from_main_thread_and_wait_if_not_on_already
-		_waiting_for_semaphore_for_visualization.post()
 	_printerr("abort_generation() called")
 	if running_thread and running_thread.is_alive() and OS.get_main_thread_id() == OS.get_thread_caller_id():
 		running_thread.wait_to_finish()
@@ -832,25 +840,6 @@ func _printwarning(str : String, str2 : String = "", str3 : String = "", str4 : 
 
 func get_grid_aabbi() -> AABBi:
 	return AABBi.new(Vector3i(0,0,0), dungeon_size)
-
-# Only used for visualization to make that easier to integrate into the code calling some delay on separate thread.
-var _waiting_for_semaphore_for_visualization : Semaphore
-func _call_main_thread_then_post_semaphore(f : Callable, s : Semaphore):
-	if s != _waiting_for_semaphore_for_visualization:
-		s.post()
-		return # Generation must have been aborted & reset in abort_generation
-	f.call()
-	s.post()
-func _call_from_main_thread_and_wait_if_not_on_already(f : Callable):
-	if full_abort_triggered:
-		return
-	if OS.get_thread_caller_id() == OS.get_main_thread_id():
-		f.call()
-	else:
-		_waiting_for_semaphore_for_visualization = Semaphore.new()
-		_call_main_thread_then_post_semaphore.call_deferred(f, _waiting_for_semaphore_for_visualization)
-		_waiting_for_semaphore_for_visualization.wait()
-		_waiting_for_semaphore_for_visualization = null
 
 func get_room_at_pos(grid_pos : Vector3i) -> DungeonRoom3D:
 	if stage > BuildStage.CONNECT_ROOMS:

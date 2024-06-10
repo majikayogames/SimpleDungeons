@@ -2,6 +2,8 @@ extends Node3D
 
 var player_scene = preload("res://FPSController/FPSController.tscn")
 
+@onready var dungeon_generator = %DungeonGenerator3D
+
 var blue_red = [
 	preload("res://addons/SimpleDungeons/sample_dungeons/custom_random_room_function_example/blue_room.tscn"),
 	preload("res://addons/SimpleDungeons/sample_dungeons/custom_random_room_function_example/red_room.tscn"),
@@ -138,9 +140,9 @@ func custom_get_rand_rooms(room_instances : Array[DungeonRoom3D], rng_seeded : R
 		inst.room_rotations = rng_seeded.randi()
 		inst.set_position_by_grid_pos(
 			Vector3i(
-				(rng_seeded.randi() % %DungeonGenerator3D.dungeon_size.x) / 2,
-				rng_seeded.randi() % %DungeonGenerator3D.dungeon_size.y,
-				rng_seeded.randi() % %DungeonGenerator3D.dungeon_size.z))
+				(rng_seeded.randi() % dungeon_generator.dungeon_size.x) / 2,
+				rng_seeded.randi() % dungeon_generator.dungeon_size.y,
+				rng_seeded.randi() % dungeon_generator.dungeon_size.z))
 		num_red_rooms -= 1
 	while num_blue_rooms > 0:
 		var inst = blue_room.create_clone_and_make_virtual_unless_visualizing()
@@ -149,9 +151,9 @@ func custom_get_rand_rooms(room_instances : Array[DungeonRoom3D], rng_seeded : R
 		inst.room_rotations = rng_seeded.randi()
 		inst.set_position_by_grid_pos(
 			Vector3i(
-				(rng_seeded.randi() % %DungeonGenerator3D.dungeon_size.x) / 2 + %DungeonGenerator3D.dungeon_size.x / 2,
-				rng_seeded.randi() % %DungeonGenerator3D.dungeon_size.y,
-				rng_seeded.randi() % %DungeonGenerator3D.dungeon_size.z))
+				(rng_seeded.randi() % dungeon_generator.dungeon_size.x) / 2 + dungeon_generator.dungeon_size.x / 2,
+				rng_seeded.randi() % dungeon_generator.dungeon_size.y,
+				rng_seeded.randi() % dungeon_generator.dungeon_size.z))
 		num_blue_rooms -= 1
 	return rooms
 

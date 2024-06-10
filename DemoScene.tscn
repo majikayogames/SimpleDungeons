@@ -42,6 +42,7 @@ environment = SubResource("Environment_4mo8u")
 unique_name_in_owner = true
 script = ExtResource("1_wd02n")
 generate_on_ready = false
+generate_threaded = true
 
 [node name="GUI" type="Control" parent="."]
 unique_name_in_owner = true
@@ -142,7 +143,6 @@ text = "Auto rotate"
 unique_name_in_owner = true
 layout_mode = 2
 focus_mode = 0
-button_pressed = true
 text = "Show debug grid"
 
 [node name="RegenerateButton" type="Button" parent="GUI/MarginContainer/VBoxContainer"]
