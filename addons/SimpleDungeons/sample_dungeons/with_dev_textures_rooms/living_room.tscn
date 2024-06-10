@@ -1,8 +1,13 @@
-[gd_scene load_steps=6 format=3 uid="uid://b8bnbf7bch1s0"]
+[gd_scene load_steps=7 format=3 uid="uid://b8bnbf7bch1s0"]
 
 [ext_resource type="Script" path="res://addons/SimpleDungeons/DungeonRoom3D.gd" id="1_y1oj8"]
-[ext_resource type="Material" uid="uid://r3rtjl181fpd" path="res://addons/SimpleDungeons/sample_assets/texture_02.tres" id="2_pcrjh"]
+[ext_resource type="Texture2D" uid="uid://dqvyc0ok7chld" path="res://addons/SimpleDungeons/sample_assets/kenney-grey-checkerboard-cc0.png" id="2_bphhi"]
 [ext_resource type="Texture2D" uid="uid://djhy80eyqjqpv" path="res://addons/SimpleDungeons/sample_assets/kenney-dark-grey-checkboard-cc0.png" id="3_edxhr"]
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_n0t7s"]
+albedo_texture = ExtResource("2_bphhi")
+uv1_triplanar = true
+uv1_world_triplanar = true
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_x7cu1"]
 albedo_texture = ExtResource("3_edxhr")
@@ -25,7 +30,7 @@ size_in_voxels = Vector3i(3, 1, 2)
 
 [node name="CSGBox3D" type="CSGBox3D" parent="."]
 transform = Transform3D(-1, 0, -8.74228e-08, 0, 1, 0, 8.74228e-08, 0, -1, 2.49155e-06, 0, 0)
-material_override = ExtResource("2_pcrjh")
+material_override = SubResource("StandardMaterial3D_n0t7s")
 use_collision = true
 size = Vector3(30, 10, 20)
 

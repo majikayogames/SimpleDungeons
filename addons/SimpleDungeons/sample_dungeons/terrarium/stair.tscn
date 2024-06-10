@@ -1,23 +1,16 @@
-[gd_scene load_steps=5 format=3 uid="uid://br3pjd5mcjj11"]
+[gd_scene load_steps=3 format=3 uid="uid://cdffbslc7qhgi"]
 
-[ext_resource type="Script" path="res://addons/SimpleDungeons/DungeonRoom3D.gd" id="1_pixse"]
-[ext_resource type="Texture2D" uid="uid://dqvyc0ok7chld" path="res://addons/SimpleDungeons/sample_assets/kenney-grey-checkerboard-cc0.png" id="2_bdw51"]
-[ext_resource type="PackedScene" uid="uid://bak8ltrhbmlv5" path="res://addons/SimpleDungeons/utils/CSGStairMaker3D.tscn" id="3_dobr2"]
+[ext_resource type="Script" path="res://addons/SimpleDungeons/DungeonRoom3D.gd" id="1_13awt"]
+[ext_resource type="PackedScene" uid="uid://bak8ltrhbmlv5" path="res://addons/SimpleDungeons/utils/CSGStairMaker3D.tscn" id="3_ldwg4"]
 
-[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_6cnww"]
-albedo_texture = ExtResource("2_bdw51")
-uv1_triplanar = true
-uv1_world_triplanar = true
-
-[node name="Stairs" type="Node3D"]
-script = ExtResource("1_pixse")
+[node name="Stair" type="Node3D"]
+script = ExtResource("1_13awt")
 size_in_voxels = Vector3i(2, 2, 1)
-max_count = 20
+max_count = 15
 is_stair_room = true
 
 [node name="CSGBox3D" type="CSGBox3D" parent="."]
 transform = Transform3D(-1, 0, -8.74228e-08, 0, 1, 0, 8.74228e-08, 0, -1, 0, 0, 0)
-material_override = SubResource("StandardMaterial3D_6cnww")
 use_collision = true
 size = Vector3(20, 20, 10)
 
@@ -35,7 +28,7 @@ transform = Transform3D(-4.37114e-08, 0, -1, 0, 1, 0, 1, 0, -4.37114e-08, -9.9, 
 operation = 2
 size = Vector3(2, 4, 1)
 
-[node name="CSGStairMaker3D" parent="." instance=ExtResource("3_dobr2")]
+[node name="CSGStairMaker3D" parent="." instance=ExtResource("3_ldwg4")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2.75, -4.75, 0)
 use_collision = true
 size = Vector3(14, 10, 9.5)

@@ -1,0 +1,86 @@
+[gd_scene load_steps=9 format=3 uid="uid://b3tl36squaoel"]
+
+[ext_resource type="Script" path="res://addons/SimpleDungeons/DungeonRoom3D.gd" id="1_1qelf"]
+[ext_resource type="Texture2D" uid="uid://wvh1xmoax4ok" path="res://addons/SimpleDungeons/sample_assets/kenney-dark-grey-grid-cc0.png" id="7_x4518"]
+[ext_resource type="PackedScene" uid="uid://bak8ltrhbmlv5" path="res://addons/SimpleDungeons/utils/CSGStairMaker3D.tscn" id="8_tpxey"]
+[ext_resource type="Texture2D" uid="uid://dydd6x64uxryr" path="res://addons/SimpleDungeons/sample_assets/kenney-red-checkerboard-cc0.png" id="9_68bqd"]
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_cy7sd"]
+albedo_texture = ExtResource("7_x4518")
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_inmcr"]
+albedo_color = Color(0.252028, 0.252028, 0.252028, 1)
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_geohb"]
+albedo_color = Color(0.223103, 0.223103, 0.223103, 1)
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_0fi8r"]
+albedo_texture = ExtResource("9_68bqd")
+
+[node name="MansionEntranceRoom" type="Node3D"]
+script = ExtResource("1_1qelf")
+size_in_voxels = Vector3i(2, 4, 3)
+
+[node name="CSGBox3D" type="CSGBox3D" parent="."]
+material_override = SubResource("StandardMaterial3D_cy7sd")
+use_collision = true
+size = Vector3(20, 40, 30)
+
+[node name="CSGBox3D2" type="CSGBox3D" parent="CSGBox3D"]
+operation = 2
+size = Vector3(19, 39, 29)
+
+[node name="CSGBox3D3" type="CSGBox3D" parent="CSGBox3D"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -4.75, 13)
+operation = 2
+size = Vector3(19, 29.5, 7)
+
+[node name="DOOR_R" type="CSGBox3D" parent="CSGBox3D"]
+transform = Transform3D(-4.37114e-08, 0, -1, 0, 1, 0, 1, 0, -4.37114e-08, 9.25, -5, -9.95)
+operation = 2
+size = Vector3(9.2, 9.2, 2)
+
+[node name="DOOR_L" type="CSGBox3D" parent="CSGBox3D"]
+transform = Transform3D(-4.37114e-08, 0, -1, 0, 1, 0, 1, 0, -4.37114e-08, -9.75, -5, -9.95)
+operation = 2
+size = Vector3(9.2, 9.2, 2)
+
+[node name="DOOR_R2" type="CSGBox3D" parent="CSGBox3D"]
+transform = Transform3D(-4.37114e-08, 0, -1, 0, 1, 0, 1, 0, -4.37114e-08, 9.25, -5, 10.05)
+operation = 2
+size = Vector3(9.2, 9.2, 2)
+
+[node name="DOOR_L2" type="CSGBox3D" parent="CSGBox3D"]
+transform = Transform3D(-4.37114e-08, 0, -1, 0, 1, 0, 1, 0, -4.37114e-08, -9.75, -5, 10.05)
+operation = 2
+size = Vector3(9.2, 9.2, 2)
+
+[node name="CSGStairMaker3D" parent="." instance=ExtResource("8_tpxey")]
+transform = Transform3D(-4.37114e-08, 0, 1, 0, 1, 0, -1, 0, -4.37114e-08, 8.74228e-08, -14.9, 0)
+material_override = SubResource("StandardMaterial3D_inmcr")
+use_collision = true
+size = Vector3(10, 10, 10)
+num_stairs = 42
+
+[node name="CSGBox3D4" type="CSGBox3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -14.5, -9.75)
+use_collision = true
+size = Vector3(19.8, 10, 9.5)
+material = SubResource("StandardMaterial3D_geohb")
+
+[node name="CSGBox3D5" type="CSGBox3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 7.5, -9.95, 5)
+use_collision = true
+size = Vector3(4, 0.7, 20)
+material = SubResource("StandardMaterial3D_geohb")
+
+[node name="CSGBox3D6" type="CSGBox3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -7.5, -9.95, 5)
+use_collision = true
+size = Vector3(4, 0.7, 20)
+material = SubResource("StandardMaterial3D_geohb")
+
+[node name="CSGBox3D2" type="CSGBox3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -19.9, 10)
+size = Vector3(6, 1, 9)
+material = SubResource("StandardMaterial3D_0fi8r")

@@ -1,0 +1,87 @@
+[gd_scene load_steps=13 format=3 uid="uid://bv23twweurssv"]
+
+[ext_resource type="Script" path="res://addons/SimpleDungeons/sample_dungeons/mansion/house_exterior.gd" id="1_d4jd8"]
+[ext_resource type="PackedScene" uid="uid://bak8ltrhbmlv5" path="res://addons/SimpleDungeons/utils/CSGStairMaker3D.tscn" id="1_wv7fx"]
+[ext_resource type="Texture2D" uid="uid://bwe02yta75ooa" path="res://addons/SimpleDungeons/sample_assets/kenney-green-checkerboar-cc0.png" id="2_dgnpe"]
+
+[sub_resource type="Gradient" id="Gradient_0gfbx"]
+colors = PackedColorArray(0.19, 0.0988, 0.0988, 1, 0.356863, 0.607843, 1, 1)
+
+[sub_resource type="FastNoiseLite" id="FastNoiseLite_ay5m5"]
+
+[sub_resource type="NoiseTexture2D" id="NoiseTexture2D_ikcx8"]
+color_ramp = SubResource("Gradient_0gfbx")
+noise = SubResource("FastNoiseLite_ay5m5")
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_cjtu7"]
+albedo_texture = SubResource("NoiseTexture2D_ikcx8")
+
+[sub_resource type="Gradient" id="Gradient_ks6gq"]
+colors = PackedColorArray(0.352941, 0.25098, 0, 1, 0.190162, 0.128887, 0, 1)
+
+[sub_resource type="GradientTexture2D" id="GradientTexture2D_f0vc6"]
+gradient = SubResource("Gradient_ks6gq")
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_570wq"]
+albedo_texture = SubResource("GradientTexture2D_f0vc6")
+uv1_triplanar = true
+uv1_triplanar_sharpness = 0.00158643
+uv1_world_triplanar = true
+
+[sub_resource type="PrismMesh" id="PrismMesh_urnwm"]
+material = SubResource("StandardMaterial3D_570wq")
+size = Vector3(110, 20, 110)
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_42bcn"]
+albedo_texture = ExtResource("2_dgnpe")
+
+[node name="HouseExterior" type="Node3D"]
+script = ExtResource("1_d4jd8")
+show_delay_ms = null
+
+[node name="HouseWalls" type="CSGBox3D" parent="."]
+material_override = SubResource("StandardMaterial3D_cjtu7")
+use_collision = true
+size = Vector3(105, 105, 105)
+
+[node name="InsideCut" type="CSGBox3D" parent="HouseWalls"]
+operation = 2
+size = Vector3(100, 100, 100)
+
+[node name="Roof" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 63, 0)
+mesh = SubResource("PrismMesh_urnwm")
+
+[node name="Entrance" type="Node3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -10, -30, 50)
+
+[node name="CSGStairMaker3D" parent="Entrance" instance=ExtResource("1_wv7fx")]
+transform = Transform3D(-4.37114e-08, 0, 1, 0, 1, 0, -1, 0, -4.37114e-08, 10, -10, 12.5)
+use_collision = true
+size = Vector3(20, 20, 20)
+num_stairs = 42
+
+[node name="CSGBox3D" type="CSGBox3D" parent="Entrance"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 10, -20.5, 25)
+use_collision = true
+size = Vector3(66, 1, 45)
+
+[node name="CSGBox3D2" type="CSGBox3D" parent="Entrance"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -12.5, -13.5, 9)
+material_override = SubResource("StandardMaterial3D_42bcn")
+use_collision = true
+size = Vector3(5, 14, 5)
+
+[node name="CSGBox3D3" type="CSGBox3D" parent="Entrance"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 32.5, -13.5, 9)
+material_override = SubResource("StandardMaterial3D_42bcn")
+use_collision = true
+size = Vector3(5, 14, 5)
+
+[node name="PlayerSpawnPoint" type="Node3D" parent="Entrance" groups=["player_spawn_point"]]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 10, -14, 41)
+
+[node name="FrontDoorCut" type="CSGBox3D" parent="Entrance"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 10, 5, 0)
+operation = 2
+size = Vector3(20, 10, 10)

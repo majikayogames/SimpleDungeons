@@ -1,0 +1,63 @@
+[gd_scene load_steps=6 format=3 uid="uid://bn6lta2vs6qh8"]
+
+[ext_resource type="Script" path="res://addons/SimpleDungeons/DungeonRoom3D.gd" id="1_m0wvh"]
+
+[sub_resource type="FastNoiseLite" id="FastNoiseLite_4grxn"]
+
+[sub_resource type="NoiseTexture2D" id="NoiseTexture2D_4g5kp"]
+noise = SubResource("FastNoiseLite_4grxn")
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_ovx52"]
+albedo_texture = SubResource("NoiseTexture2D_4g5kp")
+
+[sub_resource type="GDScript" id="GDScript_nl3oo"]
+script/source = "extends Node
+
+func _ready():
+	$\"..\".connect(\"dungeon_done_generating\", remove_unused_doors)
+
+func remove_unused_doors():
+	for door in $\"..\".get_doors():
+		if door.get_room_leads_to() == null:
+			door.door_node.queue_free()
+"
+
+[node name="Corridor" type="Node3D"]
+script = ExtResource("1_m0wvh")
+
+[node name="CSGBox3D" type="CSGBox3D" parent="."]
+use_collision = true
+size = Vector3(10, 10, 10)
+
+[node name="CSGBox3D2" type="CSGBox3D" parent="CSGBox3D"]
+operation = 2
+size = Vector3(9, 9, 9)
+
+[node name="CSGBox3D3" type="CSGBox3D" parent="CSGBox3D"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -4.52714, 0)
+operation = 2
+size = Vector3(9, 0.096, 9)
+material = SubResource("StandardMaterial3D_ovx52")
+
+[node name="DOOR?" type="CSGBox3D" parent="CSGBox3D"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -5)
+operation = 2
+size = Vector3(9, 9, 3)
+
+[node name="DOOR?2" type="CSGBox3D" parent="CSGBox3D"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 5)
+operation = 2
+size = Vector3(9, 9, 3)
+
+[node name="DOOR?3" type="CSGBox3D" parent="CSGBox3D"]
+transform = Transform3D(-4.37114e-08, 0, 1, 0, 1, 0, -1, 0, -4.37114e-08, 4, 0, 0)
+operation = 2
+size = Vector3(9, 9, 3)
+
+[node name="DOOR?4" type="CSGBox3D" parent="CSGBox3D"]
+transform = Transform3D(-4.37114e-08, 0, 1, 0, 1, 0, -1, 0, -4.37114e-08, -4, 0, 0)
+operation = 2
+size = Vector3(9, 9, 3)
+
+[node name="RemoveUnusedDoors" type="Node" parent="."]
+script = SubResource("GDScript_nl3oo")

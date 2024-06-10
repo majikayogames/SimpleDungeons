@@ -25,6 +25,16 @@ var devtextures = [
 	preload("res://addons/SimpleDungeons/sample_dungeons/with_dev_textures_rooms/stair.tscn"),
 	preload("res://addons/SimpleDungeons/sample_dungeons/with_dev_textures_rooms/corridor.tscn"),
 ]
+var mansion = [
+	preload("res://addons/SimpleDungeons/sample_dungeons/mansion/rooms/bedroom.tscn"),
+	preload("res://addons/SimpleDungeons/sample_dungeons/mansion/rooms/stair.tscn"),
+	preload("res://addons/SimpleDungeons/sample_dungeons/mansion/rooms/corridor.tscn"),
+]
+var terrarium = [
+	preload("res://addons/SimpleDungeons/sample_dungeons/terrarium/green_room.tscn"),
+	preload("res://addons/SimpleDungeons/sample_dungeons/terrarium/stair.tscn"),
+	preload("res://addons/SimpleDungeons/sample_dungeons/terrarium/corridor.tscn"),
+]
 
 var sizes = {
 	blue_red: Vector3i(10,10,10),
@@ -36,6 +46,8 @@ var names = {
 	blue_red: "Custom room placement demo",
 	rgsdev: "Dungeon Kit by rgsdev",
 	devtextures: "Dev texture example",
+	mansion: "Mansion",
+	terrarium: "Terrarium"
 }
 
 func _ready():
@@ -65,12 +77,33 @@ func _process(delta):
 				c.release_focus()
 			c.focus_mode = Control.FOCUS_NONE if Input.get_mouse_mode() == Input.MOUSE_MODE_CAPTURED else Control.FOCUS_CLICK
 
+var mansion_exterior
+var mansion_entrance_room
+func cleanup_mansion():
+	if mansion_entrance_room:
+		mansion_entrance_room.get_parent().remove_child(mansion_entrance_room)
+		mansion_entrance_room.queue_free()
+		mansion_entrance_room = null
+	if mansion_exterior:
+		mansion_exterior.get_parent().remove_child(mansion_exterior)
+		mansion_exterior.queue_free()
+		mansion_exterior = null
+
+func setup_mansion():
+	mansion_exterior = preload("res://addons/SimpleDungeons/sample_dungeons/mansion/house_exterior.tscn").instantiate()
+	add_child(mansion_exterior)
+	mansion_exterior.dungeon_generator = %DungeonGenerator3D
+	mansion_entrance_room = preload("res://addons/SimpleDungeons/sample_dungeons/mansion/mansion_entrance_room.tscn").instantiate()
+	%DungeonGenerator3D.add_child(mansion_entrance_room)
+	mansion_entrance_room.set_position_by_grid_pos(Vector3i(%DungeonGenerator3D.dungeon_size.x / 2 - 1,2,999))
+
 func regenerate():
-	print("Checking if generating...")
 	if %DungeonGenerator3D.is_currently_generating:
 		print("Aborting...")
 		%DungeonGenerator3D.abort_generation()
 		print("Aborted successfully")
+	
+	cleanup_mansion()
 	var n = %OptionButtonDungeons.get_item_text(%OptionButtonDungeons.get_selected_id())
 	var d_arr = names.find_key(n).slice(0)
 	var corridor = d_arr.pop_back()
@@ -80,6 +113,9 @@ func regenerate():
 	%DungeonGenerator3D.room_scenes = room_scenes
 	
 	%DungeonGenerator3D.custom_get_rooms_function = custom_get_rand_rooms if n == "Custom room placement demo" else null
+	
+	if n == "Mansion":
+		setup_mansion()
 	
 	_update_props()
 	%DungeonGenerator3D.generate(%Seed.value)
@@ -128,7 +164,3 @@ func _on_spawn_player_button_pressed():
 	spawn_points.pick_random().add_child(player)
 	for cam in player.find_children("*", "Camera3D"):
 		cam.current = true
-
-
-func _on_abort_button_pressed():
-	%DungeonGenerator3D.abort_generation()

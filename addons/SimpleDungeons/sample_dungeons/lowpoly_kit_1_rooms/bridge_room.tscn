@@ -1,7 +1,6 @@
-[gd_scene load_steps=23 format=3 uid="uid://p0pnjftk0uda"]
+[gd_scene load_steps=22 format=3 uid="uid://p0pnjftk0uda"]
 
 [ext_resource type="Script" path="res://addons/SimpleDungeons/DungeonRoom3D.gd" id="1_l4i0w"]
-[ext_resource type="Material" uid="uid://r3rtjl181fpd" path="res://addons/SimpleDungeons/sample_assets/texture_02.tres" id="3_dyes0"]
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_upkxj"]
 resource_name = "dark grey"
@@ -407,7 +406,6 @@ size = Vector3(2, 0.1, 19.5)
 [node name="CSGBox3D" type="CSGBox3D" parent="."]
 transform = Transform3D(-1, 0, -8.74228e-08, 0, 1, 0, 8.74228e-08, 0, -1, 7.43094e-07, 0.0643888, 0.115448)
 visible = false
-material_override = ExtResource("3_dyes0")
 use_collision = true
 size = Vector3(10, 10, 20)
 

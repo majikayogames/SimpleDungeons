@@ -98,7 +98,7 @@ func _process(delta):
 const _dungeon_room_export_props_names = ["size_in_voxels", "voxel_scale", "min_count", "max_count", "is_stair_room", "show_debug_in_editor", "show_debug_in_game", "show_grid_aabb_with_doors"]
 func copy_all_props(from : DungeonRoom3D, to : DungeonRoom3D) -> void:
 	for prop in _dungeon_room_export_props_names:
-		if from.get(prop) != to.get(prop): # Don't trigger editor button setters
+		if from.get(prop) != to.get(prop):
 			to.set(prop, from.get(prop))
 	to.name = from.name
 	to.dungeon_generator = from.dungeon_generator

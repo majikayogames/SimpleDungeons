@@ -26,6 +26,8 @@ func remove_unused_doors():
 [node name="LivingRoom" type="Node3D"]
 script = ExtResource("1_5uyeo")
 size_in_voxels = Vector3i(2, 1, 2)
+min_count = 5
+max_count = 12
 
 [node name="CSGBox3D" type="CSGBox3D" parent="."]
 material_override = SubResource("StandardMaterial3D_0q3jk")

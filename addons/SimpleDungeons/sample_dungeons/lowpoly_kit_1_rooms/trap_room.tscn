@@ -1,6 +1,4 @@
-[gd_scene load_steps=24 format=3 uid="uid://bicoj8112x1ra"]
-
-[ext_resource type="Material" uid="uid://r3rtjl181fpd" path="res://addons/SimpleDungeons/sample_assets/texture_02.tres" id="1_8c1cq"]
+[gd_scene load_steps=23 format=3 uid="uid://bicoj8112x1ra"]
 
 [sub_resource type="GDScript" id="GDScript_nbyfi"]
 script/source = "@tool
@@ -399,7 +397,6 @@ size_in_voxels = Vector3i(1, 2, 1)
 [node name="CSGBox3D" type="CSGBox3D" parent="."]
 transform = Transform3D(-1, 0, -8.74228e-08, 0, 1, 0, 8.74228e-08, 0, -1, 0, 0, 0)
 visible = false
-material_override = ExtResource("1_8c1cq")
 use_collision = true
 size = Vector3(10, 20, 10)
 
@@ -416,7 +413,6 @@ size = Vector3(3.64819, 5.45129, 1)
 [node name="TrapFloor" type="CSGBox3D" parent="."]
 transform = Transform3D(-1, 0, -8.74228e-08, 0, 1, 0, 8.74228e-08, 0, -1, 0, -0.11621, 0)
 visible = false
-material_override = ExtResource("1_8c1cq")
 use_collision = true
 size = Vector3(10, 0.92495, 10)
 

@@ -1,4 +1,4 @@
-[gd_scene load_steps=16 format=3 uid="uid://26v8vrtj6g87"]
+[gd_scene load_steps=9 format=3 uid="uid://26v8vrtj6g87"]
 
 [ext_resource type="Script" path="res://DemoScene.gd" id="1_7ldx6"]
 [ext_resource type="Script" path="res://addons/SimpleDungeons/DungeonGenerator3D.gd" id="1_wd02n"]
@@ -28,30 +28,6 @@ func _process(_delta):
 
 [sub_resource type="Theme" id="Theme_am664"]
 
-[sub_resource type="Gradient" id="Gradient_0gfbx"]
-colors = PackedColorArray(0.19, 0.0988, 0.0988, 1, 0.356863, 0.607843, 1, 1)
-
-[sub_resource type="FastNoiseLite" id="FastNoiseLite_ay5m5"]
-
-[sub_resource type="NoiseTexture2D" id="NoiseTexture2D_ikcx8"]
-color_ramp = SubResource("Gradient_0gfbx")
-noise = SubResource("FastNoiseLite_ay5m5")
-
-[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_cjtu7"]
-albedo_texture = SubResource("NoiseTexture2D_ikcx8")
-
-[sub_resource type="Gradient" id="Gradient_ks6gq"]
-colors = PackedColorArray(0.352941, 0.25098, 0, 1, 0.190162, 0.128887, 0, 1)
-
-[sub_resource type="GradientTexture2D" id="GradientTexture2D_f0vc6"]
-gradient = SubResource("Gradient_ks6gq")
-
-[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_570wq"]
-albedo_texture = SubResource("GradientTexture2D_f0vc6")
-uv1_triplanar = true
-uv1_triplanar_sharpness = 0.00158643
-uv1_world_triplanar = true
-
 [node name="DemoScene" type="Node3D"]
 script = ExtResource("1_7ldx6")
 
@@ -66,7 +42,6 @@ environment = SubResource("Environment_4mo8u")
 unique_name_in_owner = true
 script = ExtResource("1_wd02n")
 generate_on_ready = false
-show_debug_in_game = true
 
 [node name="GUI" type="Control" parent="."]
 unique_name_in_owner = true
@@ -83,7 +58,7 @@ layout_mode = 0
 offset_left = 860.0
 offset_top = 15.0
 offset_right = 1137.0
-offset_bottom = 478.0
+offset_bottom = 443.0
 script = SubResource("GDScript_fku1n")
 
 [node name="MarginContainer" type="MarginContainer" parent="GUI"]
@@ -167,6 +142,7 @@ text = "Auto rotate"
 unique_name_in_owner = true
 layout_mode = 2
 focus_mode = 0
+button_pressed = true
 text = "Show debug grid"
 
 [node name="RegenerateButton" type="Button" parent="GUI/MarginContainer/VBoxContainer"]
@@ -180,12 +156,6 @@ unique_name_in_owner = true
 layout_mode = 2
 focus_mode = 0
 text = "Generate With New Seed"
-
-[node name="AbortButton" type="Button" parent="GUI/MarginContainer/VBoxContainer"]
-unique_name_in_owner = true
-layout_mode = 2
-focus_mode = 0
-text = "Abort"
 
 [node name="SpawnPlayerButton" type="Button" parent="GUI/MarginContainer/VBoxContainer"]
 unique_name_in_owner = true
@@ -202,24 +172,6 @@ auto_rotate = true
 unique_name_in_owner = true
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 152)
 
-[node name="House" type="CSGBox3D" parent="."]
-visible = false
-size = Vector3(101, 101, 101)
-material = SubResource("StandardMaterial3D_cjtu7")
-
-[node name="InsideCut" type="CSGBox3D" parent="House"]
-operation = 2
-size = Vector3(100, 100, 100)
-
-[node name="Roof" type="CSGCylinder3D" parent="House"]
-transform = Transform3D(0.707107, 0, 0.707107, 0, 1, 0, -0.707107, 0, 0.707107, 0, 68, 0)
-radius = 74.199
-height = 36.155
-sides = 4
-cone = true
-material = SubResource("StandardMaterial3D_570wq")
-
 [connection signal="pressed" from="GUI/MarginContainer/VBoxContainer/RegenerateButton" to="." method="regenerate"]
 [connection signal="pressed" from="GUI/MarginContainer/VBoxContainer/GenerateWithNewSeedButton" to="." method="_on_generate_with_new_seed_button_pressed"]
-[connection signal="pressed" from="GUI/MarginContainer/VBoxContainer/AbortButton" to="." method="_on_abort_button_pressed"]
 [connection signal="pressed" from="GUI/MarginContainer/VBoxContainer/SpawnPlayerButton" to="." method="_on_spawn_player_button_pressed"]

@@ -1,6 +1,5 @@
-[gd_scene load_steps=52 format=3 uid="uid://b6t2tduxk8tfn"]
+[gd_scene load_steps=51 format=3 uid="uid://b6t2tduxk8tfn"]
 
-[ext_resource type="Material" uid="uid://r3rtjl181fpd" path="res://addons/SimpleDungeons/sample_assets/texture_02.tres" id="1_vmsou"]
 [ext_resource type="Script" path="res://addons/SimpleDungeons/sample_dungeons/lowpoly_kit_1_rooms/living_room.gd" id="1_y5hb7"]
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_upkxj"]
@@ -870,7 +869,6 @@ size_in_voxels = Vector3i(3, 1, 2)
 [node name="CSGBox3D" type="CSGBox3D" parent="."]
 transform = Transform3D(-1, 0, -8.74228e-08, 0, 1, 0, 8.74228e-08, 0, -1, 0, 0, 0)
 visible = false
-material_override = ExtResource("1_vmsou")
 use_collision = true
 size = Vector3(30, 10, 20)
 

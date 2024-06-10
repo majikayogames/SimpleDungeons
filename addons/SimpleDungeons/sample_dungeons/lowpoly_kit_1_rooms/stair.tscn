@@ -1,7 +1,6 @@
-[gd_scene load_steps=25 format=3 uid="uid://c5lo6wkhhg76p"]
+[gd_scene load_steps=24 format=3 uid="uid://c5lo6wkhhg76p"]
 
 [ext_resource type="Script" path="res://addons/SimpleDungeons/DungeonRoom3D.gd" id="1_xwt1m"]
-[ext_resource type="Material" uid="uid://r3rtjl181fpd" path="res://addons/SimpleDungeons/sample_assets/texture_02.tres" id="2_xj4qq"]
 [ext_resource type="PackedScene" uid="uid://bak8ltrhbmlv5" path="res://addons/SimpleDungeons/utils/CSGStairMaker3D.tscn" id="3_vbju8"]
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_upkxj"]
@@ -340,7 +339,6 @@ is_stair_room = true
 [node name="CSGBox3D" type="CSGBox3D" parent="."]
 transform = Transform3D(-1, 0, -8.74228e-08, 0, 1, 0, 8.74228e-08, 0, -1, 0, 0, 0)
 visible = false
-material_override = ExtResource("2_xj4qq")
 use_collision = true
 size = Vector3(20, 20, 10)
 

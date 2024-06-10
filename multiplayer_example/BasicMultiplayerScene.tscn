@@ -1,0 +1,89 @@
+[gd_scene load_steps=2 format=3 uid="uid://cncv0huyfdm03"]
+
+[sub_resource type="GDScript" id="GDScript_k6brh"]
+script/source = "extends Control
+
+func _process(delta):
+	if len(%LevelContainer.get_children()) > 0:
+		self.visible = false
+	else:
+		self.visible = true
+
+func change_level(path):
+	# Clear existing children (previous scene).
+	for child in %LevelContainer.get_children():
+		%LevelContainer.remove_child(child)
+		child.queue_free()
+	
+	# change_level(null) to go back to main menu
+	if not path:
+		Input.mouse_mode = Input.MOUSE_MODE_VISIBLE
+		return
+	
+	%LevelContainer.add_child(ResourceLoader.load(path).instantiate())
+
+func _on_join_button_pressed():
+	var peer = ENetMultiplayerPeer.new()
+	peer.create_client(%ServerIPTextEdit.text, 1337)
+	multiplayer.multiplayer_peer = peer
+
+func _on_create_button_pressed():
+	var peer = ENetMultiplayerPeer.new()
+	peer.create_server(1337)
+	multiplayer.multiplayer_peer = peer
+	change_level(\"res://multiplayer_example/DungeonTest.tscn\")
+"
+
+[node name="BasicMultiplayerScene" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = SubResource("GDScript_k6brh")
+
+[node name="LevelMultiplayerSpawner" type="MultiplayerSpawner" parent="."]
+unique_name_in_owner = true
+_spawnable_scenes = PackedStringArray("res://multiplayer_example/DungeonTest.tscn")
+spawn_path = NodePath("../LevelContainer")
+spawn_limit = 1
+
+[node name="LevelContainer" type="Node" parent="."]
+unique_name_in_owner = true
+
+[node name="CreateButton" type="Button" parent="."]
+layout_mode = 0
+offset_left = 257.0
+offset_top = 294.0
+offset_right = 495.0
+offset_bottom = 398.0
+text = "Create Server"
+
+[node name="JoinButton" type="Button" parent="."]
+layout_mode = 0
+offset_left = 633.0
+offset_top = 286.0
+offset_right = 890.0
+offset_bottom = 410.0
+text = "Join Server"
+
+[node name="Label" type="Label" parent="."]
+layout_mode = 0
+offset_left = 726.0
+offset_top = 196.0
+offset_right = 799.0
+offset_bottom = 219.0
+text = "Server ip:"
+
+[node name="ServerIPTextEdit" type="TextEdit" parent="."]
+unique_name_in_owner = true
+layout_mode = 0
+offset_left = 681.0
+offset_top = 233.0
+offset_right = 842.0
+offset_bottom = 270.0
+text = "127.0.0.1"
+
+[connection signal="pressed" from="CreateButton" to="." method="_on_create_button_pressed"]
+[connection signal="pressed" from="JoinButton" to="." method="_on_join_button_pressed"]

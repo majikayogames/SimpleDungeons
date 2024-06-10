@@ -45,6 +45,7 @@ func get_move_speed() -> float:
 	return sprint_speed if Input.is_action_pressed("sprint") else walk_speed
 
 func _ready():
+	if not is_multiplayer_authority(): return
 	for child in %WorldModel.find_children("*", "VisualInstance3D"):
 		child.set_layer_mask_value(1, false)
 		child.set_layer_mask_value(2, true)
@@ -90,6 +91,7 @@ func _handle_controller_look_input(delta):
 	%Camera3D.rotation.x = clamp(%Camera3D.rotation.x, deg_to_rad(-90), deg_to_rad(90)) # clamp up and down range
 
 func _process(delta):
+	if not is_multiplayer_authority(): return
 	_handle_controller_look_input(delta)
 	if get_interactable_component_at_shapecast():
 		get_interactable_component_at_shapecast().hover_cursor(self)
@@ -391,6 +393,7 @@ func _handle_ground_physics(delta) -> void:
 	_headbob_effect(delta)
 
 func _physics_process(delta):
+	if not is_multiplayer_authority(): return
 	if is_on_floor(): _last_frame_was_on_floor = Engine.get_physics_frames()
 	
 	var input_dir = Input.get_vector("left", "right", "up", "down").normalized()

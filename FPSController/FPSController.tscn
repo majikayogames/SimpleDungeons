@@ -1,4 +1,4 @@
-[gd_scene load_steps=7 format=3 uid="uid://f6kx848g5bco"]
+[gd_scene load_steps=8 format=3 uid="uid://f6kx848g5bco"]
 
 [ext_resource type="Script" path="res://FPSController/FPSController.gd" id="1_o4fvy"]
 [ext_resource type="PackedScene" uid="uid://gvm0me264r32" path="res://FPSController/models/disguise-glasses.glb" id="2_jjg3x"]
@@ -11,7 +11,16 @@
 [sub_resource type="SphereShape3D" id="SphereShape3D_7ebel"]
 radius = 0.25
 
+[sub_resource type="SceneReplicationConfig" id="SceneReplicationConfig_48qrp"]
+properties/0/path = NodePath(".:position")
+properties/0/spawn = true
+properties/0/replication_mode = 1
+properties/1/path = NodePath(".:rotation")
+properties/1/spawn = true
+properties/1/replication_mode = 1
+
 [node name="CharacterBody3D" type="CharacterBody3D"]
+collision_layer = 2
 platform_on_leave = 2
 script = ExtResource("1_o4fvy")
 
@@ -59,3 +68,6 @@ target_position = Vector3(0, -0.55, 0)
 
 [node name="StairsBelowRayCast3D" type="RayCast3D" parent="."]
 unique_name_in_owner = true
+
+[node name="MultiplayerSynchronizer" type="MultiplayerSynchronizer" parent="."]
+replication_config = SubResource("SceneReplicationConfig_48qrp")

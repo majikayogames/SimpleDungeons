@@ -1,0 +1,101 @@
+[gd_scene load_steps=10 format=3 uid="uid://crr6031qmir35"]
+
+[ext_resource type="Script" path="res://addons/SimpleDungeons/DungeonRoom3D.gd" id="1_1c8qy"]
+
+[sub_resource type="Gradient" id="Gradient_omn5o"]
+
+[sub_resource type="GradientTexture2D" id="GradientTexture2D_ls0we"]
+gradient = SubResource("Gradient_omn5o")
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_1b4dt"]
+albedo_texture = SubResource("GradientTexture2D_ls0we")
+uv1_triplanar = true
+uv1_world_triplanar = true
+
+[sub_resource type="GDScript" id="GDScript_4tekc"]
+script/source = "extends Node
+
+func _ready():
+	$\"..\".connect(\"dungeon_done_generating\", remove_unused_doors)
+
+func remove_unused_doors():
+	for door in $\"..\".get_doors():
+		if door.get_room_leads_to() == null:
+			door.door_node.queue_free()
+"
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_sva35"]
+albedo_color = Color(1, 0.44, 0.44, 1)
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_8485v"]
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_1qq54"]
+albedo_color = Color(0.5, 0.243333, 0.225, 1)
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_ca5kw"]
+albedo_color = Color(0.5, 0.243333, 0.225, 1)
+
+[node name="Bedroom" type="Node3D"]
+script = ExtResource("1_1c8qy")
+size_in_voxels = Vector3i(3, 1, 3)
+
+[node name="CSGBox3D" type="CSGBox3D" parent="."]
+use_collision = true
+size = Vector3(30, 10, 30)
+
+[node name="CSGBox3D2" type="CSGBox3D" parent="CSGBox3D"]
+operation = 2
+size = Vector3(29, 9, 29)
+
+[node name="DOOR" type="CSGBox3D" parent="CSGBox3D"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -9.5, 0, -14.5)
+operation = 2
+size = Vector3(10, 9, 2)
+
+[node name="CSGBox3D3" type="CSGBox3D" parent="CSGBox3D"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -4.42782, 0)
+operation = 2
+size = Vector3(29, 0.2, 29)
+material = SubResource("StandardMaterial3D_1b4dt")
+
+[node name="RemoveUnusedDoors" type="Node" parent="."]
+script = SubResource("GDScript_4tekc")
+
+[node name="CSGCombiner3D" type="CSGCombiner3D" parent="."]
+use_collision = true
+
+[node name="CSGBox3D2" type="CSGBox3D" parent="CSGCombiner3D"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 3.5, -3, 0)
+size = Vector3(8, 1, 8)
+material = SubResource("StandardMaterial3D_sva35")
+
+[node name="CSGBox3D9" type="CSGBox3D" parent="CSGCombiner3D"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 9.5, -3, 0)
+size = Vector3(4, 1, 8)
+material = SubResource("StandardMaterial3D_8485v")
+
+[node name="CSGBox3D4" type="CSGBox3D" parent="CSGCombiner3D"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 5.91372, -3.3, 0)
+size = Vector3(13.1274, 1, 8.3)
+material = SubResource("StandardMaterial3D_1qq54")
+
+[node name="CSGBox3D3" type="CSGBox3D" parent="CSGCombiner3D"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 12, -2, 0)
+size = Vector3(1, 3, 8)
+material = SubResource("StandardMaterial3D_ca5kw")
+
+[node name="CSGBox3D5" type="CSGBox3D" parent="CSGCombiner3D"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 12, -4.3, 3.5)
+material = SubResource("StandardMaterial3D_ca5kw")
+
+[node name="CSGBox3D6" type="CSGBox3D" parent="CSGCombiner3D"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -4.3, 3.5)
+material = SubResource("StandardMaterial3D_ca5kw")
+
+[node name="CSGBox3D7" type="CSGBox3D" parent="CSGCombiner3D"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 12, -4.3, -3.63669)
+material = SubResource("StandardMaterial3D_ca5kw")
+
+[node name="CSGBox3D8" type="CSGBox3D" parent="CSGCombiner3D"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -4.3, -3.63669)
+material = SubResource("StandardMaterial3D_ca5kw")

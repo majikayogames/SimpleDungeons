@@ -3,7 +3,7 @@
 [ext_resource type="Script" path="res://addons/SimpleDungeons/DungeonRoom3D.gd" id="1_owjkt"]
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_fbsiu"]
-albedo_color = Color(0.370364, 0.370364, 0.370364, 1)
+albedo_color = Color(0.0728426, 0.0728426, 0.0728426, 1)
 
 [sub_resource type="GDScript" id="GDScript_mplv8"]
 script/source = "extends Node
@@ -20,7 +20,8 @@ func remove_unused_doors():
 [node name="Stair" type="Node3D"]
 script = ExtResource("1_owjkt")
 size_in_voxels = Vector3i(2, 2, 1)
-max_count = 10
+min_count = 5
+max_count = 15
 is_stair_room = true
 
 [node name="CSGBox3D" type="CSGBox3D" parent="."]

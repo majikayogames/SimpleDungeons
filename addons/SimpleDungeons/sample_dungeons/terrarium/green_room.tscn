@@ -1,0 +1,89 @@
+[gd_scene load_steps=9 format=3 uid="uid://54kdovp1yfl5"]
+
+[ext_resource type="Script" path="res://addons/SimpleDungeons/DungeonRoom3D.gd" id="1_defih"]
+[ext_resource type="Texture2D" uid="uid://bwe02yta75ooa" path="res://addons/SimpleDungeons/sample_assets/kenney-green-checkerboar-cc0.png" id="2_lnti6"]
+[ext_resource type="Texture2D" uid="uid://djhy80eyqjqpv" path="res://addons/SimpleDungeons/sample_assets/kenney-dark-grey-checkboard-cc0.png" id="3_yqsq5"]
+[ext_resource type="Texture2D" uid="uid://i7rtr0ewxm5j" path="res://addons/SimpleDungeons/sample_assets/blue-checkerboard-cc0.png" id="4_h1rri"]
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_76ghj"]
+albedo_texture = ExtResource("2_lnti6")
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_x7cu1"]
+albedo_texture = ExtResource("3_yqsq5")
+
+[sub_resource type="GDScript" id="GDScript_17gef"]
+script/source = "extends Node
+
+func remove_unused_doors():
+	for door in $\"..\".get_doors():
+		if door.get_room_leads_to() == null:
+			door.door_node.queue_free()
+
+func _on_living_room_dungeon_done_generating():
+	remove_unused_doors()
+"
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_ao0hg"]
+transparency = 1
+depth_draw_mode = 1
+albedo_color = Color(1, 1, 1, 0.454902)
+albedo_texture = ExtResource("4_h1rri")
+clearcoat_roughness = 1.0
+uv1_triplanar = true
+uv1_world_triplanar = true
+
+[node name="GreenRoom" type="Node3D"]
+script = ExtResource("1_defih")
+size_in_voxels = Vector3i(3, 1, 2)
+
+[node name="CSGBox3D2" type="CSGBox3D" parent="."]
+transform = Transform3D(-1, 0, -8.74228e-08, 0, 1, 0, 8.74228e-08, 0, -1, 2.49155e-06, -4.74656, 0)
+material_override = SubResource("StandardMaterial3D_76ghj")
+use_collision = true
+size = Vector3(30, 0.496826, 20)
+
+[node name="CSGBox3D3" type="CSGBox3D" parent="."]
+transform = Transform3D(-1, 0, -8.74228e-08, 0, 1, 0, 8.74228e-08, 0, -1, 2.49155e-06, 4.75344, 0)
+material_override = SubResource("StandardMaterial3D_x7cu1")
+use_collision = true
+size = Vector3(30, 0.496826, 20)
+
+[node name="RemoveUnusedDoors" type="Node" parent="."]
+script = SubResource("GDScript_17gef")
+
+[node name="CSGBox3D" type="CSGBox3D" parent="."]
+transform = Transform3D(-1, 0, -8.74228e-08, 0, 1, 0, 8.74228e-08, 0, -1, 2.49155e-06, 0, 0)
+material_override = SubResource("StandardMaterial3D_ao0hg")
+use_collision = true
+size = Vector3(30, 10, 20)
+
+[node name="CSGBox3D3" type="CSGBox3D" parent="CSGBox3D"]
+operation = 2
+size = Vector3(29.5, 9.5, 19.5)
+
+[node name="DOOR?_R2_CUT2" type="CSGBox3D" parent="CSGBox3D"]
+transform = Transform3D(-4.37114e-08, 0, -1, 0, 1, 0, 1, 0, -4.37114e-08, 15, -2.75, -5)
+operation = 2
+size = Vector3(2, 4, 1)
+
+[node name="DOOR?_R1_CUT2" type="CSGBox3D" parent="CSGBox3D"]
+transform = Transform3D(-4.37114e-08, 0, -1, 0, 1, 0, 1, 0, -4.37114e-08, 15, -2.75, 5)
+operation = 2
+size = Vector3(2, 4, 1)
+
+[node name="DOOR?_L2_CUT" type="CSGBox3D" parent="CSGBox3D"]
+transform = Transform3D(-4.37114e-08, 0, -1, 0, 1, 0, 1, 0, -4.37114e-08, -15, -2.75, -5)
+operation = 2
+size = Vector3(2, 4, 1)
+
+[node name="DOOR?_L1_CUT" type="CSGBox3D" parent="CSGBox3D"]
+transform = Transform3D(-4.37114e-08, 0, -1, 0, 1, 0, 1, 0, -4.37114e-08, -15, -2.75, 5)
+operation = 2
+size = Vector3(2, 4, 1)
+
+[node name="CSGBox3D4" type="CSGBox3D" parent="CSGBox3D"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.5, 0, 4.65546e-15)
+operation = 1
+size = Vector3(32, 9, 21)
+
+[connection signal="dungeon_done_generating" from="." to="RemoveUnusedDoors" method="_on_living_room_dungeon_done_generating"]
