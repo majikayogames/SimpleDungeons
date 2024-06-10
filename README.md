@@ -29,3 +29,11 @@ You can download this repo and open its folder in Godot to run the sample projec
 ## License
 
 This addon is available under the CC0 license.
+
+## Support
+
+If you find this addon helpful and would like to support its development, consider becoming a patron or buying me a coffee!
+
+[![Patreon](https://img.shields.io/badge/Patreon-Support%20Me-orange)](https://www.patreon.com/MajikayoGames)
+[![Ko-fi](https://img.shields.io/badge/Ko--fi-Buy%20Me%20a%20Coffee-blue)](https://ko-fi.com/majikayogames)
+
