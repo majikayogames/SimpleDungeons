@@ -37,7 +37,6 @@ albedo_texture = ExtResource("2_dgnpe")
 
 [node name="HouseExterior" type="Node3D"]
 script = ExtResource("1_d4jd8")
-show_delay_ms = null
 
 [node name="HouseWalls" type="CSGBox3D" parent="."]
 material_override = SubResource("StandardMaterial3D_cjtu7")
