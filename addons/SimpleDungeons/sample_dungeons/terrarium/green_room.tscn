@@ -86,4 +86,6 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.5, 0, 4.65546e-15)
 operation = 1
 size = Vector3(32, 9, 21)
 
+[node name="PlayerSpawnPoint" type="Node3D" parent="." groups=["player_spawn_point"]]
+
 [connection signal="dungeon_done_generating" from="." to="RemoveUnusedDoors" method="_on_living_room_dungeon_done_generating"]
