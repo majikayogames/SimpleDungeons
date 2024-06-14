@@ -1,0 +1,158 @@
+[gd_scene load_steps=9 format=3 uid="uid://bnxjj8dpefmfd"]
+
+[ext_resource type="Script" path="res://addons/SimpleDungeons/DungeonRoom3D.gd" id="1_vbc11"]
+[ext_resource type="Texture2D" uid="uid://i7rtr0ewxm5j" path="res://addons/SimpleDungeons/sample_assets/blue-checkerboard-cc0.png" id="2_1ufaf"]
+
+[sub_resource type="Shader" id="Shader_vq8fj"]
+code = "// NOTE: Shader automatically converted from Godot Engine 4.2.2.stable's StandardMaterial3D.
+
+shader_type spatial;
+render_mode blend_mix,depth_draw_opaque,cull_back,diffuse_burley,specular_schlick_ggx;
+uniform vec4 albedo : source_color;
+uniform sampler2D texture_albedo : source_color,filter_linear_mipmap,repeat_enable;
+uniform float point_size : hint_range(0,128);
+uniform float roughness : hint_range(0,1);
+uniform sampler2D texture_metallic : hint_default_white,filter_linear_mipmap,repeat_enable;
+uniform vec4 metallic_texture_channel;
+uniform sampler2D texture_roughness : hint_roughness_r,filter_linear_mipmap,repeat_enable;
+uniform float specular;
+uniform float metallic;
+varying vec3 uv1_triplanar_pos;
+uniform float uv1_blend_sharpness;
+varying vec3 uv1_power_normal;
+uniform vec3 uv1_scale;
+uniform vec3 uv1_offset;
+uniform vec3 uv2_scale;
+uniform vec3 uv2_offset;
+
+
+void vertex() {
+	vec3 normal = MODEL_NORMAL_MATRIX * NORMAL;
+	TANGENT = vec3(0.0,0.0,-1.0) * abs(normal.x);
+	TANGENT+= vec3(1.0,0.0,0.0) * abs(normal.y);
+	TANGENT+= vec3(1.0,0.0,0.0) * abs(normal.z);
+	TANGENT = inverse(MODEL_NORMAL_MATRIX) * normalize(TANGENT);
+	BINORMAL = vec3(0.0,1.0,0.0) * abs(normal.x);
+	BINORMAL+= vec3(0.0,0.0,-1.0) * abs(normal.y);
+	BINORMAL+= vec3(0.0,1.0,0.0) * abs(normal.z);
+	BINORMAL = inverse(MODEL_NORMAL_MATRIX) * normalize(BINORMAL);
+	uv1_power_normal=pow(abs(normal),vec3(uv1_blend_sharpness));
+	uv1_triplanar_pos = (MODEL_MATRIX * vec4(VERTEX, 1.0f)).xyz * uv1_scale + uv1_offset + TIME * 0.01;
+	uv1_power_normal/=dot(uv1_power_normal,vec3(1.0));
+	uv1_triplanar_pos *= vec3(1.0,-1.0, 1.0);
+}
+
+
+
+
+vec4 triplanar_texture(sampler2D p_sampler,vec3 p_weights,vec3 p_triplanar_pos) {
+	vec4 samp=vec4(0.0);
+	samp+= texture(p_sampler,p_triplanar_pos.xy) * p_weights.z;
+	samp+= texture(p_sampler,p_triplanar_pos.xz) * p_weights.y;
+	samp+= texture(p_sampler,p_triplanar_pos.zy * vec2(-1.0,1.0)) * p_weights.x;
+	return samp;
+}
+
+
+void fragment() {
+	vec4 albedo_tex = triplanar_texture(texture_albedo,uv1_power_normal,uv1_triplanar_pos);
+	ALBEDO = albedo.rgb * albedo_tex.rgb;
+	float metallic_tex = dot(triplanar_texture(texture_metallic,uv1_power_normal,uv1_triplanar_pos),metallic_texture_channel);
+	METALLIC = metallic_tex * metallic;
+	vec4 roughness_texture_channel = vec4(1.0,0.0,0.0,0.0);
+	float roughness_tex = dot(triplanar_texture(texture_roughness,uv1_power_normal,uv1_triplanar_pos),roughness_texture_channel);
+	ROUGHNESS = roughness_tex * roughness;
+	SPECULAR = specular;
+}
+"
+
+[sub_resource type="FastNoiseLite" id="FastNoiseLite_fe7vc"]
+noise_type = 2
+frequency = 0.0165
+
+[sub_resource type="NoiseTexture2D" id="NoiseTexture2D_bispe"]
+seamless = true
+noise = SubResource("FastNoiseLite_fe7vc")
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_g7p6c"]
+render_priority = 0
+shader = SubResource("Shader_vq8fj")
+shader_parameter/albedo = Color(1, 1, 1, 1)
+shader_parameter/point_size = 1.0
+shader_parameter/roughness = 1.0
+shader_parameter/metallic_texture_channel = null
+shader_parameter/specular = 0.5
+shader_parameter/metallic = 0.0
+shader_parameter/uv1_blend_sharpness = 1.0
+shader_parameter/uv1_scale = Vector3(0.08, 0.08, 0.08)
+shader_parameter/uv1_offset = Vector3(0, 0, 0)
+shader_parameter/uv2_scale = Vector3(1, 1, 1)
+shader_parameter/uv2_offset = Vector3(0, 0, 0)
+shader_parameter/texture_albedo = SubResource("NoiseTexture2D_bispe")
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_07mhj"]
+albedo_texture = ExtResource("2_1ufaf")
+
+[sub_resource type="GDScript" id="GDScript_17gef"]
+script/source = "extends Node
+
+func remove_unused_doors():
+	for door in $\"..\".get_doors():
+		if door.get_room_leads_to() == null:
+			door.door_node.queue_free()
+
+func _on_living_room_dungeon_done_generating():
+	remove_unused_doors()
+"
+
+[node name="LivingRoom" type="Node3D"]
+script = ExtResource("1_vbc11")
+size_in_voxels = Vector3i(3, 1, 2)
+min_count = 5
+max_count = 10
+
+[node name="CSGBox3D" type="CSGBox3D" parent="."]
+transform = Transform3D(-1, 0, -8.74228e-08, 0, 1, 0, 8.74228e-08, 0, -1, 2.49155e-06, 0, 0)
+material_override = SubResource("ShaderMaterial_g7p6c")
+use_collision = true
+size = Vector3(30, 10, 20)
+
+[node name="CSGBox3D3" type="CSGBox3D" parent="CSGBox3D"]
+operation = 2
+size = Vector3(29.5, 9.5, 19.5)
+
+[node name="DOOR?_B_CUT" type="CSGBox3D" parent="CSGBox3D"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -2.75, 9.75)
+operation = 2
+size = Vector3(2, 4, 1)
+
+[node name="DOOR?_R2_CUT2" type="CSGBox3D" parent="CSGBox3D"]
+transform = Transform3D(-4.37114e-08, 0, -1, 0, 1, 0, 1, 0, -4.37114e-08, 15, -2.75, -5)
+operation = 2
+size = Vector3(2, 4, 1)
+
+[node name="DOOR?_R1_CUT2" type="CSGBox3D" parent="CSGBox3D"]
+transform = Transform3D(-4.37114e-08, 0, -1, 0, 1, 0, 1, 0, -4.37114e-08, 15, -2.75, 5)
+operation = 2
+size = Vector3(2, 4, 1)
+
+[node name="DOOR?_L2_CUT" type="CSGBox3D" parent="CSGBox3D"]
+transform = Transform3D(-4.37114e-08, 0, -1, 0, 1, 0, 1, 0, -4.37114e-08, -15, -2.75, -5)
+operation = 2
+size = Vector3(2, 4, 1)
+
+[node name="DOOR?_L1_CUT" type="CSGBox3D" parent="CSGBox3D"]
+transform = Transform3D(-4.37114e-08, 0, -1, 0, 1, 0, 1, 0, -4.37114e-08, -15, -2.75, 5)
+operation = 2
+size = Vector3(2, 4, 1)
+
+[node name="CSGBox3D2" type="CSGBox3D" parent="."]
+transform = Transform3D(-1, 0, -8.74228e-08, 0, 1, 0, 8.74228e-08, 0, -1, 2.49155e-06, -4.825, 0)
+material_override = SubResource("StandardMaterial3D_07mhj")
+use_collision = true
+size = Vector3(8, 0.2, 13)
+
+[node name="RemoveUnusedDoors" type="Node" parent="."]
+script = SubResource("GDScript_17gef")
+
+[connection signal="dungeon_done_generating" from="." to="RemoveUnusedDoors" method="_on_living_room_dungeon_done_generating"]

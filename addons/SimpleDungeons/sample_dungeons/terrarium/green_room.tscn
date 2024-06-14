@@ -35,6 +35,8 @@ uv1_world_triplanar = true
 [node name="GreenRoom" type="Node3D"]
 script = ExtResource("1_defih")
 size_in_voxels = Vector3i(3, 1, 2)
+min_count = 5
+max_count = 15
 
 [node name="CSGBox3D2" type="CSGBox3D" parent="."]
 transform = Transform3D(-1, 0, -8.74228e-08, 0, 1, 0, 8.74228e-08, 0, -1, 2.49155e-06, -4.74656, 0)

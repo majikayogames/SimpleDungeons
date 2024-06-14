@@ -3,7 +3,7 @@ extends Node3D
 @export var orbit_speed : float = 0.3
 @export var zoom_speed : float = 5.0
 @export var min_zoom : float = 2.0
-@export var max_zoom : float = 200.0
+@export var max_zoom : float = 400.0
 @export var auto_rotate_speed : float = -0.44 # Speed of auto rotation
 @export var auto_rotate : bool = false # Toggle auto-rotation
 

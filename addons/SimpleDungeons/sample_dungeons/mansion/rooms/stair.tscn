@@ -1,22 +1,59 @@
-[gd_scene load_steps=7 format=3 uid="uid://najwcu57f6bc"]
+[gd_scene load_steps=12 format=3 uid="uid://najwcu57f6bc"]
 
 [ext_resource type="Script" path="res://addons/SimpleDungeons/DungeonRoom3D.gd" id="1_ht4j3"]
-[ext_resource type="Texture2D" uid="uid://dqvyc0ok7chld" path="res://addons/SimpleDungeons/sample_assets/kenney-grey-checkerboard-cc0.png" id="2_qs484"]
 [ext_resource type="PackedScene" uid="uid://bak8ltrhbmlv5" path="res://addons/SimpleDungeons/utils/CSGStairMaker3D.tscn" id="3_1hkio"]
-[ext_resource type="Texture2D" uid="uid://i7rtr0ewxm5j" path="res://addons/SimpleDungeons/sample_assets/blue-checkerboard-cc0.png" id="4_dvkby"]
+
+[sub_resource type="Gradient" id="Gradient_n7jmt"]
+colors = PackedColorArray(1, 1, 1, 1, 0.5832, 0.5832, 0.81, 1)
+
+[sub_resource type="FastNoiseLite" id="FastNoiseLite_xy5n2"]
+noise_type = 2
+
+[sub_resource type="NoiseTexture2D" id="NoiseTexture2D_wo5pc"]
+color_ramp = SubResource("Gradient_n7jmt")
+noise = SubResource("FastNoiseLite_xy5n2")
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_0vchj"]
-albedo_texture = ExtResource("2_qs484")
+albedo_texture = SubResource("NoiseTexture2D_wo5pc")
+uv1_scale = Vector3(4.165, 4.165, 4.165)
 uv1_triplanar = true
 uv1_world_triplanar = true
 
-[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_tgytq"]
-albedo_texture = ExtResource("4_dvkby")
+[sub_resource type="Gradient" id="Gradient_i80ea"]
+offsets = PackedFloat32Array(0, 0.442623)
+colors = PackedColorArray(0, 0, 0, 1, 0.52, 0.1872, 0.275947, 1)
+
+[sub_resource type="FastNoiseLite" id="FastNoiseLite_805tn"]
+noise_type = 3
+seed = 16
+frequency = 0.029
+fractal_type = 0
+fractal_octaves = 1
+
+[sub_resource type="NoiseTexture2D" id="NoiseTexture2D_wr6uy"]
+in_3d_space = true
+generate_mipmaps = false
+seamless = true
+color_ramp = SubResource("Gradient_i80ea")
+noise = SubResource("FastNoiseLite_805tn")
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_hudx1"]
+albedo_texture = SubResource("NoiseTexture2D_wr6uy")
+uv1_scale = Vector3(0.705, 0.705, 0.705)
+uv1_triplanar = true
+uv1_world_triplanar = true
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_i5qk8"]
+albedo_texture = SubResource("NoiseTexture2D_wr6uy")
+uv1_scale = Vector3(0.705, 0.705, 0.705)
+uv1_triplanar = true
+uv1_world_triplanar = true
 
 [node name="Stair" type="Node3D"]
 script = ExtResource("1_ht4j3")
 size_in_voxels = Vector3i(2, 2, 1)
-max_count = 15
+min_count = 5
+max_count = 30
 is_stair_room = true
 
 [node name="CSGBox3D" type="CSGBox3D" parent="."]
@@ -41,7 +78,13 @@ size = Vector3(2, 4, 1)
 
 [node name="CSGStairMaker3D" parent="." instance=ExtResource("3_1hkio")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2.75, -4.75, 0)
-material_override = SubResource("StandardMaterial3D_tgytq")
+material_override = SubResource("StandardMaterial3D_hudx1")
 use_collision = true
 size = Vector3(14, 10, 9.5)
 num_stairs = 32
+
+[node name="CSGBox3D2" type="CSGBox3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -6.98486, -9.75, 0)
+material_override = SubResource("StandardMaterial3D_i5qk8")
+use_collision = true
+size = Vector3(5.96973, 0.1, 4.2)

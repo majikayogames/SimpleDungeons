@@ -78,7 +78,10 @@ enum AStarHeuristics { NONE_DIJKSTRAS = 0, MANHATTAN = 1, EUCLIDEAN = 2 }
 ## Euclidan - Standard, tends towards straight corridors connecting rooms.
 ## Manhattan - May lead to zigzagging corridors between rooms.
 ## Dijkstra's - No heuristic, this turns AStar into Dijkstra's algorithm. Guaranteed to find the shortest possible path but may lead to zigzagging corridors.
-@export var astar_heuristic : AStarHeuristics = AStarHeuristics.EUCLIDEAN
+@export var astar_heuristic : AStarHeuristics = AStarHeuristics.MANHATTAN
+## Increasing the heuristic scale may make the path less optimal but can help reduce zigzagging corridors.
+## A heuristic of 3.0 (with either manhattan or euclidean, dijkstras already means 0 heuristic scale) may help reduce zigzagging corridors.
+@export var heuristic_scale : float = 1.0
 ## By making the corridors cost less to walk through, the algorithm will tend towards merging into single corridors,
 ## thus making hallways more compact.
 @export var corridor_cost_multiplier : float = 0.25

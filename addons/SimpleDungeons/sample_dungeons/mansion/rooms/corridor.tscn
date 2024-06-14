@@ -1,10 +1,21 @@
-[gd_scene load_steps=6 format=3 uid="uid://bn6lta2vs6qh8"]
+[gd_scene load_steps=9 format=3 uid="uid://bn6lta2vs6qh8"]
 
 [ext_resource type="Script" path="res://addons/SimpleDungeons/DungeonRoom3D.gd" id="1_m0wvh"]
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_8tlf5"]
+albedo_color = Color(0, 0, 0, 1)
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_4tt88"]
+albedo_color = Color(0.176419, 0.176419, 0.176419, 1)
+
+[sub_resource type="Gradient" id="Gradient_nd35r"]
+offsets = PackedFloat32Array(0.276119, 1)
+colors = PackedColorArray(0.301961, 0, 0, 1, 0.555762, 0.29171, 0.357937, 1)
 
 [sub_resource type="FastNoiseLite" id="FastNoiseLite_4grxn"]
 
 [sub_resource type="NoiseTexture2D" id="NoiseTexture2D_4g5kp"]
+color_ramp = SubResource("Gradient_nd35r")
 noise = SubResource("FastNoiseLite_4grxn")
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_ovx52"]
@@ -28,10 +39,12 @@ script = ExtResource("1_m0wvh")
 [node name="CSGBox3D" type="CSGBox3D" parent="."]
 use_collision = true
 size = Vector3(10, 10, 10)
+material = SubResource("StandardMaterial3D_8tlf5")
 
 [node name="CSGBox3D2" type="CSGBox3D" parent="CSGBox3D"]
 operation = 2
 size = Vector3(9, 9, 9)
+material = SubResource("StandardMaterial3D_4tt88")
 
 [node name="CSGBox3D3" type="CSGBox3D" parent="CSGBox3D"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -4.52714, 0)

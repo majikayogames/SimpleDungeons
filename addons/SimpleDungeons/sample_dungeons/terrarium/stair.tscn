@@ -1,16 +1,21 @@
-[gd_scene load_steps=3 format=3 uid="uid://cdffbslc7qhgi"]
+[gd_scene load_steps=5 format=3 uid="uid://cdffbslc7qhgi"]
 
 [ext_resource type="Script" path="res://addons/SimpleDungeons/DungeonRoom3D.gd" id="1_13awt"]
+[ext_resource type="Texture2D" uid="uid://i7rtr0ewxm5j" path="res://addons/SimpleDungeons/sample_assets/blue-checkerboard-cc0.png" id="2_tjfvs"]
 [ext_resource type="PackedScene" uid="uid://bak8ltrhbmlv5" path="res://addons/SimpleDungeons/utils/CSGStairMaker3D.tscn" id="3_ldwg4"]
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_wrp25"]
+albedo_texture = ExtResource("2_tjfvs")
 
 [node name="Stair" type="Node3D"]
 script = ExtResource("1_13awt")
 size_in_voxels = Vector3i(2, 2, 1)
-max_count = 15
+max_count = 50
 is_stair_room = true
 
 [node name="CSGBox3D" type="CSGBox3D" parent="."]
 transform = Transform3D(-1, 0, -8.74228e-08, 0, 1, 0, 8.74228e-08, 0, -1, 0, 0, 0)
+material_override = SubResource("StandardMaterial3D_wrp25")
 use_collision = true
 size = Vector3(20, 20, 10)
 

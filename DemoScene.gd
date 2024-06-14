@@ -30,6 +30,7 @@ var devtextures = [
 var mansion = [
 	preload("res://addons/SimpleDungeons/sample_dungeons/mansion/rooms/bedroom.tscn"),
 	preload("res://addons/SimpleDungeons/sample_dungeons/mansion/rooms/stair.tscn"),
+	preload("res://addons/SimpleDungeons/sample_dungeons/mansion/rooms/living_room.tscn"),
 	preload("res://addons/SimpleDungeons/sample_dungeons/mansion/rooms/corridor.tscn"),
 ]
 var terrarium = [
@@ -37,12 +38,6 @@ var terrarium = [
 	preload("res://addons/SimpleDungeons/sample_dungeons/terrarium/stair.tscn"),
 	preload("res://addons/SimpleDungeons/sample_dungeons/terrarium/corridor.tscn"),
 ]
-
-var sizes = {
-	blue_red: Vector3i(10,10,10),
-	rgsdev: Vector3i(10,10,10),
-	devtextures: Vector3i(10,10,10),
-}
 
 var names = {
 	blue_red: "Custom room placement demo",

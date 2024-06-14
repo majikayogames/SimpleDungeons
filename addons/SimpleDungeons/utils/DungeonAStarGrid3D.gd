@@ -53,10 +53,10 @@ func _estimate_cost(from_id : int, to_id : int) -> float:
 		return 0.0
 	elif dungeon_generator.astar_heuristic == DungeonGenerator3D.AStarHeuristics.MANHATTAN:
 		var diff := get_point_position(to_id) - get_point_position(from_id)
-		return abs(diff.x) + abs(diff.y) + abs(diff.z)
+		return (abs(diff.x) + abs(diff.y) + abs(diff.z)) * dungeon_generator.heuristic_scale
 	elif dungeon_generator.astar_heuristic == DungeonGenerator3D.AStarHeuristics.EUCLIDEAN:
 		var diff := get_point_position(to_id) - get_point_position(from_id)
-		return diff.length()
+		return diff.length() * dungeon_generator.heuristic_scale
 	return 0.0
 
 func _compute_cost(from_id : int, to_id : int) -> float:
