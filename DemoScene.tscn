@@ -42,6 +42,7 @@ environment = SubResource("Environment_4mo8u")
 unique_name_in_owner = true
 script = ExtResource("1_wd02n")
 generate_on_ready = false
+heuristic_scale = 3.0
 
 [node name="GUI" type="Control" parent="."]
 unique_name_in_owner = true

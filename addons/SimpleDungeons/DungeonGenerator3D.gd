@@ -78,7 +78,7 @@ enum AStarHeuristics { NONE_DIJKSTRAS = 0, MANHATTAN = 1, EUCLIDEAN = 2 }
 ## Euclidan - Standard, tends towards straight corridors connecting rooms.
 ## Manhattan - May lead to zigzagging corridors between rooms.
 ## Dijkstra's - No heuristic, this turns AStar into Dijkstra's algorithm. Guaranteed to find the shortest possible path but may lead to zigzagging corridors.
-@export var astar_heuristic : AStarHeuristics = AStarHeuristics.MANHATTAN
+@export var astar_heuristic : AStarHeuristics = AStarHeuristics.EUCLIDEAN
 ## Increasing the heuristic scale may make the path less optimal but can help reduce zigzagging corridors.
 ## A heuristic of 3.0 (with either manhattan or euclidean, Dijkstra's already means 0 heuristic scale) may help reduce zigzagging corridors.
 @export var heuristic_scale : float = 1.0
@@ -652,8 +652,11 @@ func connect_rooms_iteration(first_call_in_loop : bool) -> void:
 				_quick_room_check_dict[aabbi.position + Vector3i(x,y,z)] = room
 		# Init after corridors/room dict setup
 		_astar3d = DungeonAStar3D.new(self, _quick_room_check_dict, _quick_corridors_check_dict)
+		# Sort rooms by door y positions. Likely to make astar connections more stable
+		_rooms_to_connect.sort_custom(func(a,b): return b.get_doors_cached()[0].exit_pos_grid.y > a.get_doors_cached()[0].exit_pos_grid.y)
 	
 	# Can exit early if _rooms_to_connect stops going down, aka we tried shuffling and couldn't find a connection
+	# Don't think this is necessary actually, I just exit below instead if it fails ever.
 	#_last_rooms_to_connect_counts.push_front(len(_rooms_to_connect))
 	#_last_rooms_to_connect_counts = _last_rooms_to_connect_counts.filter(func(c): return c == _last_rooms_to_connect_counts[0])
 	#if len(_last_rooms_to_connect_counts) > (len(_rooms_to_connect) * 4) and _last_rooms_to_connect_counts[0] == len(_rooms_to_connect):
