@@ -15,9 +15,9 @@ var rgsdev = [
 	preload("res://addons/SimpleDungeons/sample_dungeons/lowpoly_kit_1_rooms/entrance_room.tscn"),
 	preload("res://addons/SimpleDungeons/sample_dungeons/lowpoly_kit_1_rooms/living_room.tscn"),
 	preload("res://addons/SimpleDungeons/sample_dungeons/lowpoly_kit_1_rooms/spike_hallway.tscn"),
-	preload("res://addons/SimpleDungeons/sample_dungeons/lowpoly_kit_1_rooms/stair.tscn"),
 	preload("res://addons/SimpleDungeons/sample_dungeons/lowpoly_kit_1_rooms/trap_room.tscn"),
 	preload("res://addons/SimpleDungeons/sample_dungeons/lowpoly_kit_1_rooms/treasure_room.tscn"),
+	preload("res://addons/SimpleDungeons/sample_dungeons/lowpoly_kit_1_rooms/stair.tscn"),
 	preload("res://addons/SimpleDungeons/sample_dungeons/lowpoly_kit_1_rooms/corridor.tscn"),
 ]
 var devtextures = [
@@ -29,8 +29,8 @@ var devtextures = [
 ]
 var mansion = [
 	preload("res://addons/SimpleDungeons/sample_dungeons/mansion/rooms/bedroom.tscn"),
-	preload("res://addons/SimpleDungeons/sample_dungeons/mansion/rooms/stair.tscn"),
 	preload("res://addons/SimpleDungeons/sample_dungeons/mansion/rooms/living_room.tscn"),
+	preload("res://addons/SimpleDungeons/sample_dungeons/mansion/rooms/stair.tscn"),
 	preload("res://addons/SimpleDungeons/sample_dungeons/mansion/rooms/corridor.tscn"),
 ]
 var terrarium = [
@@ -38,13 +38,21 @@ var terrarium = [
 	preload("res://addons/SimpleDungeons/sample_dungeons/terrarium/stair.tscn"),
 	preload("res://addons/SimpleDungeons/sample_dungeons/terrarium/corridor.tscn"),
 ]
+var flat_wide = [
+	preload("res://addons/SimpleDungeons/sample_dungeons/flat_wide_dungeon/living_room.tscn"),
+	preload("res://addons/SimpleDungeons/sample_dungeons/flat_wide_dungeon/entrance_room.tscn"),
+	preload("res://addons/SimpleDungeons/sample_dungeons/flat_wide_dungeon/bridge_room.tscn"),
+	preload("res://addons/SimpleDungeons/sample_dungeons/lowpoly_kit_1_rooms/stair.tscn"),
+	preload("res://addons/SimpleDungeons/sample_dungeons/flat_wide_dungeon/corridor.tscn"),
+]
 
 var names = {
 	blue_red: "Custom room placement demo",
 	rgsdev: "Dungeon Kit by rgsdev",
 	devtextures: "Dev texture example",
 	mansion: "Mansion",
-	terrarium: "Terrarium"
+	terrarium: "Terrarium",
+	flat_wide: "Flat wide dungeon with rgsdev kit"
 }
 
 func _ready():
@@ -104,6 +112,14 @@ func regenerate():
 	var n = %OptionButtonDungeons.get_item_text(%OptionButtonDungeons.get_selected_id())
 	var d_arr = names.find_key(n).slice(0)
 	var corridor = d_arr.pop_back()
+	var xyz = Vector3i(%X.value, %Y.value, %Z.value)
+	if xyz.y == 1:
+		d_arr.pop_back() # Remove stair room, made it second to last in all. Some have multiple 2 floor rooms but can try to make all generate if only 1 height
+		if names.find_key(n) == rgsdev:
+			# Also remove 2 floor rooms for rgsdev
+			d_arr.pop_back() # Treasure room
+			d_arr.pop_back() # Trap room
+			d_arr.pop_back() # Spike room
 	var room_scenes : Array[PackedScene] = []
 	room_scenes.assign(d_arr)
 	%DungeonGenerator3D.corridor_room_scene = corridor

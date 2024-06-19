@@ -1,6 +1,6 @@
-[gd_scene load_steps=23 format=3 uid="uid://cf13frjr2u0oe"]
+[gd_scene load_steps=23 format=3 uid="uid://5jsl6j1ag8ul"]
 
-[ext_resource type="Script" path="res://addons/SimpleDungeons/DungeonRoom3D.gd" id="1_c5k6q"]
+[ext_resource type="Script" path="res://addons/SimpleDungeons/DungeonRoom3D.gd" id="1_xqb2j"]
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_upkxj"]
 resource_name = "dark grey"
@@ -444,7 +444,7 @@ blend_shape_mode = 0
 shadow_mesh = SubResource("ArrayMesh_4v2wr")
 
 [node name="EntranceRoom" type="Node3D"]
-script = ExtResource("1_c5k6q")
+script = ExtResource("1_xqb2j")
 min_count = 1
 max_count = 1
 

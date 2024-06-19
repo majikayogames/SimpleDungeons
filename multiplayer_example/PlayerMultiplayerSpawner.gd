@@ -36,6 +36,8 @@ func _custom_spawn_func(data : Variant) -> Node:
 	var player = player_scene.instantiate()
 	player.name = str(data.multiplayer_id)
 	player.set_multiplayer_authority(data.multiplayer_id)
+	if data.multiplayer_id == 1:
+		player.position.x -= 2
 	set_camera_current_if_necessary(player)
 	return player
 

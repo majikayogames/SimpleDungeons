@@ -52,6 +52,7 @@ corridor_room_scene = ExtResource("5_hvl01")
 dungeon_size = Vector3i(10, 16, 10)
 generate_on_ready = false
 max_retries = 0
+show_debug_in_game = true
 place_even_if_fail = true
 visualize_generation_progress = true
 

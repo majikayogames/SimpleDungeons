@@ -40,6 +40,7 @@ func _validate_property(property: Dictionary):
 @export_group("Debug view")
 @export var show_debug_in_editor : bool = true
 @export var show_debug_in_game : bool = false
+## For internal debug use only
 @export var show_grid_aabb_with_doors : bool = false
 
 var was_preplaced = false :
