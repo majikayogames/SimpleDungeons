@@ -6,6 +6,8 @@ SimpleDungeons Tutorial video: https://www.youtube.com/watch?v=v58l05FsdPs
 
 Wiki page: https://github.com/majikayogames/SimpleDungeons/wiki
 
+Web demo: https://majikayogames.github.io/SimpleDungeonsDemo/demo.html
+
 You can download this repo and open its folder in Godot to run the sample project.
 
 ## Installation
