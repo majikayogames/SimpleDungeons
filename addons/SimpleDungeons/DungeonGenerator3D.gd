@@ -733,7 +733,7 @@ func get_rooms_less_than_max_count(include_stairs : bool):
 			return false
 		var already_in_tree = _rooms_placed.filter(func(placed_room : DungeonRoom3D):
 			return room.get_original_packed_scene() == placed_room.get_original_packed_scene())
-		return len(already_in_tree) < room.min_count)
+		return len(already_in_tree) < room.max_count)
 
 func get_randomly_positioned_room() -> DungeonRoom3D:
 	var room : DungeonRoom3D = get_rooms_less_than_max_count(false)[rng.randi() % get_rooms_less_than_max_count(false).size()]
